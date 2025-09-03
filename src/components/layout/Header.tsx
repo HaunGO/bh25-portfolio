@@ -107,13 +107,13 @@ export default function Header({ className = '' }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-          >
-            {/* <span className="text-3xl">🎨</span> */}
-            <span>BH25</span>
-          </Link>
+                      <Link
+              href="/"
+              className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
+            >
+              {/* <span className="text-3xl">🎨</span> */}
+              <span>BH25</span>
+            </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

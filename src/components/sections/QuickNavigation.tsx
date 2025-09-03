@@ -78,12 +78,15 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
   return (
     <section 
       ref={sectionRef}
-      className={`py-20 bg-white dark:bg-neutral-900 transition-colors duration-500 ${className}`}
+      className={`py-20 bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-800 transition-colors duration-500 ${className}`}
     >
+      {/* Visual separator */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-700 to-transparent" />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 
           ref={titleRef}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-neutral-900 dark:text-neutral-100 mb-12 transition-colors duration-500"
+          className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-neutral-900 dark:text-neutral-100 mb-12 transition-colors duration-500 font-display"
         >
           Explore My Work
         </h2>
@@ -100,10 +103,10 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
               <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2 transition-colors duration-300">
+              <h3 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2 transition-colors duration-300 font-display">
                 {item.title}
               </h3>
-              <p className="text-neutral-600 dark:text-neutral-400 mb-6 transition-colors duration-300">
+              <p className="text-neutral-600 dark:text-neutral-400 mb-6 transition-colors duration-300 font-body">
                 {item.description}
               </p>
               <a

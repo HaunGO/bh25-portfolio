@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface HeroProps {
   className?: string;
@@ -16,6 +17,9 @@ export default function Hero({ className = '' }: HeroProps) {
 
   useEffect(() => {
     if (!heroRef.current) return;
+
+    // Register ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
 
     // Create a timeline for coordinated animations
     const tl = gsap.timeline({ delay: 0.2 });
@@ -66,16 +70,85 @@ export default function Hero({ className = '' }: HeroProps) {
       repeat: -1
     });
 
+    // Header slide-down effect when hero bottom reaches top of screen
+    // Use a small delay to ensure header is fully rendered
+    setTimeout(() => {
+      // Try multiple methods to find the header
+      let header = document.querySelector('header');
+      if (!header) {
+        header = document.querySelector('[data-header]'); // Fallback to data attribute
+      }
+      if (!header) {
+        header = document.querySelector('.header'); // Fallback to class
+      }
+      
+      console.log('Header element found:', header); // Debug log
+      
+      if (header) {
+          // Check if header already has transforms and preserve them
+          const currentTransform = window.getComputedStyle(header).transform;
+          const hasTransform = currentTransform && currentTransform !== 'none';
+          
+          // Start with header hidden (moved up)
+          gsap.set(header, { 
+            y:'-100%',
+            immediateRender: true,
+            force3D: true,
+            clearProps: hasTransform ? 'none' : 'transform' // Don't clear existing transforms
+          });
+          console.log('Header set to hidden position, current transform:', currentTransform); // Debug log
+        
+        // Create ScrollTrigger for header animation
+        const headerTrigger = ScrollTrigger.create({
+          trigger: titleRef.current, 
+          start: 'bottom top', // When bottom of hero reaches top of viewport
+          end: 'bottom top',   // End immediately when it starts
+          markers: true,
+          onEnter: () => {
+            console.log('ScrollTrigger onEnter - sliding header down'); // Debug log
+            // Slide header down into place
+            gsap.to(header, {
+              y: '0%',
+              duration: 0.2,
+              ease: 'power2.in',
+              force3D: true
+            });
+          },
+          onLeaveBack: () => {
+            console.log('ScrollTrigger onLeaveBack - sliding header up'); // Debug log
+            // Slide header back up when scrolling back to hero
+            gsap.to(header, {
+              y: '-100%',
+              duration: 0.2,
+              ease: 'power1.out',
+              force3D: true
+            });
+          },
+          onUpdate: (self) => {
+            // Debug: log scroll progress
+            if (self.progress > 0) {
+              console.log('ScrollTrigger progress:', self.progress);
+            }
+          }
+        });
+        
+        console.log('Header ScrollTrigger created:', headerTrigger); // Debug log
+      } else {
+        console.warn('Header element not found!'); // Debug warning
+      }
+    }, 100); // Small delay to ensure DOM is ready
+
     // Cleanup function
     return () => {
       tl.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
   return (
     <section 
       ref={heroRef}
-      className={`relative min-h-screen flex items-center justify-center overflow-hidden ${className}`}
+      className={`relative h-screen flex items-center pl-16 pb-32 pt-32 justify-start  overflow-hidden ${className}`}
     >
       {/* Animated Background */}
       <div 
@@ -89,24 +162,30 @@ export default function Hero({ className = '' }: HeroProps) {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 text-center space-y-8 px-4 max-w-4xl mx-auto">
+      <div className="relative z-10 text-left space-y-8 px-4 ">
         {/* Main Title */}
         <h1 
           ref={titleRef}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight"
+          className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display"
         >
-          <span className="block bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600 bg-clip-text text-transparent">
-            Creative
+          {/* <span className="inline bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600 bg-clip-text text-transparent">
+            Creative&nbsp;
           </span>
-          <span className="block text-neutral-800 dark:text-neutral-200">
+          <span className="inline text-neutral-800 dark:text-neutral-200">
             Developer
-          </span>
+          </span> */}
+
+            <span className="block text-3xl font-normal" >Hello, I&apos;m</span>
+            {/* <span className="block font-semibold">Brandog the Magnificent</span> */}
+            <span className="block font-semibold">Brandon Haun</span>
+            <span className="block text-4xl font-normal">A Creator of Great &amp; Many</span>
         </h1>
+            {/* <p className="block text-3xl font-normal">A Creator of Great &amp; Many Things</p> */}
 
         {/* Subtitle */}
-        <p 
+        {/* <p 
           ref={subtitleRef}
-          className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed"
+          className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body"
         >
           Building beautiful, interactive experiences that combine{' '}
           <span className="text-primary-600 dark:text-primary-400 font-semibold">
@@ -116,30 +195,24 @@ export default function Hero({ className = '' }: HeroProps) {
           <span className="text-accent-600 dark:text-accent-400 font-semibold">
             artistic vision
           </span>
-        </p>
+        </p> */}
 
-        {/* Call to Action Buttons */}
-        <div 
-          ref={ctaRef}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
-          <button className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
-            <span className="relative z-10">View Portfolio</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </button>
+        {/* Call to Action Buttons
+        // <div 
+        //   ref={ctaRef}
+        //   className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+        // >
+        //   <button className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+        //     <span className="relative z-10">View Portfolio</span>
+        //     <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        //   </button>
           
-          <button className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-            <span className="relative z-10">Download Resume</span>
-            <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </button>
-        </div>
+        //   <button className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+        //     <span className="relative z-10">Download Resume</span>
+        //     <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        //   </button>
+        // </div> */}
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-neutral-400 dark:border-neutral-600 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-neutral-400 dark:bg-neutral-600 rounded-full mt-2 animate-pulse" />
-          </div>
-        </div>
       </div>
 
       {/* Interactive Background Elements */}

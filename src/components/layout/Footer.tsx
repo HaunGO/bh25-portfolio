@@ -59,8 +59,7 @@ export default function Footer({ className = '' }: FooterProps) {
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <span className="text-3xl">🎨</span>
-              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
                 BH25
               </span>
             </div>
@@ -72,7 +71,7 @@ export default function Footer({ className = '' }: FooterProps) {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
               Quick Links
             </h3>
             <ul className="space-y-2">
@@ -91,7 +90,7 @@ export default function Footer({ className = '' }: FooterProps) {
 
           {/* Social Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
               Connect
             </h3>
             <div className="flex space-x-4">

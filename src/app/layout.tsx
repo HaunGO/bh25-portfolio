@@ -1,7 +1,21 @@
 import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Inter } from 'next/font/google';
+import { Bitter } from 'next/font/google';
 import './globals.css';
+
+// Configure Inter font for body text
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+// Configure Bitter font for headings
+const bitter = Bitter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-bitter',
+});
 import Layout from '@/components/layout/Layout';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 
@@ -48,34 +62,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* CRITICAL: Set theme before any rendering to prevent flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  
-                  if (theme === 'dark' || (!theme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {
-                  // Fallback to system preference if localStorage fails
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (prefersDark) {
-                    document.documentElement.classList.add('dark');
-                  }
-                }
-              })();
-            `,
-          }}
-        />
+        {/* Theme will be handled client-side to prevent hydration mismatch */}
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
+        className={`${inter.variable} ${bitter.variable} antialiased`}
       >
         <ErrorBoundary>
           <Layout>
