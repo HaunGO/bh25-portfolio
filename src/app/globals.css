@@ -99,6 +99,41 @@ body {
     @apply transition-all duration-500 transform hover:-translate-y-2 hover:scale-105;
   }
 
+  /* Page transition styles */
+  .page-transition {
+    @apply relative w-full;
+  }
+
+  .transition-background {
+    @apply absolute inset-0 pointer-events-none;
+  }
+
+  .transition-main {
+    @apply relative z-10;
+  }
+
+  /* Prevent layout shift during transitions */
+  .page-transition[data-transitioning="true"] {
+    @apply pointer-events-none;
+  }
+
+  /* Smooth transitions for all page elements */
+  .page-transition * {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Prevent flash by hiding content until GSAP takes over */
+  .page-transition {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* Only show content when GSAP animation is ready */
+  .page-transition.animate-ready {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* Header animation classes for ScrollTrigger fallback */
   .header-hidden {
     transform: translateY(-100%);

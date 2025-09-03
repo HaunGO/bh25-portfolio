@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { NavigationItem } from '@/types';
 
 interface HeaderProps {
@@ -21,7 +21,24 @@ export default function Header({ className = '' }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeInitialized, setIsThemeInitialized] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Listen for page transition completion
+  useEffect(() => {
+    const handleTransitionComplete = (event: CustomEvent) => {
+      if (pendingNavigation && event.detail.href === pendingNavigation) {
+        router.push(pendingNavigation);
+        setPendingNavigation(null);
+      }
+    };
+
+    window.addEventListener('pageTransitionComplete', handleTransitionComplete as EventListener);
+    return () => {
+      window.removeEventListener('pageTransitionComplete', handleTransitionComplete as EventListener);
+    };
+  }, [pendingNavigation, router]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -76,6 +93,24 @@ export default function Header({ className = '' }: HeaderProps) {
     }
   };
 
+  // Handle navigation with page transitions
+  const handleNavigation = (href: string) => {
+    if (href === pathname) return; // Don't navigate to current page
+    
+    // Close mobile menu
+    setIsMenuOpen(false);
+    
+    // Set pending navigation
+    setPendingNavigation(href);
+    
+    // Dispatch a custom event that the current page can listen to
+    // This allows the page to transition out before navigation
+    const transitionEvent = new CustomEvent('pageTransition', {
+      detail: { href, direction: 'out' }
+    });
+    window.dispatchEvent(transitionEvent);
+  };
+
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
@@ -107,20 +142,19 @@ export default function Header({ className = '' }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
-                      <Link
-              href="/"
-              className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
-            >
-              {/* <span className="text-3xl">🎨</span> */}
-              <span>BH25</span>
-            </Link>
+          <Link
+            href="/"
+            className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
+          >
+            <span>BH25</span>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
-              <Link
+              <button
                 key={item.href}
-                href={item.href}
+                onClick={() => handleNavigation(item.href)}
                 className={`
                   relative px-3 py-2 text-sm font-medium transition-colors duration-200
                   ${pathname === item.href
@@ -133,7 +167,7 @@ export default function Header({ className = '' }: HeaderProps) {
                 {pathname === item.href && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-neutral-400" />
                 )}
-              </Link>
+              </button>
             ))}
           </nav>
 
@@ -201,11 +235,11 @@ export default function Header({ className = '' }: HeaderProps) {
         }`}>
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-lg shadow-lg mt-2 border border-neutral-200 dark:border-neutral-700">
             {navigationItems.map((item, index) => (
-              <Link
+              <button
                 key={item.href}
-                href={item.href}
+                onClick={() => handleNavigation(item.href)}
                 className={`
-                  block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 transform
+                  block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-200 transform
                   ${pathname === item.href
                     ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 scale-105'
                     : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:scale-102'
@@ -217,7 +251,7 @@ export default function Header({ className = '' }: HeaderProps) {
                 }}
               >
                 {item.label}
-              </Link>
+              </button>
             ))}
           </div>
         </div>
