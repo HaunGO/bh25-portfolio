@@ -194,27 +194,33 @@ export default function Header({ className = '' }: HeaderProps) {
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-neutral-900 rounded-lg shadow-lg mt-2">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`
-                    block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200
-                    ${pathname === item.href
-                      ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                      : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
-                    }
-                  `}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
+        <div className={`md:hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen 
+            ? 'opacity-100 max-h-96' 
+            : 'opacity-0 max-h-0 overflow-hidden'
+        }`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-lg shadow-lg mt-2 border border-neutral-200 dark:border-neutral-700">
+            {navigationItems.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`
+                  block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 transform
+                  ${pathname === item.href
+                    ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 scale-105'
+                    : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:scale-102'
+                  }
+                `}
+                style={{ 
+                  transitionDelay: `${index * 50}ms`,
+                  transform: isMenuOpen ? 'translateX(0)' : 'translateX(-20px)'
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

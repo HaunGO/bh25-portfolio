@@ -72,71 +72,75 @@ export default function Hero({ className = '' }: HeroProps) {
 
     // Header slide-down effect when hero bottom reaches top of screen
     // Use a small delay to ensure header is fully rendered
-    setTimeout(() => {
-      // Try multiple methods to find the header
-      let header = document.querySelector('header');
-      if (!header) {
-        header = document.querySelector('[data-header]'); // Fallback to data attribute
-      }
-      if (!header) {
-        header = document.querySelector('.header'); // Fallback to class
-      }
+  //   setTimeout(() => {
+  //     // Try multiple methods to find the header
+  //     let header = document.querySelector('header');
+  //     if (!header) {
+  //       header = document.querySelector('[data-header]'); // Fallback to data attribute
+  //     }
+  //     if (!header) {
+  //       header = document.querySelector('.header'); // Fallback to class
+  //     }
       
-      console.log('Header element found:', header); // Debug log
+  //     console.log('Header element found:', header); // Debug log
       
-      if (header) {
-          // Check if header already has transforms and preserve them
-          const currentTransform = window.getComputedStyle(header).transform;
-          const hasTransform = currentTransform && currentTransform !== 'none';
+  //     if (header) {
+  //         // Check if header already has transforms and preserve them
+  //         const currentTransform = window.getComputedStyle(header).transform;
+  //         const hasTransform = currentTransform && currentTransform !== 'none';
           
-          // Start with header hidden (moved up)
-          gsap.set(header, { 
-            y:'-100%',
-            immediateRender: true,
-            force3D: true,
-            clearProps: hasTransform ? 'none' : 'transform' // Don't clear existing transforms
-          });
-          console.log('Header set to hidden position, current transform:', currentTransform); // Debug log
+  //         // Start with header hidden (moved up)
+  //         gsap.set(header, { 
+  //           y:'-100%',
+  //           immediateRender: true,
+  //           force3D: true,
+  //           clearProps: hasTransform ? 'none' : 'transform' // Don't clear existing transforms
+  //         });
+  //         console.log('Header set to hidden position, current transform:', currentTransform); // Debug log
         
-        // Create ScrollTrigger for header animation
-        const headerTrigger = ScrollTrigger.create({
-          trigger: titleRef.current, 
-          start: 'bottom top', // When bottom of hero reaches top of viewport
-          end: 'bottom top',   // End immediately when it starts
-          markers: true,
-          onEnter: () => {
-            console.log('ScrollTrigger onEnter - sliding header down'); // Debug log
-            // Slide header down into place
-            gsap.to(header, {
-              y: '0%',
-              duration: 0.2,
-              ease: 'power2.in',
-              force3D: true
-            });
-          },
-          onLeaveBack: () => {
-            console.log('ScrollTrigger onLeaveBack - sliding header up'); // Debug log
-            // Slide header back up when scrolling back to hero
-            gsap.to(header, {
-              y: '-100%',
-              duration: 0.2,
-              ease: 'power1.out',
-              force3D: true
-            });
-          },
-          onUpdate: (self) => {
-            // Debug: log scroll progress
-            if (self.progress > 0) {
-              console.log('ScrollTrigger progress:', self.progress);
-            }
-          }
-        });
+  //       // Create ScrollTrigger for header animation
+  //       const headerTrigger = ScrollTrigger.create({
+  //         trigger: titleRef.current, 
+  //         start: 'bottom top', // When bottom of hero reaches top of viewport
+  //         end: 'bottom top',   // End immediately when it starts
+  //         markers: true,
+  //         onEnter: () => {
+  //           console.log('ScrollTrigger onEnter - sliding header down'); // Debug log
+  //           // Slide header down into place
+  //           gsap.to(header, {
+  //             y: '0%',
+  //             duration: 0.2,
+  //             ease: 'power2.in',
+  //             force3D: true
+  //           });
+  //         },
+  //         onLeaveBack: () => {
+  //           console.log('ScrollTrigger onLeaveBack - sliding header up'); // Debug log
+  //           // Slide header back up when scrolling back to hero
+  //           gsap.to(header, {
+  //             y: '-100%',
+  //             duration: 0.2,
+  //             ease: 'power1.out',
+  //             force3D: true
+  //           });
+  //         },
+  //         onUpdate: (self) => {
+  //           // Debug: log scroll progress
+  //           if (self.progress > 0) {
+  //             console.log('ScrollTrigger progress:', self.progress);
+  //           }
+  //         }
+  //       });
         
-        console.log('Header ScrollTrigger created:', headerTrigger); // Debug log
-      } else {
-        console.warn('Header element not found!'); // Debug warning
-      }
-    }, 100); // Small delay to ensure DOM is ready
+  //       console.log('Header ScrollTrigger created:', headerTrigger); // Debug log
+  //     } else {
+  //       console.warn('Header element not found!'); // Debug warning
+  //     }
+  //   }, 100); // Small delay to ensure DOM is ready
+
+
+
+
 
     // Cleanup function
     return () => {
@@ -145,6 +149,10 @@ export default function Hero({ className = '' }: HeroProps) {
     };
   }, []);
 
+
+
+
+  
   return (
     <section 
       ref={heroRef}
