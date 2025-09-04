@@ -60,9 +60,42 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Theme will be handled client-side to prevent hydration mismatch */}
+        {/* Prevent theme flash by setting theme immediately */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  
+                  let shouldBeDark = false;
+                  
+                  if (savedTheme === 'dark') {
+                    shouldBeDark = true;
+                  } else if (savedTheme === 'light') {
+                    shouldBeDark = false;
+                  } else {
+                    shouldBeDark = prefersDark;
+                  }
+                  
+                  if (shouldBeDark) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {
+                  // Fallback to system preference if localStorage fails
+                  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                  }
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${inter.variable} ${bitter.variable} antialiased`}

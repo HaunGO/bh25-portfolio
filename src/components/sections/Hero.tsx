@@ -6,9 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface HeroProps {
   className?: string;
+  delay?: number;
+  shouldAnimate?: boolean;
 }
 
-export default function Hero({ className = '' }: HeroProps) {
+export default function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -16,13 +18,13 @@ export default function Hero({ className = '' }: HeroProps) {
   const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!heroRef.current) return;
+    if (!heroRef.current || !shouldAnimate) return;
 
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
 
     // Create a timeline for coordinated animations
-    const tl = gsap.timeline({ delay: 0.2 });
+    const tl = gsap.timeline({ delay });
 
     // Background animation
     tl.fromTo(backgroundRef.current,
@@ -46,20 +48,20 @@ export default function Hero({ className = '' }: HeroProps) {
     );
 
     // CTA buttons staggered animation
-    if (ctaRef.current?.children) {
-      tl.fromTo(Array.from(ctaRef.current.children),
-        { opacity: 0, y: 20, scale: 0.8 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1, 
-          duration: 0.6, 
-          stagger: 0.1,
-          ease: 'back.out(1.4)' 
-        },
-        0.9
-      );
-    }
+    // if (ctaRef.current?.children) {
+    //   tl.fromTo(Array.from(ctaRef.current.children),
+    //     { opacity: 0, y: 20, scale: 0.8 },
+    //     { 
+    //       opacity: 1, 
+    //       y: 0, 
+    //       scale: 1, 
+    //       duration: 0.6, 
+    //       stagger: 0.1,
+    //       ease: 'back.out(1.4)' 
+    //     },
+    //     0.9
+    //   );
+    // }
 
     // Add floating animation to background elements
     gsap.to(backgroundRef.current, {
@@ -147,7 +149,7 @@ export default function Hero({ className = '' }: HeroProps) {
       tl.kill();
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, []);
+  }, [shouldAnimate, delay]);
 
 
 
@@ -156,12 +158,12 @@ export default function Hero({ className = '' }: HeroProps) {
   return (
     <section 
       ref={heroRef}
-      className={`relative h-screen flex items-center pl-16 pb-32 pt-32 justify-start  overflow-hidden ${className}`}
+      className={`relative h-screen flex items-center pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
     >
       {/* Animated Background */}
       <div 
         ref={backgroundRef}
-        className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700"
+        className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
       >
         {/* Floating geometric shapes */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-primary-200/20 dark:bg-primary-800/20 rounded-full blur-xl animate-pulse" />
@@ -174,7 +176,7 @@ export default function Hero({ className = '' }: HeroProps) {
         {/* Main Title */}
         <h1 
           ref={titleRef}
-          className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display"
+          className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display opacity-0"
         >
           {/* <span className="inline bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600 bg-clip-text text-transparent">
             Creative&nbsp;
@@ -186,7 +188,8 @@ export default function Hero({ className = '' }: HeroProps) {
             <span className="block text-3xl font-normal" >Hello, I&apos;m</span>
             {/* <span className="block font-semibold">Brandog the Magnificent</span> */}
             <span className="block font-semibold">Brandon Haun</span>
-            <span className="block text-4xl font-normal">A Creator of Great &amp; Many</span>
+            {/* <span className="block text-4xl font-normal">A Creator of Great &amp; Many</span> */}
+            <span className="block text-4xl font-normal">A Creator of Sorts</span>
         </h1>
             {/* <p className="block text-3xl font-normal">A Creator of Great &amp; Many Things</p> */}
 
