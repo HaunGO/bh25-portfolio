@@ -19,8 +19,6 @@ const navigationItems: NavigationItem[] = [
 export default function Header({ className = '' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isThemeInitialized, setIsThemeInitialized] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -50,48 +48,6 @@ export default function Header({ className = '' }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Initialize theme from localStorage and system preference - CRITICAL: No flash allowed
-  useEffect(() => {
-    // Immediately check and apply theme before any rendering
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    let shouldBeDark = false;
-    
-    if (savedTheme === 'dark') {
-      shouldBeDark = true;
-    } else if (savedTheme === 'light') {
-      shouldBeDark = false;
-    } else {
-      // No saved preference, use system preference
-      shouldBeDark = prefersDark;
-    }
-    
-    // Apply theme to DOM immediately
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    
-    // Set state after DOM is updated
-    setIsDarkMode(shouldBeDark);
-    setIsThemeInitialized(true);
-  }, []);
-
-  // Handle theme toggle
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
 
   // Handle navigation with page transitions
   const handleNavigation = (href: string) => {
@@ -116,7 +72,7 @@ export default function Header({ className = '' }: HeaderProps) {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // Get header background classes based on scroll state and theme
+  // Get header background classes based on scroll state
   const getHeaderBackground = () => {
     if (isScrolled) {
       return 'bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-lg';
@@ -124,12 +80,6 @@ export default function Header({ className = '' }: HeaderProps) {
     // When not scrolled, use subtle backgrounds that work in both themes
     return 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm';
   };
-
-  // CRITICAL: Don't render ANYTHING until theme is fully initialized
-  // This prevents the flash from light to dark theme
-  if (!isThemeInitialized) {
-    return null; // Return null instead of a skeleton to prevent any flash
-  }
 
   return (
     <header
@@ -139,18 +89,18 @@ export default function Header({ className = '' }: HeaderProps) {
         ${className}
       `}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mr-10 md:mr-auto">
+        <div className="relative flex justify-end md:justify-center items-center h-16 lg:h-20">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
+            className="absolute left-0 space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
           >
-            <span>BH25</span>
+            <span>BH<sup className="opacity-50">25</sup></span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8 border-2 border-red-500">
             {navigationItems.map((item) => (
               <button
                 key={item.href}
@@ -171,60 +121,36 @@ export default function Header({ className = '' }: HeaderProps) {
             ))}
           </nav>
 
-          {/* Right side - Theme toggle and mobile menu button */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            aria-label="Toggle mobile menu"
+            aria-expanded={isMenuOpen}
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              {isDarkMode ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              {isMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
-            </button>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-              aria-label="Toggle mobile menu"
-              aria-expanded={isMenuOpen}
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {isMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
+            </svg>
+          </button>
         </div>
 
         {/* Mobile Navigation */}
@@ -233,7 +159,7 @@ export default function Header({ className = '' }: HeaderProps) {
             ? 'opacity-100 max-h-96' 
             : 'opacity-0 max-h-0 overflow-hidden'
         }`}>
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-lg shadow-lg mt-2 border border-neutral-200 dark:border-neutral-700">
+          <div className="px-2 pt-2 pb-3 mb-4 space-y-1 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md rounded-lg shadow-lg mt-2 border border-neutral-200 dark:border-neutral-700">
             {navigationItems.map((item, index) => (
               <button
                 key={item.href}

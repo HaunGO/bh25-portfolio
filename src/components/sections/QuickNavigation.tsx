@@ -40,26 +40,25 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 80%',
-        end: 'bottom 20%',
+        // start: 'top 80%',
+        // end: 'bottom 20%',
         toggleActions: 'play none none reverse'
       }
     });
 
     // Title animation
     tl.fromTo(titleRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: 'power2.out' },
       0
     );
 
     // Cards staggered animation
     if (cardsRef.current?.children) {
       tl.fromTo(Array.from(cardsRef.current.children),
-        { opacity: 0, y: 40, scale: 0.9 },
+        { opacity: 0, scale: 0.9 },
         { 
           opacity: 1, 
-          y: 0, 
           scale: 1, 
           duration: 0.6, 
           stagger: 0.15,

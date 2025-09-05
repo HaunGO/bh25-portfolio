@@ -24,17 +24,8 @@ const socialLinks = [
     ),
   },
   {
-    name: 'X',
-    href: 'https://x.com/yourusername',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    ),
-  },
-  {
     name: 'Email',
-    href: 'mailto:hello@yourdomain.com',
+    href: 'mailto:hello@brandonhaun.com',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -43,28 +34,22 @@ const socialLinks = [
   },
 ];
 
-const footerLinks = [
-  { name: 'Privacy Policy', href: '/privacy' },
-  { name: 'Terms of Service', href: '/terms' },
-  { name: 'Cookie Policy', href: '/cookies' },
-];
-
 export default function Footer({ className = '' }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className={`bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <span className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
-                BH25
+                BH<sup className="opacity-50">25</sup>
               </span>
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
-              Creative developer passionate about building beautiful, interactive experiences 
+              Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
               that combine technical excellence with artistic vision.
             </p>
           </div>
@@ -111,23 +96,11 @@ export default function Footer({ className = '' }: FooterProps) {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-neutral-200 dark:border-neutral-800">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+          <div className="text-center">
             <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-              © {currentYear} BH25 Creative Portfolio. All rights reserved.
+              Brandon-Davis:Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
             </p>
-            
-            <div className="flex space-x-6 text-sm">
-              {footerLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </div>
