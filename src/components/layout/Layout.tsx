@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import ThemeToggle from '../ui/ThemeToggle';
+import AdvancedCursor from '../ui/AdvancedCursor';
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,6 +24,14 @@ export default function Layout({ children, className = '' }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AdvancedCursor 
+        size={24}
+        ringSize={72}
+        ringThickness={2}
+        showTrail={true}
+        trailLength={5}
+        magneticStrength={0.3}
+      />
       <Header className={isHomePage ? 'opacity-0' : 'opacity-100'} />
       <ThemeToggle />
       

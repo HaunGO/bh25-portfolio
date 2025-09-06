@@ -17,7 +17,7 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
   const nameRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
-  // const ctaRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
   // Preloader refs
@@ -189,11 +189,30 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
           {/* Main Title */}
           <h1 
             ref={textRef}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display "
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display cursor-hover"
+            data-cursor-hover
           >
-            <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-4" >Hello, I&apos;m</span>
-            <span ref={nameRef} className="block font-semibold">Brandon</span>
-            <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2">A Creator of Sorts</span>
+            <span 
+              ref={greetingRef} 
+              className="block text-4xl font-normal relative left-16 top-4 cursor-hover" 
+              data-cursor-hover
+            >
+              Hello, I&apos;m
+            </span>
+            <span 
+              ref={nameRef} 
+              className="block font-semibold cursor-magnetic"
+              data-cursor-magnetic
+            >
+              Brandon
+            </span>
+            <span 
+              ref={subtitleRef} 
+              className="block text-5xl font-normal relative -top-2 cursor-hover"
+              data-cursor-hover
+            >
+              A Creator of Sorts
+            </span>
           </h1>
 
           {/* Subtitle */}
@@ -212,20 +231,28 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
           </p> */}
 
           {/* Call to Action Buttons */}
-          {/* <div 
+          <div 
             ref={ctaRef}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <button className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+            <button 
+              className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-magnetic"
+              data-cursor-magnetic
+              data-cursor-click
+            >
               <span className="relative z-10">View Portfolio</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
             
-            <button className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+            <button 
+              className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 cursor-magnetic"
+              data-cursor-magnetic
+              data-cursor-click
+            >
               <span className="relative z-10">Download Resume</span>
               <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
-          </div> */}
+          </div>
         </div>
 
         {/* Interactive Background Elements */}
