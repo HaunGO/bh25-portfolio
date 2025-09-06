@@ -51,9 +51,15 @@ export const transitions = {
       const tl = gsap.timeline({ delay: config.delay || 0 });
       
       // Set initial states
-      tl.set(elements.main, { opacity: 0, x: -50 })
-        .set(elements.title, { opacity: 0, y: 30 })
-        .set(elements.content, { opacity: 0, y: 20 });
+      tl.set(elements.main, { opacity: 0, x: -50 });
+      
+      if (elements.title) {
+        tl.set(elements.title, { opacity: 0, y: 30 });
+      }
+      
+      if (elements.content) {
+        tl.set(elements.content, { opacity: 0, y: 20 });
+      }
       
       // Animate in sequence
       tl.to(elements.main, {
@@ -61,39 +67,50 @@ export const transitions = {
         x: 0,
         duration: config.duration,
         ease: config.ease
-      })
-      .to(elements.title, {
-        opacity: 1,
-        y: 0,
-        duration: config.duration * 0.8,
-        ease: config.ease
-      }, '-=0.2')
-      .to(elements.content, {
-        opacity: 1,
-        y: 0,
-        duration: config.duration * 0.8,
-        ease: config.ease,
-        stagger: config.stagger || 0.1
-      }, '-=0.3');
+      });
+      
+      if (elements.title) {
+        tl.to(elements.title, {
+          opacity: 1,
+          y: 0,
+          duration: config.duration * 0.8,
+          ease: config.ease
+        }, '-=0.2');
+      }
+      
+      if (elements.content) {
+        tl.to(elements.content, {
+          opacity: 1,
+          y: 0,
+          duration: config.duration * 0.8,
+          ease: config.ease,
+          stagger: config.stagger || 0.1
+        }, '-=0.3');
+      }
       
       return tl;
     },
     out: (elements: TransitionElements, config: TransitionConfig) => {
       const tl = gsap.timeline();
       
-      tl.to([elements.title, elements.content], {
-        opacity: 0,
-        y: -20,
-        duration: config.duration * 0.6,
-        ease: config.ease,
-        stagger: 0.05
-      })
-      .to(elements.main, {
+      const elementsToAnimate = [elements.title, elements.content].filter(Boolean);
+      
+      if (elementsToAnimate.length > 0) {
+        tl.to(elementsToAnimate, {
+          opacity: 0,
+          y: -20,
+          duration: config.duration * 0.6,
+          ease: config.ease,
+          stagger: 0.05
+        });
+      }
+      
+      tl.to(elements.main, {
         opacity: 0,
         x: 50,
         duration: config.duration,
         ease: config.ease
-      }, '-=0.2');
+      }, elementsToAnimate.length > 0 ? '-=0.2' : 0);
       
       return tl;
     }
@@ -104,21 +121,27 @@ export const transitions = {
     in: (elements: TransitionElements, config: TransitionConfig) => {
       const tl = gsap.timeline({ delay: config.delay || 0 });
       
-      tl.set(elements.main, { opacity: 0, scale: 0.95 })
-        .set(elements.background, { opacity: 0, scale: 1.1 });
+      tl.set(elements.main, { opacity: 0, scale: 0.95 });
       
-      tl.to(elements.background, {
-        opacity: 1,
-        scale: 1,
-        duration: config.duration * 1.2,
-        ease: config.ease
-      })
-      .to(elements.main, {
+      if (elements.background) {
+        tl.set(elements.background, { opacity: 0, scale: 1.1 });
+      }
+      
+      if (elements.background) {
+        tl.to(elements.background, {
+          opacity: 1,
+          scale: 1,
+          duration: config.duration * 1.2,
+          ease: config.ease
+        });
+      }
+      
+      tl.to(elements.main, {
         opacity: 1,
         scale: 1,
         duration: config.duration,
         ease: config.ease
-      }, '-=0.3');
+      }, elements.background ? '-=0.3' : 0);
       
       return tl;
     },
@@ -130,13 +153,16 @@ export const transitions = {
         scale: 1.05,
         duration: config.duration,
         ease: config.ease
-      })
-      .to(elements.background, {
-        opacity: 0,
-        scale: 0.9,
-        duration: config.duration * 0.8,
-        ease: config.ease
-      }, '-=0.2');
+      });
+      
+      if (elements.background) {
+        tl.to(elements.background, {
+          opacity: 0,
+          scale: 0.9,
+          duration: config.duration * 0.8,
+          ease: config.ease
+        }, '-=0.2');
+      }
       
       return tl;
     }

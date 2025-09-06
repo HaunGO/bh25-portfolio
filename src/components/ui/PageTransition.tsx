@@ -21,7 +21,7 @@ const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(
   ({ 
     children, 
     className = '', 
-    transition = 'fade',
+    // transition = 'fade',
     config = {},
     onTransitionStart,
     onTransitionEnd 
@@ -47,7 +47,6 @@ const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(
           // Trigger fade out animation with page-specific timing
           gsap.to(element, {
             opacity: 0,
-            y: -20,
             duration: exitDuration,
             ease: config.ease || 'power2.out',
             onComplete: () => {

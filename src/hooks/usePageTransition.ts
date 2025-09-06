@@ -28,7 +28,7 @@ export function usePageTransition(options: PageTransitionOptions = {}) {
       // Immediately hide the page before any rendering
       gsap.set(pageRef.current, { 
         opacity: 0, 
-        y: 20,
+        y: 0, // Explicitly set y to 0 to prevent unwanted transforms
         immediateRender: true,
         force3D: true
       });
@@ -52,7 +52,7 @@ export function usePageTransition(options: PageTransitionOptions = {}) {
 
         tl.to(pageRef.current, {
           opacity: 1,
-          y: 0,
+          y: 0, // Explicitly animate y to 0
           duration,
           ease
         });
@@ -89,7 +89,7 @@ export function usePageTransition(options: PageTransitionOptions = {}) {
 
     tl.to(pageRef.current, {
       opacity: 0,
-      y: -20,
+      y: 0, // Keep y at 0 during transition out
       duration,
       ease
     });

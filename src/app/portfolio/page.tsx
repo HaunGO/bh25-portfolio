@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PortfolioPage() {
   return (
-    <PageTransition transition="slide" config={{ duration: 0.6, stagger: 0.15 }}>
+    <PageTransition transition="slide" config={{ duration: 0.6 }}>
       <div className="min-h-screen py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">

@@ -99,7 +99,7 @@ body {
     @apply transition-all duration-500 transform hover:-translate-y-2 hover:scale-105;
   }
 
-  /* Page transition styles */
+  Page transition styles
   .page-transition {
     @apply relative w-full;
   }
@@ -134,12 +134,4 @@ body {
     transform: translateY(0);
   }
 
-  /* Header animation classes for ScrollTrigger fallback */
-  .header-hidden {
-    transform: translateY(-100%);
-  }
-
-  .header-visible {
-    transform: translateY(0);
-  }
 }
