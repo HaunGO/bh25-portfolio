@@ -47,6 +47,7 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
 
+
     // Create master timeline that includes both preloader and hero
     const masterTimeline = gsap.timeline();
 
@@ -63,8 +64,8 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
       // Phase 2: Loading bar animation (1.2s from 0 to 100%)
       masterTimeline.to(barRef.current, {
         scaleX: 1,
-        duration: 1.2, // THIS WILL SOMEHOW EVENTUALLY RELECT ACTUAL PRELOADING OF THE SITE. PROBABLY SOME LARGE 3D LIBRARY FILES AND FUNCTIONALITY
-        ease: 'power2.inOut'
+        duration: 2, // THIS WILL SOMEHOW EVENTUALLY RELECT ACTUAL PRELOADING OF THE SITE. PROBABLY SOME LARGE 3D LIBRARY FILES AND FUNCTIONALITY
+        ease: 'power1.inOut'
       }, '-=0.1');
 
       // Phase 3: Fade out preloader (0.6s)

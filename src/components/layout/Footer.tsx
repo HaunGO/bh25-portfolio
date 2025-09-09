@@ -97,9 +97,13 @@ export default function Footer({ className = '' }: FooterProps) {
 
         {/* Bottom Section */}
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
-          <div className="text-center">
+          <div className="text-center flex flex-col items-center md:flex-row md:justify-between">
             <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-              Brandon-Davis:Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
+              Brandon-Davis: Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
+            </p>
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+              {/* <em>Amazing Grace, How Sweet the Sound</em>  */}
+              <em>This is the day which the LORD hath made; we will rejoice and be glad in it.</em> -Psalm 118:24
             </p>
           </div>
         </div>

@@ -19,24 +19,8 @@ const navigationItems: NavigationItem[] = [
 export default function Header({ className = '' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
-
-  // Listen for page transition completion
-  useEffect(() => {
-    const handleTransitionComplete = (event: CustomEvent) => {
-      if (pendingNavigation && event.detail.href === pendingNavigation) {
-        router.push(pendingNavigation);
-        setPendingNavigation(null);
-      }
-    };
-
-    window.addEventListener('pageTransitionComplete', handleTransitionComplete as EventListener);
-    return () => {
-      window.removeEventListener('pageTransitionComplete', handleTransitionComplete as EventListener);
-    };
-  }, [pendingNavigation, router]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -49,22 +33,15 @@ export default function Header({ className = '' }: HeaderProps) {
   }, []);
 
 
-  // Handle navigation with page transitions
+  // Handle navigation
   const handleNavigation = (href: string) => {
     if (href === pathname) return; // Don't navigate to current page
     
     // Close mobile menu
     setIsMenuOpen(false);
     
-    // Set pending navigation
-    setPendingNavigation(href);
-    
-    // Dispatch a custom event that the current page can listen to
-    // This allows the page to transition out before navigation
-    const transitionEvent = new CustomEvent('pageTransition', {
-      detail: { href, direction: 'out' }
-    });
-    window.dispatchEvent(transitionEvent);
+    // Navigate directly
+    router.push(href);
   };
 
   // Close mobile menu when route changes
