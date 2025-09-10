@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 
 interface ThemeToggleProps {
   className?: string;
   position?: 'fixed' | 'absolute';
 }
 
-export default function ThemeToggle({ 
+const ThemeToggle = memo(function ThemeToggle({ 
   className = '', 
   position = 'fixed' 
 }: ThemeToggleProps) {
@@ -43,8 +43,8 @@ export default function ThemeToggle({
     setIsThemeInitialized(true);
   }, []);
 
-  // Handle theme toggle
-  const toggleTheme = () => {
+  // Handle theme toggle - memoized to prevent re-renders
+  const toggleTheme = useCallback(() => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     
@@ -55,7 +55,7 @@ export default function ThemeToggle({
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  };
+  }, [isDarkMode]);
 
   // CRITICAL: Don't render ANYTHING until theme is fully initialized
   // This prevents the flash from light to dark theme
@@ -92,4 +92,6 @@ export default function ThemeToggle({
       )}
     </button>
   );
-}
+});
+
+export default ThemeToggle;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { NavigationItem } from '@/types';
@@ -16,25 +16,14 @@ const navigationItems: NavigationItem[] = [
   { label: 'Contact', href: '/contact' },
 ];
 
-export default function Header({ className = '' }: HeaderProps) {
+const Header = memo(function Header({ className = '' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-
-  // Handle navigation
-  const handleNavigation = (href: string) => {
+  // Handle navigation - memoized to prevent re-renders
+  const handleNavigation = useCallback((href: string) => {
     if (href === pathname) return; // Don't navigate to current page
     
     // Close mobile menu
@@ -42,21 +31,21 @@ export default function Header({ className = '' }: HeaderProps) {
     
     // Navigate directly
     router.push(href);
-  };
+  }, [pathname, router]);
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  // Get header background classes based on scroll state
-  const getHeaderBackground = () => {
+  // Get header background classes based on scroll state - memoized
+  const getHeaderBackground = useCallback(() => {
     if (isScrolled) {
       return 'bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-lg';
     }
     // When not scrolled, use subtle backgrounds that work in both themes
     return 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm';
-  };
+  }, [isScrolled]);
 
   return (
     <header
@@ -161,4 +150,6 @@ export default function Header({ className = '' }: HeaderProps) {
       </div>
     </header>
   );
-}
+});
+
+export default Header;

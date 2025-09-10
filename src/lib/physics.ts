@@ -15,6 +15,7 @@ export interface CursorPhysics {
   cursorBody?: Matter.Body;
   particles: Matter.Body[];
   attractors: Matter.Body[];
+  elementBodies: Map<HTMLElement, Matter.Body>;
 }
 
 export const defaultPhysicsConfig: PhysicsConfig = {
@@ -27,7 +28,7 @@ export const defaultPhysicsConfig: PhysicsConfig = {
 
 export class CursorPhysicsEngine {
   private config: PhysicsConfig;
-  private physics: CursorPhysics;
+  public physics: CursorPhysics; // Make public for access
   private isInitialized = false;
   private maxParticles = 50; // Limit particles for performance
   private lastCleanup = 0;
@@ -38,7 +39,8 @@ export class CursorPhysicsEngine {
       engine: Matter.Engine.create(),
       world: Matter.World.create({}),
       particles: [],
-      attractors: []
+      attractors: [],
+      elementBodies: new Map()
     };
   }
 
@@ -56,7 +58,9 @@ export class CursorPhysicsEngine {
       render: { visible: false }
     });
 
+    console.log('🎯 Created cursor body with ID:', this.physics.cursorBody.id);
     Matter.World.add(this.physics.world, this.physics.cursorBody);
+    console.log('✅ Cursor body added to world');
 
     // Create renderer if canvas provided
     if (canvas) {
@@ -82,6 +86,8 @@ export class CursorPhysicsEngine {
   updateCursorPosition(x: number, y: number): void {
     if (this.physics.cursorBody) {
       Matter.Body.setPosition(this.physics.cursorBody, { x, y });
+    } else {
+      console.log('❌ No cursor body available for position update');
     }
   }
 
@@ -237,7 +243,8 @@ export class CursorPhysicsEngine {
   start(): void {
     if (!this.isInitialized) return;
     
-    Matter.Engine.run(this.physics.engine);
+    // Use the new Runner API instead of deprecated Engine.run
+    Matter.Runner.run(this.physics.engine);
     
     if (this.physics.render) {
       Matter.Render.run(this.physics.render);
@@ -249,6 +256,7 @@ export class CursorPhysicsEngine {
       Matter.Render.stop(this.physics.render);
     }
     
+    // Clear the engine instead of using non-existent Runner.stop
     Matter.Engine.clear(this.physics.engine);
   }
 
@@ -264,10 +272,142 @@ export class CursorPhysicsEngine {
     return this.physics.particles;
   }
 
+  getElementBodies(): Map<HTMLElement, Matter.Body> {
+    return this.physics.elementBodies;
+  }
+
+  // Test method to verify physics engine is running
+  testPhysics(): void {
+    console.log('🧪 Physics engine test:', {
+      isInitialized: this.isInitialized,
+      engineRunning: this.physics.engine.enabled,
+      worldBodies: this.physics.world.bodies.length,
+      elementBodies: this.physics.elementBodies.size,
+      particles: this.physics.particles.length
+    });
+    
+    // Create a test collision
+    if (this.physics.cursorBody) {
+      const testBody = Matter.Bodies.rectangle(200, 200, 50, 50, {
+        isStatic: true,
+        isSensor: true,
+        render: { visible: false }
+      });
+      
+      // Add element reference
+      (testBody as any).element = { tagName: 'TEST', className: 'test-element' };
+      
+      Matter.World.add(this.physics.world, testBody);
+      
+      // Move cursor to test collision
+      Matter.Body.setPosition(this.physics.cursorBody, { x: 200, y: 200 });
+      
+      console.log('🧪 Test collision setup complete');
+    }
+  }
+
+  // Create Matter.js body for DOM element
+  createElementBody(element: HTMLElement): Matter.Body | null {
+    const rect = element.getBoundingClientRect();
+    console.log('📐 Element rect:', {
+      width: rect.width,
+      height: rect.height,
+      left: rect.left,
+      top: rect.top
+    });
+    
+    if (rect.width === 0 || rect.height === 0) {
+      console.log('❌ Element has zero dimensions, skipping body creation');
+      return null;
+    }
+
+    const body = Matter.Bodies.rectangle(
+      rect.left + rect.width / 2,
+      rect.top + rect.height / 2,
+      rect.width,
+      rect.height,
+      {
+        isStatic: true,
+        isSensor: true,
+        render: { visible: false }
+      }
+    );
+
+    console.log('🔧 Created body with ID:', body.id);
+
+    // Store reference to the element
+    (body as any).element = element;
+    Matter.World.add(this.physics.world, body);
+    this.physics.elementBodies.set(element, body);
+    
+    console.log('✅ Body added to world, total element bodies:', this.physics.elementBodies.size);
+    return body;
+  }
+
+  // Remove element body
+  removeElementBody(element: HTMLElement): void {
+    const body = this.physics.elementBodies.get(element);
+    if (body) {
+      Matter.World.remove(this.physics.world, body);
+      this.physics.elementBodies.delete(element);
+    }
+  }
+
+  // Set up collision detection
+  setupCollisionDetection(onCollision: (element: HTMLElement) => void): void {
+    console.log('🔧 Setting up collision detection...');
+    
+    // Use both collisionStart and collisionActive for better detection
+    Matter.Events.on(this.physics.engine, 'collisionStart', (event) => {
+      console.log('💥 Collision START event detected, pairs:', event.pairs.length);
+      this.handleCollisionEvent(event, onCollision);
+    });
+    
+    Matter.Events.on(this.physics.engine, 'collisionActive', (event) => {
+      console.log('💥 Collision ACTIVE event detected, pairs:', event.pairs.length);
+      this.handleCollisionEvent(event, onCollision);
+    });
+    
+    console.log('✅ Collision detection setup complete');
+  }
+  
+  private handleCollisionEvent(event: any, onCollision: (element: HTMLElement) => void): void {
+    const pairs = event.pairs;
+    
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = pairs[i];
+      const bodyA = pair.bodyA;
+      const bodyB = pair.bodyB;
+      
+      console.log('🔍 Checking collision between:', {
+        bodyA: bodyA.id,
+        bodyB: bodyB.id,
+        cursorBody: this.physics.cursorBody?.id
+      });
+      
+      // Check if cursor is involved in collision
+      if (bodyA === this.physics.cursorBody || bodyB === this.physics.cursorBody) {
+        const otherBody = bodyA === this.physics.cursorBody ? bodyB : bodyA;
+        
+        console.log('🎯 Cursor collision detected with body:', otherBody.id);
+        
+        // Check if the other body has an element reference
+        if ((otherBody as any).element) {
+          const element = (otherBody as any).element as HTMLElement;
+          console.log('✅ Element found, calling collision handler');
+          onCollision(element);
+        } else {
+          console.log('❌ No element reference found on body');
+        }
+      }
+    }
+  }
+
   cleanup(): void {
     this.stop();
     this.physics.particles.forEach(particle => this.removeParticle(particle));
     this.physics.attractors.forEach(attractor => this.removeAttractor(attractor));
+    this.physics.elementBodies.forEach((body, element) => this.removeElementBody(element));
   }
 }
 

@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, memo } from 'react';
 import { gsap } from 'gsap';
-import { CursorPhysicsEngine, createCursorTrail, createClickEffect, createHoverEffect } from '@/lib/physics';
 
 // Cursor configuration - adjust these values to customize the cursor behavior
 const CURSOR_CONFIG = {
@@ -16,26 +15,12 @@ const CURSOR_CONFIG = {
   clickColor: 'rgba(59, 130, 246, 0.8)',
   
   // Behavior settings
-  disabled: false,
-  magneticStrength: 0.9,
-  
-  // Physics settings
-  enablePhysics: true,
-  enableTrail: true,
-  enableParticles: true,
-  particleIntensity: 3,
-  
-  // Performance settings
-  trailFrequency: 50, // ms between trail particles
-  particleFrequency: 200, // ms between hover particles
-  maxParticles: 50
+  disabled: false
 };
 
-export default function AdvancedCursor() {
+const AdvancedCursor = memo(function AdvancedCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const physicsRef = useRef<CursorPhysicsEngine | null>(null);
   
   const [cursorState, setCursorState] = useState({
     x: 0,
@@ -46,14 +31,12 @@ export default function AdvancedCursor() {
     isVisible: false
   });
 
-  const [lastTrailTime, setLastTrailTime] = useState(0);
-  const [lastParticleTime, setLastParticleTime] = useState(0);
 
   // Check if element should trigger hover state
   const isHoverable = useCallback((element: HTMLElement | null): boolean => {
     if (!element) return false;
     
-    const hoverableSelectors = ['a', 'button', '[data-cursor-hover]', '.cursor-hover'];
+    const hoverableSelectors = ['a', 'button', '[data-cursor-hover]'];
     
     return hoverableSelectors.some(selector => 
       element.matches(selector) || element.closest(selector)
@@ -74,34 +57,6 @@ export default function AdvancedCursor() {
     );
   }, []);
 
-  // Check if element has magnetic effect
-  const isMagnetic = useCallback((element: HTMLElement | null): boolean => {
-    if (!element) return false;
-    
-    const magneticSelectors = [
-      '[data-cursor-magnetic]', '.cursor-magnetic',
-      'button', 'a', '[role="button"]'
-    ];
-    
-    return magneticSelectors.some(selector => 
-      element.matches(selector) || element.closest(selector)
-    );
-  }, []);
-
-  // Get magnetic target position
-  const getMagneticPosition = useCallback((element: HTMLElement, mouseX: number, mouseY: number) => {
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    const deltaX = centerX - mouseX;
-    const deltaY = centerY - mouseY;
-    
-    return {
-      x: mouseX + deltaX * CURSOR_CONFIG.magneticStrength,
-      y: mouseY + deltaY * CURSOR_CONFIG.magneticStrength
-    };
-  }, []);
 
   // Create ripple effect on click
   const createRipple = useCallback((x: number, y: number) => {
@@ -135,76 +90,40 @@ export default function AdvancedCursor() {
     );
   }, []);
 
+
   // Update cursor position and state
   const updateCursor = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
     const isHovering = isHoverable(target);
     const isClickableElement = isClickable(target);
-    const isMagneticElement = isMagnetic(target);
-    
-    let finalX = e.clientX;
-    let finalY = e.clientY;
-    
-    // Apply magnetic effect
-    if (isMagneticElement && target) {
-      const magneticPos = getMagneticPosition(target, e.clientX, e.clientY);
-      finalX = magneticPos.x;
-      finalY = magneticPos.y;
-    }
     
     setCursorState(prev => ({
       ...prev,
-      x: finalX,
-      y: finalY,
+      x: e.clientX,
+      y: e.clientY,
       isHovering,
       isClicking: false,
       target,
       isVisible: true
     }));
 
-    // Update physics engine
-    if (physicsRef.current) {
-      physicsRef.current.updateCursorPosition(finalX, finalY);
-      
-      // Apply magnetic force to particles
-      physicsRef.current.applyMagneticForce();
-    }
-
-    // Create trail effect
-    if (CURSOR_CONFIG.enableTrail && physicsRef.current) {
-      const now = Date.now();
-      if (now - lastTrailTime > CURSOR_CONFIG.trailFrequency) {
-        createCursorTrail(physicsRef.current, finalX, finalY);
-        setLastTrailTime(now);
-      }
-    }
-
-    // Create hover particles
-    if (CURSOR_CONFIG.enableParticles && isHovering && physicsRef.current) {
-      const now = Date.now();
-      if (now - lastParticleTime > CURSOR_CONFIG.particleFrequency) {
-        createHoverEffect(physicsRef.current, finalX, finalY);
-        setLastParticleTime(now);
-      }
-    }
-
     // Animate cursor position
     if (cursorRef.current && ringRef.current) {
       gsap.to(cursorRef.current, {
-        left: finalX,
-        top: finalY,
+        left: e.clientX,
+        top: e.clientY,
         duration: 0,
         ease: 'power2.out'
       });
 
       gsap.to(ringRef.current, {
-        left: finalX,
-        top: finalY,
+        left: e.clientX,
+        top: e.clientY,
         duration: 0,
         ease: 'power2.out'
       });
     }
-  }, [isHoverable, isClickable, isMagnetic, getMagneticPosition, lastTrailTime, lastParticleTime]);
+  }, [isHoverable, isClickable]);
 
   // Handle mouse down
   const handleMouseDown = useCallback((e: MouseEvent) => {
@@ -217,19 +136,12 @@ export default function AdvancedCursor() {
       // Create ripple effect
       createRipple(e.clientX, e.clientY);
       
-      // Create physics click effect
-      if (CURSOR_CONFIG.enablePhysics && physicsRef.current) {
-        createClickEffect(physicsRef.current, e.clientX, e.clientY);
-      }
+      // Physics click effects disabled for better performance
       
       // Animate click effect
       if (ringRef.current) {
         gsap.set(ringRef.current, { opacity: 0 });
-        gsap.to(ringRef.current, {
-          opacity: 0.5,
-          duration: 2,
-          ease: 'power1.in'
-        });
+        gsap.to(ringRef.current, { opacity: 0.5, duration: 1.5, ease: 'power1.in' });
       }
     }
   }, [isClickable, createRipple]);
@@ -265,31 +177,6 @@ export default function AdvancedCursor() {
     }
   }, []);
 
-  // Initialize physics engine
-  useEffect(() => {
-    if (!CURSOR_CONFIG.enablePhysics || CURSOR_CONFIG.disabled) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Initialize physics engine
-    physicsRef.current = new CursorPhysicsEngine({
-      gravity: 0.1,
-      friction: 0.001,
-      frictionAir: 0.01,
-      restitution: 0.8,
-      density: 0.001
-    });
-
-    physicsRef.current.initialize(canvas);
-    physicsRef.current.start();
-
-    return () => {
-      if (physicsRef.current) {
-        physicsRef.current.cleanup();
-      }
-    };
-  }, []);
 
   // Main effect for event listeners
   useEffect(() => {
@@ -347,15 +234,6 @@ export default function AdvancedCursor() {
 
   return (
     <>
-      {/* Physics Canvas - Hidden, used for Matter.js rendering */}
-      {CURSOR_CONFIG.enablePhysics && (
-        <canvas
-          ref={canvasRef}
-          className="fixed inset-0 pointer-events-none z-[9996]"
-          style={{ opacity: 0 }}
-        />
-      )}
-
       {/* Main cursor dot */}
       <div
         ref={cursorRef}
@@ -389,4 +267,6 @@ export default function AdvancedCursor() {
       />
     </>
   );
-}
+});
+
+export default AdvancedCursor;

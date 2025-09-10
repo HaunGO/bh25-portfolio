@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -10,7 +10,7 @@ interface HeroProps {
   shouldAnimate?: boolean;
 }
 
-export default function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
+const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
@@ -179,10 +179,6 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
           ref={backgroundRef}
           className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
-          {/* Floating geometric shapes */}
-          {/* <div className="absolute top-20 left-20 w-32 h-32 bg-primary-200/20 dark:bg-primary-800/20 rounded-full blur-xl animate-pulse" />
-          <div className="absolute top-40 right-32 w-24 h-24 bg-accent-200/20 dark:bg-accent-800/20 rounded-full blur-lg animate-pulse delay-1000" />
-          <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-neutral-200/20 dark:bg-neutral-700/20 rounded-full blur-xl animate-pulse delay-500" /> */}
         </div>
 
         {/* Content Container */}
@@ -190,27 +186,23 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
           {/* Main Title */}
           <h1 
             ref={textRef}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display cursor-hover"
-            data-cursor-hover
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display"
           >
             <span 
               ref={greetingRef} 
-              className="block text-4xl font-normal relative left-16 top-4 cursor-hover" 
-              data-cursor-hover
+              className="block text-4xl font-normal relative left-16 top-4 " 
             >
               Hello, I&apos;m
             </span>
             <span 
               ref={nameRef} 
-              className="block font-semibold cursor-magnetic"
-              data-cursor-magnetic
+              className="block font-semibold"
             >
               Brandon
             </span>
             <span 
               ref={subtitleRef} 
-              className="block text-5xl font-normal relative -top-2 cursor-hover"
-              data-cursor-hover
+              className="block text-5xl font-normal relative -top-2 "
             >
               A Creator of Sorts
             </span>
@@ -223,11 +215,11 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
           >
             Building beautiful, interactive experiences that combine{' '}
             <span className="text-primary-600 dark:text-primary-400 font-semibold">
-              technical excellence
+            artistic vision
             </span>{' '}
             with{' '}
             <span className="text-accent-600 dark:text-accent-400 font-semibold">
-              artistic vision
+            technical excellence
             </span>
           </p> */}
 
@@ -237,18 +229,14 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <button 
-              className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl cursor-magnetic"
-              data-cursor-magnetic
-              data-cursor-click
+              className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
             >
               <span className="relative z-10">View Portfolio</span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
             
             <button 
-              className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 cursor-magnetic"
-              data-cursor-magnetic
-              data-cursor-click
+              className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
             >
               <span className="relative z-10">Download Resume</span>
               <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -270,4 +258,6 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
       </section>
     </>
   );
-}
+});
+
+export default Hero;

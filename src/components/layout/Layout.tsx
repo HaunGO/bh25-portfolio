@@ -1,18 +1,17 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import ThemeToggle from '../ui/ThemeToggle';
-import AdvancedCursor from '../ui/AdvancedCursor';
 
 interface LayoutProps {
   children: ReactNode;
   className?: string;
 }
 
-export default function Layout({ children, className = '' }: LayoutProps) {
+const Layout = memo(function Layout({ children, className = '' }: LayoutProps) {
   const pathname = usePathname();
   
   // Now you can control visibility based on the current page
@@ -24,7 +23,6 @@ export default function Layout({ children, className = '' }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AdvancedCursor />
       <Header className={isHomePage ? 'opacity-0' : 'opacity-100'} />
       <ThemeToggle />
       
@@ -35,4 +33,6 @@ export default function Layout({ children, className = '' }: LayoutProps) {
       <Footer />
     </div>
   );
-}
+});
+
+export default Layout;

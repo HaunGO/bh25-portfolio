@@ -18,6 +18,7 @@ const bitter = Bitter({
 });
 import Layout from '@/components/layout/Layout';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import AdvancedCursor from '@/components/ui/AdvancedCursor';
 
 export const metadata: Metadata = {
   title: 'BH25 Creative Portfolio - Senior Frontend Developer',
@@ -100,6 +101,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${bitter.variable} antialiased`}
       >
+        <AdvancedCursor />
         <ErrorBoundary>
           <Layout>
             {children}
