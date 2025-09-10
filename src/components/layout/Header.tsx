@@ -77,7 +77,7 @@ export default function Header({ className = '' }: HeaderProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8 border-2 border-red-500">
+          <nav className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
               <button
                 key={item.href}

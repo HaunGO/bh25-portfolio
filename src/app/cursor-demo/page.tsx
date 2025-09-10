@@ -27,11 +27,16 @@ export default function CursorDemo() {
       <div ref={demoRef} className="max-w-4xl mx-auto space-y-12">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-4 cursor-hover" data-cursor-hover>
-            Custom Cursor Demo
+            Physics-Enhanced Cursor Demo
           </h1>
           <p className="text-lg text-neutral-600 dark:text-neutral-400 cursor-hover" data-cursor-hover>
-            Move your cursor around to see the interactive effects. The custom cursor elements follow your actual pointer precisely!
+            Experience advanced cursor interactions with Matter.js physics! Move your cursor around to see particle trails, magnetic effects, and collision detection.
           </p>
+          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              🎯 <strong>Physics Features:</strong> Particle trails, magnetic attraction, click explosions, hover particles, and collision detection
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -134,6 +139,33 @@ export default function CursorDemo() {
           </div>
         </div>
 
+        {/* Physics Effects */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 cursor-hover" data-cursor-hover>
+            Physics Effects
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg text-white cursor-magnetic" data-cursor-magnetic>
+              <h3 className="text-lg font-medium mb-2 cursor-magnetic" data-cursor-magnetic>
+                Particle Trails
+              </h3>
+              <p className="text-sm cursor-magnetic" data-cursor-magnetic>
+                Move your cursor around this area to see particle trails following your movement
+              </p>
+            </div>
+            
+            <div className="p-6 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg text-white cursor-magnetic" data-cursor-magnetic>
+              <h3 className="text-lg font-medium mb-2 cursor-magnetic" data-cursor-magnetic>
+                Magnetic Attraction
+              </h3>
+              <p className="text-sm cursor-magnetic" data-cursor-magnetic>
+                Feel the magnetic pull as particles are attracted to your cursor position
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Click Effects */}
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 cursor-hover" data-cursor-hover>
@@ -146,7 +178,7 @@ export default function CursorDemo() {
               data-cursor-magnetic
               data-cursor-click
             >
-              Click Me
+              Explosion Effect
             </button>
             
             <button 
@@ -154,7 +186,7 @@ export default function CursorDemo() {
               data-cursor-magnetic
               data-cursor-click
             >
-              Another Button
+              Ripple Effect
             </button>
             
             <button 
@@ -162,8 +194,14 @@ export default function CursorDemo() {
               data-cursor-magnetic
               data-cursor-click
             >
-              Third Button
+              Particle Burst
             </button>
+          </div>
+          
+          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <p className="text-sm text-yellow-700 dark:text-yellow-300">
+              💥 <strong>Click any button above</strong> to see explosion effects with physics particles!
+            </p>
           </div>
         </div>
       </div>
