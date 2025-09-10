@@ -24,14 +24,7 @@ export default function Layout({ children, className = '' }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AdvancedCursor 
-        size={24}
-        ringSize={72}
-        ringThickness={2}
-        showTrail={true}
-        trailLength={5}
-        magneticStrength={0.3}
-      />
+      <AdvancedCursor />
       <Header className={isHomePage ? 'opacity-0' : 'opacity-100'} />
       <ThemeToggle />
       

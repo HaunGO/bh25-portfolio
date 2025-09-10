@@ -50,7 +50,7 @@ export default function Footer({ className = '' }: FooterProps) {
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
               Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
-              that combine technical excellence with artistic vision.
+              that combine artistic vision with technical excellence.
             </p>
           </div>
 
@@ -101,10 +101,20 @@ export default function Footer({ className = '' }: FooterProps) {
             <p className="text-neutral-600 dark:text-neutral-400 text-sm">
               Brandon-Davis: Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
             </p>
-            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-              {/* <em>Amazing Grace, How Sweet the Sound</em>  */}
-              <em>This is the day which the LORD hath made; we will rejoice and be glad in it.</em> -Psalm 118:24
-            </p>
+            <blockquote 
+              className="text-neutral-600 dark:text-neutral-400 text-sm relative group"
+              cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
+            >
+              <em>This is the day which the LORD hath made; we will rejoice and be glad in it.</em>
+              <span 
+                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-neutral-100 dark:text-neutral-900 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+                role="tooltip"
+                aria-hidden="true"
+              >
+                Psalm 118:24 (KJV)
+              </span>
+            </blockquote>
+            
           </div>
         </div>
       </div>

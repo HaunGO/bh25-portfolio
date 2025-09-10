@@ -71,7 +71,7 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
       // Phase 3: Fade out preloader (0.6s)
       masterTimeline.to(preloaderRef.current, {
         opacity: 0,
-        duration: 0.6,
+        duration: 0.3,
         ease: 'power2.in',
         onComplete: () => {
           setPreloaderComplete(true);
@@ -85,7 +85,7 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
     // Background animation
     masterTimeline.fromTo(backgroundRef.current,
       { opacity: 0, scale: 1.1 },
-      { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' },
+      { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' },
       '-=0.3' // Start slightly before preloader ends
     );
 
@@ -98,22 +98,22 @@ export default function Hero({ className = '', delay = 0.2, shouldAnimate = true
 
     // Greeting text animation
     masterTimeline.fromTo(greetingRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      { opacity: 0, x: -10 },
+      { opacity: 1, x: 0, duration: 1, ease: 'power2.out' },
       '-=0.3' // Start after title begins
     );
 
     // Subtitle animation
     masterTimeline.fromTo(nameRef.current,
-      { opacity: 0, y: 30 },
+      { opacity: 0, y: -20 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
       '-=0.3' // Start after title begins
     );
 
     // Subtitle animation
     masterTimeline.fromTo(subtitleRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      { opacity: 0, y: -5 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
       '-=0.3' // Start after title begins
     );
 
