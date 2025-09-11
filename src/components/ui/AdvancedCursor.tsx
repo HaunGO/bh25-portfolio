@@ -71,7 +71,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   const isHoverable = useCallback((element: HTMLElement | null): boolean => {
     if (!element) return false;
     
-    const hoverableSelectors = ['a', 'button', '[data-cursor-hover]'];
+    const hoverableSelectors = ['a', 'button'];
     
     return hoverableSelectors.some(selector => 
       element.matches(selector) || element.closest(selector)
@@ -83,8 +83,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     if (!element) return false;
     
     const clickableSelectors = [
-      'a', 'button', '[role="button"]',
-      '[data-cursor-click]', '.cursor-click'
+      'a', 'button', '[role="button"]'
     ];
     
     return clickableSelectors.some(selector => 
