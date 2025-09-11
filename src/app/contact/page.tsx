@@ -10,7 +10,7 @@ export default function ContactPage() {
     <div className="min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 dark:text-neutral-100 mb-6 font-display">
+          <h1 className="text-4xl md:text-6xl font-bold text-neutral-900 dark:text-white mb-6 font-display">
             Contact
           </h1>
           <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto font-body">

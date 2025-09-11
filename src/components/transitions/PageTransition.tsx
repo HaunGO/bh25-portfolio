@@ -45,7 +45,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     await gsap.to(overlayRef.current, { 
       autoAlpha: 0, 
       duration: 0.2, 
-      ease: 'power2.out' 
+      ease: 'power2.ut' 
     });
   };
 
@@ -57,7 +57,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       {children}
       <div
         ref={overlayRef}
-        className="absolute inset-0 z-10 bg-white dark:bg-dark pointer-events-none"
+        className="absolute inset-0 z-10 bg-black pointer-events-none"
         style={{ opacity: 0, visibility: 'hidden' }}
       />
     </>
