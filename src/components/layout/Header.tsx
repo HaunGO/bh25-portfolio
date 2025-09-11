@@ -2,8 +2,9 @@
 
 import { useState, useEffect, memo, useCallback } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { NavigationItem } from '@/types';
+import { TransitionLink } from '../transitions/TransitionLink';
 
 interface HeaderProps {
   className?: string;
@@ -20,18 +21,20 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   // Handle navigation - memoized to prevent re-renders
-  const handleNavigation = useCallback((href: string) => {
+  const handleNavigation = useCallback(async (href: string) => {
     if (href === pathname) return; // Don't navigate to current page
     
     // Close mobile menu
     setIsMenuOpen(false);
     
-    // Navigate directly
-    router.push(href);
-  }, [pathname, router]);
+    // Navigate with transition
+    const startTransition = (window as any).startTransition;
+    if (startTransition) {
+      await startTransition(href);
+    }
+  }, [pathname]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -58,12 +61,12 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mr-10 md:mr-auto">
         <div className="relative flex justify-end md:justify-center items-center h-16 lg:h-20">
           {/* Logo */}
-          <Link
+          <TransitionLink
             href="/"
             className="absolute left-0 space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
           >
             <span>BH<sup className="opacity-50">25</sup></span>
-          </Link>
+          </TransitionLink>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

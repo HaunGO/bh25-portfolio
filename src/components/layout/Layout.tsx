@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import ThemeToggle from '../ui/ThemeToggle';
+import PageTransition from '../transitions/PageTransition';
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,15 +24,17 @@ const Layout = memo(function Layout({ children, className = '' }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header className={isHomePage ? 'opacity-0' : 'opacity-100'} />
-      <ThemeToggle />
-      
-      <main className={`flex-1 ${className}`}>
-        {children}
-      </main>
-      
-      <Footer />
-    </div>
+        <Header className={isHomePage ? 'opacity-0' : 'opacity-100'} />
+        <ThemeToggle />
+        
+        <PageTransition>
+          <main className={`flex-1 ${className}`}>
+            {children}
+          </main>
+        </PageTransition>
+        
+        <Footer />
+      </div>
   );
 });
 

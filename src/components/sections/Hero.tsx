@@ -56,7 +56,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       // Phase 1: Fade in preloader (0.2s)
       masterTimeline.set(preloaderRef.current, { opacity: 0 })
         .to(preloaderRef.current, {
-          opacity: 1,
+          opacity: 0.3,
           duration: 0.2,
           ease: 'power2.out'
         });
@@ -64,7 +64,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       // Phase 2: Loading bar animation (1.2s from 0 to 100%)
       masterTimeline.to(barRef.current, {
         scaleX: 1,
-        duration: 2, // THIS WILL SOMEHOW EVENTUALLY RELECT ACTUAL PRELOADING OF THE SITE. PROBABLY SOME LARGE 3D LIBRARY FILES AND FUNCTIONALITY
+        duration: 0.3, // THIS WILL SOMEHOW EVENTUALLY RELECT ACTUAL PRELOADING OF THE SITE. PROBABLY SOME LARGE 3D LIBRARY FILES AND FUNCTIONALITY
         ease: 'power1.inOut'
       }, '-=0.1');
 

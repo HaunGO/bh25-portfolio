@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { TransitionLink } from '../transitions/TransitionLink';
 
 interface FooterProps {
   className?: string;
@@ -62,12 +62,12 @@ export default function Footer({ className = '' }: FooterProps) {
             <ul className="space-y-2">
               {['Home', 'Portfolio', 'Resume', 'Contact'].map((item) => (
                 <li key={item}>
-                  <Link
+                  <TransitionLink
                     href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
                     className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     {item}
-                  </Link>
+                  </TransitionLink>
                 </li>
               ))}
             </ul>
