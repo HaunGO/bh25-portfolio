@@ -57,7 +57,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       {children}
       <div
         ref={overlayRef}
-        className="absolute inset-0 z-10 bg-black pointer-events-none"
+        className="absolute inset-0 z-10 bg-white dark:bg-black pointer-events-none"
         style={{ opacity: 0, visibility: 'hidden' }}
       />
     </>
