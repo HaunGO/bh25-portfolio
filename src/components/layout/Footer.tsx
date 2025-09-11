@@ -49,7 +49,7 @@ export default function Footer({ className = '' }: FooterProps) {
               </span>
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
-              Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
+              Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
               that combine artistic vision with technical excellence.
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function Footer({ className = '' }: FooterProps) {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  className="p-2 text-neutral-700 dark:text-neutral-300 rounded-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   aria-label={`Follow on ${social.name}`}
                 >
                   {social.icon}
@@ -96,13 +96,13 @@ export default function Footer({ className = '' }: FooterProps) {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
           <div className="text-center flex flex-col items-center md:flex-row md:justify-between">
             <p className="text-neutral-600 dark:text-neutral-400 text-sm">
               Brandon-Davis: Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
             </p>
             <blockquote 
-              className="text-neutral-600 dark:text-neutral-400 text-sm relative group"
+              className="text-neutral-600 dark:text-neutral-400 text-sm relative group pt-4 md:pt-0"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
               <em>This is the day which the LORD hath made; we will rejoice and be glad in it.</em>

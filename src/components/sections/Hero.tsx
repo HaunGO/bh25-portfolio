@@ -168,7 +168,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       {/* Hero Section */}
       <section 
         ref={heroRef}
-        className={`relative h-screen flex items-center pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
+        className={`relative h-screen flex items-center pl-4 md:pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
         style={{ 
           opacity: preloaderComplete ? 1 : 0,
           visibility: preloaderComplete ? 'visible' : 'hidden'
@@ -182,11 +182,11 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         </div>
 
         {/* Content Container */}
-        <div className="relative z-10 text-left space-y-8 px-4 ">
+        <div className="relative z-10 text-left scale-75 md:scale-100 origin-left ">
           {/* Main Title */}
           <h1 
             ref={textRef}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display"
+            className="text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display pointer-events-none whitespace-nowrap"
           >
             <span 
               ref={greetingRef} 
@@ -224,7 +224,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           </p> */}
 
           {/* Call to Action Buttons */}
-          <div 
+          {/* <div 
             ref={ctaRef}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
@@ -241,7 +241,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               <span className="relative z-10">Download Resume</span>
               <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Interactive Background Elements */}

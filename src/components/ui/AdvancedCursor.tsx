@@ -3,6 +3,40 @@
 import { useEffect, useRef, useState, useCallback, memo } from 'react';
 import { gsap } from 'gsap';
 
+// Hook to detect if device supports mouse
+const useMouseSupport = () => {
+  const [hasMouse, setHasMouse] = useState(false);
+
+  useEffect(() => {
+    // Check if device supports mouse (not touch-only)
+    const checkMouseSupport = () => {
+      // Primary check: CSS media query for hover capability
+      const hasHover = window.matchMedia('(hover: hover)').matches;
+      
+      // Secondary check: pointer type detection
+      const hasPointer = window.matchMedia('(pointer: fine)').matches;
+      
+      // Tertiary check: no touch capability or touch + mouse
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
+      // Device has mouse if it supports hover AND (fine pointer OR no touch)
+      const mouseSupported = hasHover && (hasPointer || !hasTouch);
+      
+      setHasMouse(mouseSupported);
+    };
+
+    checkMouseSupport();
+    
+    // Listen for changes (e.g., if user connects/disconnects mouse)
+    const mediaQuery = window.matchMedia('(hover: hover)');
+    mediaQuery.addEventListener('change', checkMouseSupport);
+    
+    return () => mediaQuery.removeEventListener('change', checkMouseSupport);
+  }, []);
+
+  return hasMouse;
+};
+
 // Cursor configuration - adjust these values to customize the cursor behavior
 const CURSOR_CONFIG = {
   // Visual settings
@@ -21,6 +55,7 @@ const CURSOR_CONFIG = {
 const AdvancedCursor = memo(function AdvancedCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const hasMouse = useMouseSupport();
   
   const [cursorState, setCursorState] = useState({
     x: 0,
@@ -180,7 +215,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
   // Main effect for event listeners
   useEffect(() => {
-    if (CURSOR_CONFIG.disabled) return;
+    if (CURSOR_CONFIG.disabled || !hasMouse) return;
 
     // Add event listeners
     document.addEventListener('mousemove', updateCursor);
@@ -210,11 +245,11 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       document.removeEventListener('scroll', handleScroll);
       document.removeEventListener('scrollend', handleScrollEnd);
     };
-  }, [updateCursor, handleMouseDown, handleMouseUp, handleMouseLeave, handleScroll, handleScrollEnd]);
+  }, [hasMouse, updateCursor, handleMouseDown, handleMouseUp, handleMouseLeave, handleScroll, handleScrollEnd]);
 
   // Animate ring based on state
   useEffect(() => {
-    if (!ringRef.current) return;
+    if (!ringRef.current || !hasMouse) return;
 
     const currentColor = cursorState.isClicking 
       ? CURSOR_CONFIG.clickColor 
@@ -228,9 +263,9 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       duration: 0.5,
       ease: 'power1.out'
     });
-  }, [cursorState.isHovering, cursorState.isClicking]);
+  }, [hasMouse, cursorState.isHovering, cursorState.isClicking]);
 
-  if (CURSOR_CONFIG.disabled) return null;
+  if (CURSOR_CONFIG.disabled || !hasMouse) return null;
 
   return (
     <>
