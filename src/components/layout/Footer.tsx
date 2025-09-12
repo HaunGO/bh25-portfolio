@@ -52,7 +52,7 @@ export default function Footer({ className = '' }: FooterProps) {
             <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
               {/* Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
               that combine artistic vision with technical excellence. */}
-              Me build good for happy people.. .. .. <em>Yaaaay !!</em>
+              Me do good for happy people .. .. <em><strong>Yaaaay !!</strong></em>
             </p>
           </div>
 
@@ -60,28 +60,16 @@ export default function Footer({ className = '' }: FooterProps) {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
               {/* &nbsp; */}
-              {/* Links */}
+              Links
             </h3>
 
             <ul className="space-y-2 ">
 
-
-              
-              {['Portfolio', 'Resume'].map((item) => (
-                <li key={item}>
-                  <TransitionLink
-                    href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
-                    className=""
-                  >
-                    {item}
-                  </TransitionLink>
-                </li>
-              ))}
-
+                <li><TransitionLink href="/portfolio">Portfolio</TransitionLink></li>
+                <li><TransitionLink href="/resume">Resume</TransitionLink></li>
                 <li>LinkedIn</li>
                 <li>GitHub</li>
                 <li>Contact</li>
-
 
             </ul>
 

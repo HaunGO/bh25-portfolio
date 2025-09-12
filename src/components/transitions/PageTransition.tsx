@@ -22,7 +22,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     // Animate in
     await gsap.to(overlayRef.current, { 
       autoAlpha: 1, 
-      duration: 0.2, 
+      duration: 1.2, 
       ease: 'power2.in' 
     });
 
@@ -44,7 +44,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     // Animate out
     await gsap.to(overlayRef.current, { 
       autoAlpha: 0, 
-      duration: 0.2, 
+      duration: 1.2, 
       ease: 'power2.ut' 
     });
   };
@@ -59,7 +59,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       {children}
       <div
         ref={overlayRef}
-        className="absolute inset-0 z-10 bg-white dark:bg-black pointer-events-none"
+        className="fixed inset-0 z-30 bg-white dark:bg-black pointer-events-none"
         style={{ opacity: 0, visibility: 'hidden' }}
       />
     </>
