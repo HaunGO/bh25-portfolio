@@ -49,8 +49,10 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     });
   };
 
-  // Expose globally
-  (window as any).startTransition = startTransition;
+  // Expose globally (client-side only)
+  if (typeof window !== 'undefined') {
+    (window as any).startTransition = startTransition;
+  }
 
   return (
     <>

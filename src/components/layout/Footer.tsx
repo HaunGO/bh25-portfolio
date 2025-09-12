@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { TransitionLink } from '../transitions/TransitionLink';
 
 interface FooterProps {
@@ -38,80 +39,76 @@ export default function Footer({ className = '' }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={`bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4">
+    <footer className={`relative z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
-          <div className="space-y-4">
+          <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
               <span className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
                 BH<sup className="opacity-50">25</sup>
               </span>
             </div>
-            <p className="text-neutral-600 dark:text-neutral-400 max-w-md">
-              Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
-              that combine artistic vision with technical excellence.
+            <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
+              {/* Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
+              that combine artistic vision with technical excellence. */}
+              Me build good for happy people.. .. .. <em>Yaaaay !!</em>
             </p>
-          </div>
-
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
-              Quick Links
-            </h3>
-            <ul className="space-y-2">
-              {['Home', 'Portfolio', 'Resume', 'Contact'].map((item) => (
-                <li key={item}>
-                  <TransitionLink
-                    href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
-                    className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                  >
-                    {item}
-                  </TransitionLink>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Social Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
-              Connect
+              {/* &nbsp; */}
+              {/* Links */}
             </h3>
-            <div className="flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-neutral-700 dark:text-neutral-300 rounded-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                  aria-label={`Follow on ${social.name}`}
-                >
-                  {social.icon}
-                </a>
+
+            <ul className="space-y-2 ">
+
+
+              
+              {['Portfolio', 'Resume'].map((item) => (
+                <li key={item}>
+                  <TransitionLink
+                    href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                    className=""
+                  >
+                    {item}
+                  </TransitionLink>
+                </li>
               ))}
-            </div>
+
+                <li>LinkedIn</li>
+                <li>GitHub</li>
+                <li>Contact</li>
+
+
+            </ul>
+
           </div>
         </div>
 
         {/* Bottom Section */}
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
           <div className="text-center flex flex-col items-center md:flex-row md:justify-between">
-            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+            <p className="text-purple-800 dark:text-purple-400 text-sm">
               Brandon-Davis: Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
             </p>
+
+
+
+            
             <blockquote 
-              className="text-neutral-600 dark:text-neutral-400 text-sm relative group pt-4 md:pt-0"
+              className="text-yellow-600 relative group pt-4 md:pt-0 font-['Schoolbell']"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
-              <em>This is the day which the LORD hath made; we will rejoice and be glad in it.</em>
+              This is the day which the LORD hath made; we will rejoice and be glad in it.
               <span 
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 dark:bg-neutral-100 text-neutral-100 dark:text-neutral-900 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10"
+                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"
                 aria-hidden="true"
               >
-                Psalm 118:24 (KJV)
+                Psalm 118:24
               </span>
             </blockquote>
             

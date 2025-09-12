@@ -247,8 +247,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         {/* Interactive Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Grid pattern */}
-          <div className="absolute inset-0 opacity-10 dark:opacity-1">
-            <div className="w-full h-full" style={{
+          <div className="absolute inset-0 opacity-10 dark:opacity-1 ">
+            <div className="w-full h-full fixed" style={{
               backgroundImage: `radial-gradient(circle at 10px 10px, currentColor 1px, transparent 0)`,
               backgroundSize: '20px 20px',
               backgroundPosition: '0 0'
