@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavigationItem } from '@/types';
 import { TransitionLink } from '../transitions/TransitionLink';
+import { PageContainer } from '../ui/Container';
 
 interface HeaderProps {
   className?: string;
@@ -58,7 +59,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
         ${className}
       `}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mr-10 md:mr-auto">
+      <PageContainer className="mr-10 md:mr-auto">
         <div className="relative flex justify-end md:justify-center items-center h-16 lg:h-20">
           {/* Logo */}
           <TransitionLink
@@ -150,7 +151,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
             ))}
           </div>
         </div>
-      </div>
+      </PageContainer>
     </header>
   );
 });

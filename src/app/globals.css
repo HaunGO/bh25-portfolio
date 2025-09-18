@@ -20,6 +20,8 @@ html {
   /* Default to light theme to prevent flash */
   background-color: #ffffff;
   color: #171717;
+  /* Add smooth transitions to html element */
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark theme overrides */
@@ -39,7 +41,7 @@ html.dark {
 body {
   @apply bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100;
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Custom component classes */
@@ -64,7 +66,7 @@ body {
   * {
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    transition-duration: 400ms;
   }
 
   /* Override for specific elements that need different timing */
@@ -101,44 +103,12 @@ body {
     @apply transition-all duration-500 transform hover:-translate-y-2 hover:scale-105;
   }
 
-  Page transition styles
-  .page-transition {
-    @apply relative w-full;
-  }
-
-  .transition-background {
-    @apply absolute inset-0 pointer-events-none;
-  }
-
-  .transition-main {
-    @apply relative z-10;
-  }
-
-  /* Prevent layout shift during transitions */
-  .page-transition[data-transitioning="true"] {
-    @apply pointer-events-none;
-  }
-
-  /* Smooth transitions for all page elements */
-  .page-transition * {
-    @apply transition-all duration-300 ease-out;
-  }
-
-  /* Prevent flash by hiding content until GSAP takes over */
-  .page-transition {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  /* Only show content when GSAP animation is ready */
-  .page-transition.animate-ready {
-    opacity: 1;
-    transform: translateY(0);
-  }
 
 }
 
 
 
-
+h1,h2,h3,h4,h5,h6 {
+  @apply relative;
+}
 

@@ -56,7 +56,8 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const hasMouse = useMouseSupport();
-  
+  const pathRef = useRef<SVGPathElement>(null);
+
   const [cursorState, setCursorState] = useState({
     x: 0,
     y: 0,
@@ -66,6 +67,35 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     isVisible: false
   });
 
+  // Store cursor trail points
+  const [trailPoints, setTrailPoints] = useState<Array<{x: number, y: number}>>([]);
+
+  // Convert screen coordinates to SVG coordinates
+  const screenToSVG = useCallback((screenX: number, screenY: number) => {
+    const svg = document.getElementById('animation-layer') as unknown as SVGElement;
+    if (!svg) return { x: 0, y: 0 };
+    
+    const rect = svg.getBoundingClientRect();
+    const x = (screenX / rect.width) * 1920;
+    const y = (screenY / rect.height) * 1080;
+    
+    return { x, y };
+  }, []);
+
+  // Update path with trail points
+  const updatePath = useCallback((points: Array<{x: number, y: number}>) => {
+    if (!pathRef.current || points.length < 2) return;
+    
+    const pathData = points.reduce((path, point, index) => {
+      if (index === 0) {
+        return `M ${point.x} ${point.y}`;
+      } else {
+        return `${path} L ${point.x} ${point.y}`;
+      }
+    }, '');
+    
+    pathRef.current.setAttribute('d', pathData);
+  }, []);
 
   // Check if element should trigger hover state
   const isHoverable = useCallback((element: HTMLElement | null): boolean => {
@@ -125,6 +155,10 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   }, []);
 
 
+
+
+
+
   // Update cursor position and state
   const updateCursor = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -157,7 +191,23 @@ const AdvancedCursor = memo(function AdvancedCursor() {
         ease: 'power2.out'
       });
     }
-  }, [isHoverable, isClickable]);
+
+    // Update trail points for path animation
+    const svgPoint = screenToSVG(e.clientX, e.clientY);
+    setTrailPoints(prev => {
+      const newPoints = [...prev, svgPoint];
+      // Keep only last 20 points for performance
+      return newPoints.slice(-20);
+    });
+
+  }, [isHoverable, isClickable, screenToSVG]);
+
+
+
+
+
+
+
 
   // Handle mouse down
   const handleMouseDown = useCallback((e: MouseEvent) => {
@@ -264,6 +314,11 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     });
   }, [hasMouse, cursorState.isHovering, cursorState.isClicking]);
 
+  // Update path when trail points change
+  useEffect(() => {
+    updatePath(trailPoints);
+  }, [trailPoints, updatePath]);
+
   if (CURSOR_CONFIG.disabled || !hasMouse) return null;
 
   return (
@@ -299,6 +354,27 @@ const AdvancedCursor = memo(function AdvancedCursor() {
           top: 0
         }}
       />
+
+      {/* Animation Layer SVG */}
+      <svg 
+        id="animation-layer"
+        width="100%" 
+        height="100%"
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="xMidYMid slice"
+        className="fixed top-0 left-0 pointer-events-none z-[9996] w-full h-full"
+      >
+        <path 
+          ref={pathRef} 
+          fill="none" 
+          stroke="rgba(59, 130, 246, 0.6)" 
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+
+
     </>
   );
 });

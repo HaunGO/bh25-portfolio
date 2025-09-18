@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { PageContainer } from '../ui/Container';
 
 interface QuickNavigationProps {
   className?: string;
@@ -82,7 +83,7 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
       {/* Visual separator */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-700 to-transparent" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <PageContainer>
         <h2 
           ref={titleRef}
           className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-neutral-900 dark:text-neutral-100 mb-12 transition-colors duration-500 font-display"
@@ -117,7 +118,7 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
             </div>
           ))}
         </div>
-      </div>
+      </PageContainer>
     </section>
   );
 }

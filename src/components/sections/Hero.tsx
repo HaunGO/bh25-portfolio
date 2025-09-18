@@ -177,12 +177,13 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         {/* Animated Background */}
         <div 
           ref={backgroundRef}
-          className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
+          className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
+          // className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
         </div>
 
         {/* Content Container */}
-        <div className="relative z-10 text-left scale-75 md:scale-100 origin-left ">
+        <div className="fixed z-10 text-left scale-75 md:scale-100 origin-left ">
           {/* Main Title */}
           <h1 
             ref={textRef}
@@ -200,6 +201,9 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
             >
               Brandon
             </span>
+            
+            <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
+
             <span 
               ref={subtitleRef} 
               className="block text-5xl font-normal relative -top-2 "
@@ -207,6 +211,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               A Creator of Sorts
             </span>
           </h1>
+
+
 
           {/* Subtitle */}
           {/* <p 
@@ -247,13 +253,33 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         {/* Interactive Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Grid pattern */}
-          <div className="absolute inset-0 opacity-10 dark:opacity-1 ">
+          {/* <div className="absolute inset-0 opacity-10 dark:opacity-1 ">
             <div className="w-full h-full fixed" style={{
               backgroundImage: `radial-gradient(circle at 10px 10px, currentColor 1px, transparent 0)`,
               backgroundSize: '20px 20px',
               backgroundPosition: '0 0'
             }} />
-          </div>
+          </div> */}
+
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="fixed inset-0  ">
+            <defs>
+              <pattern id="dotGrid"
+                      x="0" y="0"
+                      width="15" height="15"
+                      patternUnits="userSpaceOnUse">
+                <circle cx="10" cy="10" r="1" className="fill-neutral-300 dark:fill-neutral-700" >
+                  {/* <animate attributeName="r"
+                          values="1;3;1"
+                          dur="2s"
+                          repeatCount="indefinite" /> */}
+                </circle>
+              </pattern>
+            </defs>
+
+            <rect width="100%" height="100%" fill="url(#dotGrid)" />
+          </svg>
+
+
         </div>
       </section>
     </>

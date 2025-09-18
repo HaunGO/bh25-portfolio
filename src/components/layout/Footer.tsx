@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TransitionLink } from '../transitions/TransitionLink';
+import { PageContainer } from '../ui/Container';
 
 interface FooterProps {
   className?: string;
@@ -39,8 +40,8 @@ export default function Footer({ className = '' }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={`relative z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900">
+    <footer className={`relative mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
+      <PageContainer className="pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
@@ -58,20 +59,22 @@ export default function Footer({ className = '' }: FooterProps) {
 
           {/* Social Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">
-              {/* &nbsp; */}
-              Links
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">                {/* Links to other pages */}
             </h3>
 
-            <ul className="space-y-2 ">
-
-                <li><TransitionLink href="/portfolio">Portfolio</TransitionLink></li>
-                <li><TransitionLink href="/resume">Resume</TransitionLink></li>
+            <nav>
+              <ul className="flex flex-row justify-between items-center gap-4 list-none m-0 p-0">
+                <li>
+                  <TransitionLink href="/portfolio">Portfolio</TransitionLink>
+                </li>
+                <li>
+                  <TransitionLink href="/resume">Resume</TransitionLink>
+                </li>
                 <li>LinkedIn</li>
                 <li>GitHub</li>
                 <li>Contact</li>
-
-            </ul>
+              </ul>
+            </nav>
 
           </div>
         </div>
@@ -102,7 +105,7 @@ export default function Footer({ className = '' }: FooterProps) {
             
           </div>
         </div>
-      </div>
+      </PageContainer>
     </footer>
   );
 }
