@@ -72,17 +72,14 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   
   // Track if we're hovering over a link
   const [isHoveringLink, setIsHoveringLink] = useState(false);
+  
+  // Track viewport dimensions for dynamic viewBox
+  const [viewportSize, setViewportSize] = useState({ width: 1920, height: 1080 });
 
   // Convert screen coordinates to SVG coordinates
   const screenToSVG = useCallback((screenX: number, screenY: number) => {
-    const svg = document.getElementById('animation-layer') as unknown as SVGElement;
-    if (!svg) return { x: 0, y: 0 };
-    
-    const rect = svg.getBoundingClientRect();
-    const x = (screenX / rect.width) * 1920;
-    const y = (screenY / rect.height) * 1080;
-    
-    return { x, y };
+    // Direct 1:1 mapping - no conversion needed
+    return { x: screenX, y: screenY };
   }, []);
 
   // Update path with trail points
@@ -211,7 +208,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       setTrailPoints(prev => {
         const newPoints = [...prev, svgPoint];
         // Keep only last 20 points for performance
-        return newPoints.slice(-20);
+        return newPoints.slice(-30);
       });
     }
 
@@ -276,6 +273,13 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     }
   }, []);
 
+  // Handle window resize
+  const handleResize = useCallback(() => {
+    // Update viewport size and clear trail points on resize
+    setViewportSize({ width: window.innerWidth, height: window.innerHeight });
+    setTrailPoints([]);
+  }, []);
+
 
   // Main effect for event listeners
   useEffect(() => {
@@ -288,6 +292,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('scroll', handleScroll, { passive: true });
     document.addEventListener('scrollend', handleScrollEnd, { passive: true });
+    window.addEventListener('resize', handleResize);
 
     // Initial setup
     if (cursorRef.current && ringRef.current) {
@@ -300,6 +305,9 @@ const AdvancedCursor = memo(function AdvancedCursor() {
         ease: 'power2.out'
       });
     }
+    
+    // Set initial viewport size
+    setViewportSize({ width: window.innerWidth, height: window.innerHeight });
 
     return () => {
       document.removeEventListener('mousemove', updateCursor);
@@ -308,8 +316,9 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('scroll', handleScroll);
       document.removeEventListener('scrollend', handleScrollEnd);
+      window.removeEventListener('resize', handleResize);
     };
-  }, [hasMouse, updateCursor, handleMouseDown, handleMouseUp, handleMouseLeave, handleScroll, handleScrollEnd]);
+  }, [hasMouse, updateCursor, handleMouseDown, handleMouseUp, handleMouseLeave, handleScroll, handleScrollEnd, handleResize]);
 
   // Animate ring based on state
   useEffect(() => {
@@ -426,15 +435,15 @@ const AdvancedCursor = memo(function AdvancedCursor() {
         id="animation-layer"
         width="100%" 
         height="100%"
-        viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
+        viewBox={`0 0 ${viewportSize.width} ${viewportSize.height}`}
+        preserveAspectRatio="none"
         className="fixed top-0 left-0 pointer-events-none z-[9996] w-full h-full"
       >
         <path 
           ref={pathRef} 
           fill="none" 
           stroke="rgba(59, 130, 246, 0.6)" 
-          strokeWidth="2"
+          strokeWidth="4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />

@@ -46,106 +46,98 @@ export default function Footer({ className = '' }: FooterProps) {
   const footerRef = useRef<HTMLElement>(null);
   const myNameRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    // Register ScrollTrigger plugin
-    gsap.registerPlugin(ScrollTrigger);
 
-    if (myNameRef.current) {
-      const spans = myNameRef.current.querySelectorAll('span');
-      console.log(`Found ${spans.length} spans in #myName`);
+  // DO NOT DELETE THIS COMMENTED OUT CODE. I WANT TO KEEP IT FOR LATER.
+  // useEffect(() => {
+  //   // Register ScrollTrigger plugin
+  //   gsap.registerPlugin(ScrollTrigger);
+
+  //   if (myNameRef.current) {
+  //     const spans = myNameRef.current.querySelectorAll('span');
+  //     console.log(`Found ${spans.length} spans in #myName`);
       
-      // Create a timeline for sequential animation
-      const tl = gsap.timeline();
+  //     // Create a timeline for sequential animation
+  //     const tl = gsap.timeline();
       
-      // Set initial state for all spans
-      spans.forEach(span => {
-        gsap.set(span, { width: 0, overflow: 'hidden' });
-      });
-    }
+  //     // Set initial state for all spans
+  //     spans.forEach(span => {
+  //       gsap.set(span, { width: 0, overflow: 'hidden' });
+  //     });
+  //   }
 
 
-    // Add a small delay to ensure the footer is rendered
-    const timer = setTimeout(() => {
-      if (footerRef.current) {
-        console.log("Setting up ScrollTrigger for footer");
+  //   // Add a small delay to ensure the footer is rendered
+  //   const timer = setTimeout(() => {
+  //     if (footerRef.current) {
+  //       console.log("Setting up ScrollTrigger for footer");
         
-        // Create ScrollTrigger that fires when footer is 100px from bottom
-        const trigger = ScrollTrigger.create({
-          trigger: footerRef.current,
-          start: "top bottom-=250px", // When top of footer is 100px from bottom of viewport
-          end: "bottom bottom",
-          markers: true, // Add markers for debugging
-          onEnter: () => {
-            console.log("🎯 Footer is 100px from bottom!");
+  //       // Create timeline outside of ScrollTrigger for reuse
+  //       let tl: gsap.core.Timeline | null = null;
+        
+  //       if (myNameRef.current) {
+  //         const spans = myNameRef.current.querySelectorAll('span');
+  //         console.log(`Found ${spans.length} spans in #myName`);
+          
+  //         // Create timeline for sequential animation
+  //         tl = gsap.timeline({ paused: true });
+          
+  //         // Animate each span sequentially
+  //         spans.forEach((span, index) => {
+  //           // Calculate the natural width by temporarily setting to auto
+  //           const tempWidth = span.style.width;
+  //           span.style.width = 'auto';
+  //           const autoWidth = span.offsetWidth;
+  //           span.style.width = tempWidth;
             
-            // Get the myName element and its span children using ref
-            if (myNameRef.current) {
-              const spans = myNameRef.current.querySelectorAll('span');
-              console.log(`Found ${spans.length} spans in #myName`);
-              
-              // Create a timeline for sequential animation
-              const tl = gsap.timeline();
-              
-              // // Set initial state for all spans
-              // spans.forEach(span => {
-              //   gsap.set(span, { width: 0, overflow: 'hidden' });
-              // });
-              
-              // Animate each span sequentially
-              spans.forEach((span, index) => {
-                // Calculate the natural width by temporarily setting to auto
-                const tempWidth = span.style.width;
-                span.style.width = 'auto';
-                const autoWidth = span.offsetWidth;
-                span.style.width = tempWidth;
-                
-                tl.to(span, {
-                  width: autoWidth,
-                  duration: 0.6,
-                  ease: "power2.inOut",
-                  delay: 0.2 // Stagger each span by 0.1s
-                });
-              });
-              
-              console.log("Timeline created for myName spans");
-            } else {
-              console.log("❌ myName ref is null");
-            }
-          },
-          onLeave: () => {
-            console.log("📤 Footer has left the trigger zone");
-          },
-          onEnterBack: () => {
-            console.log("📥 Footer is back in the trigger zone");
-          },
-          onLeaveBack: () => {
-            console.log("📤 Footer has left the trigger zone (scrolling up)");
-          }
-        });
+  //           tl!.to(span, {
+  //             width: autoWidth,
+  //             duration: 0.3,
+  //             ease: "power2.inOut",
+  //           }, index * 0.1); // Stagger each span by 0.1s
+  //         });
+  //       }
 
-        console.log("ScrollTrigger created:", trigger);
-      } else {
-        console.log("Footer ref is null");
-      }
-    }, 100);
+  //       // Create ScrollTrigger that controls the timeline
+  //       if (tl) {
+  //         const trigger = ScrollTrigger.create({
+  //           trigger: footerRef.current,
+  //           start: "top bottom-=250px",
+  //           end: "bottom bottom",
+  //           markers: true,
+  //           animation: tl,
+  //           toggleActions: "play none play reverse", // play on enter, reverse on leave, play on enter back, reverse on leave back
+  //           // onEnter: () => console.log("🎯 Footer entered - playing timeline"),
+  //           // onLeave: () => console.log("📤 Footer left - reversing timeline"),
+  //           // onEnterBack: () => console.log("📥 Footer back - playing timeline"),
+  //           // onLeaveBack: () => console.log("📤 Footer left back - reversing timeline")
+  //         });
+          
+  //         // console.log("ScrollTrigger created:", trigger);
+  //       } else {
+  //         // console.log("❌ Timeline is null, cannot create ScrollTrigger");
+  //       }
+  //     } else {
+  //       // console.log("Footer ref is null");
+  //     }
+  //   }, 100);
 
-    // Cleanup function
-    return () => {
-      clearTimeout(timer);
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === footerRef.current) {
-          trigger.kill();
-        }
-      });
-    };
-  }, []);
-
+  //   // Cleanup function
+  //   return () => {
+  //     clearTimeout(timer);
+  //     ScrollTrigger.getAll().forEach(trigger => {
+  //       if (trigger.trigger === footerRef.current) {
+  //         trigger.kill();
+  //       }
+  //     });
+  //   };
+  // }, []);
+// h-[95vh]
   return (
     <footer 
       ref={footerRef}
-      className={`relative h-[95vh] mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
+      className={`relative mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
     >
-      <PageContainer className="relative h-full flex flex-col justify-between pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900 ">
+      <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
@@ -167,7 +159,7 @@ export default function Footer({ className = '' }: FooterProps) {
             </h3>
 
             <nav>
-              <ul className="flex flex-row justify-between items-center gap-4 list-none m-0 p-0">
+              <ul className="flex flex-row justify-between flex-wrap items-center gap-4 list-none m-0 p-0">
                 <li>
                   <TransitionLink href="/portfolio">Portfolio</TransitionLink>
                 </li>
