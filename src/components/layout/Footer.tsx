@@ -1,6 +1,11 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface FooterProps {
   className?: string;
@@ -38,19 +43,118 @@ const socialLinks = [
 
 export default function Footer({ className = '' }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const footerRef = useRef<HTMLElement>(null);
+  const myNameRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    // Register ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (myNameRef.current) {
+      const spans = myNameRef.current.querySelectorAll('span');
+      console.log(`Found ${spans.length} spans in #myName`);
+      
+      // Create a timeline for sequential animation
+      const tl = gsap.timeline();
+      
+      // Set initial state for all spans
+      spans.forEach(span => {
+        gsap.set(span, { width: 0, overflow: 'hidden' });
+      });
+    }
+
+
+    // Add a small delay to ensure the footer is rendered
+    const timer = setTimeout(() => {
+      if (footerRef.current) {
+        console.log("Setting up ScrollTrigger for footer");
+        
+        // Create ScrollTrigger that fires when footer is 100px from bottom
+        const trigger = ScrollTrigger.create({
+          trigger: footerRef.current,
+          start: "top bottom-=250px", // When top of footer is 100px from bottom of viewport
+          end: "bottom bottom",
+          markers: true, // Add markers for debugging
+          onEnter: () => {
+            console.log("🎯 Footer is 100px from bottom!");
+            
+            // Get the myName element and its span children using ref
+            if (myNameRef.current) {
+              const spans = myNameRef.current.querySelectorAll('span');
+              console.log(`Found ${spans.length} spans in #myName`);
+              
+              // Create a timeline for sequential animation
+              const tl = gsap.timeline();
+              
+              // // Set initial state for all spans
+              // spans.forEach(span => {
+              //   gsap.set(span, { width: 0, overflow: 'hidden' });
+              // });
+              
+              // Animate each span sequentially
+              spans.forEach((span, index) => {
+                // Calculate the natural width by temporarily setting to auto
+                const tempWidth = span.style.width;
+                span.style.width = 'auto';
+                const autoWidth = span.offsetWidth;
+                span.style.width = tempWidth;
+                
+                tl.to(span, {
+                  width: autoWidth,
+                  duration: 0.6,
+                  ease: "power2.inOut",
+                  delay: 0.2 // Stagger each span by 0.1s
+                });
+              });
+              
+              console.log("Timeline created for myName spans");
+            } else {
+              console.log("❌ myName ref is null");
+            }
+          },
+          onLeave: () => {
+            console.log("📤 Footer has left the trigger zone");
+          },
+          onEnterBack: () => {
+            console.log("📥 Footer is back in the trigger zone");
+          },
+          onLeaveBack: () => {
+            console.log("📤 Footer has left the trigger zone (scrolling up)");
+          }
+        });
+
+        console.log("ScrollTrigger created:", trigger);
+      } else {
+        console.log("Footer ref is null");
+      }
+    }, 100);
+
+    // Cleanup function
+    return () => {
+      clearTimeout(timer);
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.trigger === footerRef.current) {
+          trigger.kill();
+        }
+      });
+    };
+  }, []);
 
   return (
-    <footer className={`relative mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}>
-      <PageContainer className="pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900">
+    <footer 
+      ref={footerRef}
+      className={`relative h-[95vh] mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
+    >
+      <PageContainer className="relative h-full flex flex-col justify-between pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
-                BH<sup className="opacity-50">25</sup>
+              <span ref={myNameRef} className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
+                B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">25</sup>
               </span>
             </div>
-            <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
+            <p className="text-neutral-600 dark:text-neutral-400 text-lg "> 
               {/* Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
               that combine artistic vision with technical excellence. */}
               Me do good for happy people .. .. <em><strong>Yaaaay !!</strong></em>

@@ -69,6 +69,9 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
   // Store cursor trail points
   const [trailPoints, setTrailPoints] = useState<Array<{x: number, y: number}>>([]);
+  
+  // Track if we're hovering over a link
+  const [isHoveringLink, setIsHoveringLink] = useState(false);
 
   // Convert screen coordinates to SVG coordinates
   const screenToSVG = useCallback((screenX: number, screenY: number) => {
@@ -96,6 +99,16 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     
     pathRef.current.setAttribute('d', pathData);
   }, []);
+
+  // Create rectangle path for link hover effect
+  const createRectanglePath = useCallback((rect: DOMRect) => {
+    const topLeft = screenToSVG(rect.left, rect.top);
+    const topRight = screenToSVG(rect.right, rect.top);
+    const bottomRight = screenToSVG(rect.right, rect.bottom);
+    const bottomLeft = screenToSVG(rect.left, rect.bottom);
+    
+    return `M ${topLeft.x} ${topLeft.y} L ${topRight.x} ${topRight.y} L ${bottomRight.x} ${bottomRight.y} L ${bottomLeft.x} ${bottomLeft.y} Z`;
+  }, [screenToSVG]);
 
   // Check if element should trigger hover state
   const isHoverable = useCallback((element: HTMLElement | null): boolean => {
@@ -192,15 +205,17 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       });
     }
 
-    // Update trail points for path animation
-    const svgPoint = screenToSVG(e.clientX, e.clientY);
-    setTrailPoints(prev => {
-      const newPoints = [...prev, svgPoint];
-      // Keep only last 20 points for performance
-      return newPoints.slice(-20);
-    });
+    // Update trail points for path animation (only when not hovering over links)
+    if (!isHoveringLink) {
+      const svgPoint = screenToSVG(e.clientX, e.clientY);
+      setTrailPoints(prev => {
+        const newPoints = [...prev, svgPoint];
+        // Keep only last 20 points for performance
+        return newPoints.slice(-20);
+      });
+    }
 
-  }, [isHoverable, isClickable, screenToSVG]);
+  }, [isHoverable, isClickable, screenToSVG, isHoveringLink]);
 
 
 
@@ -316,8 +331,59 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
   // Update path when trail points change
   useEffect(() => {
-    updatePath(trailPoints);
-  }, [trailPoints, updatePath]);
+    if (!isHoveringLink) {
+      updatePath(trailPoints);
+    }
+  }, [trailPoints, updatePath, isHoveringLink]);
+
+  // Setup link hover effects
+  useEffect(() => {
+    if (!hasMouse) return;
+
+    const links = document.querySelectorAll('a');
+    
+    const handleLinkMouseEnter = (e: Event) => {
+      const link = e.target as HTMLElement;
+      const rect = link.getBoundingClientRect();
+      const rectPath = createRectanglePath(rect);
+      
+      setIsHoveringLink(true);
+      
+      if (pathRef.current) {
+        gsap.to(pathRef.current, {
+          attr: { d: rectPath },
+          duration: 0.4,
+          ease: "power3.out",
+        });
+      }
+    };
+
+    const handleLinkMouseLeave = () => {
+      setIsHoveringLink(false);
+      
+      if (pathRef.current) {
+        gsap.to(pathRef.current, {
+          attr: { d: "M0,0 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" },
+          duration: 0.4,
+          ease: "power3.inOut",
+        });
+      }
+    };
+
+    // Add event listeners to all links
+    links.forEach(link => {
+      link.addEventListener('mouseenter', handleLinkMouseEnter);
+      link.addEventListener('mouseleave', handleLinkMouseLeave);
+    });
+
+    // Cleanup function
+    return () => {
+      links.forEach(link => {
+        link.removeEventListener('mouseenter', handleLinkMouseEnter);
+        link.removeEventListener('mouseleave', handleLinkMouseLeave);
+      });
+    };
+  }, [hasMouse, createRectanglePath]);
 
   if (CURSOR_CONFIG.disabled || !hasMouse) return null;
 
