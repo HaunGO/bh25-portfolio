@@ -25,7 +25,7 @@ export default function HomePage() {
       </section>
 
 
-      <AdvancedCursorDemo />
+      {/* <AdvancedCursorDemo /> */}
       {/* <TransitionDemo /> */}
       {/* <QuickNavigation /> */}      
     </>

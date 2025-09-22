@@ -49,11 +49,18 @@ const CURSOR_CONFIG = {
   clickColor: 'rgba(59, 130, 246, 0.8)',
   
   // Trail settings
-  trailLength: 60, // Number of points to keep in the main trail
+  trailLength: 50, // Number of points to keep in the main trail
   trailLayers: [
-    { percentage: 0.33, opacity: 0.3 }, // First layer: 33% of trailLength
-    { percentage: 0.66, opacity: 0.3 }, // Second layer: 66% of trailLength  
-    { percentage: 1.0, opacity: 0.3 }   // Third layer: 100% of trailLength
+    { percentage: 0.1, color: 'rgba(59, 130, 246, 1)', strokeWidth: 10  },
+    { percentage: 0.2, color: 'rgba(59, 130, 246, 0.9)', strokeWidth: 9  },
+    { percentage: 0.3, color: 'rgba(59, 130, 246, 0.8)', strokeWidth: 8  },
+    { percentage: 0.4, color: 'rgba(59, 130, 246, 0.7)', strokeWidth: 7  },
+    { percentage: 0.5, color: 'rgba(59, 130, 246, 0.6)', strokeWidth: 6  }, 
+    { percentage: 0.6, color: 'rgba(59, 130, 246, 0.5)', strokeWidth: 5  }, 
+    { percentage: 0.7, color: 'rgba(59, 130, 246, 0.4)', strokeWidth: 4  }, 
+    { percentage: 0.8, color: 'rgba(59, 130, 246, 0.3)', strokeWidth: 3  },
+    { percentage: 0.9, color: 'rgba(59, 130, 246, 0.2)', strokeWidth: 2  },
+    { percentage: 1.0, color: 'rgba(59, 130, 246, 0.1)', strokeWidth: 1  },
   ],
   
   // Behavior settings
@@ -115,8 +122,6 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   const updateTrailLayers = useCallback((layers: Array<Array<{x: number, y: number}>>) => {
     layers.forEach((layer, index) => {
       const pathElement = trailLayerRefs.current[index];
-      const colors = ['RED', 'GREEN', 'BLUE'];
-      console.log(`${colors[index]} Layer ${index}: ${layer.length} points`);
       
       if (!pathElement || layer.length < 2) {
         // Clear the path if no data
@@ -132,7 +137,6 @@ const AdvancedCursor = memo(function AdvancedCursor() {
         }
       }, '');
       
-      console.log(`${colors[index]} Layer ${index} path:`, pathData.substring(0, 50) + '...');
       pathElement.setAttribute('d', pathData);
     });
   }, []);
@@ -537,21 +541,16 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       >
         {/* Trail layers (rendered in reverse order so shortest appears on top) */}
         {CURSOR_CONFIG.trailLayers.map((layer, index) => {
-          // const colors = ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 0, 255, 1)'];
-          const colors = ['rgba(59, 130, 246, 1)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.4)'];
-          // Longer trails = thinner strokes (reverse relationship)
-          const strokeWidths = [6, 4, 3]; // Layer 0 (shortest) = thickest, Layer 2 (longest) = thinnest
           const reverseIndex = CURSOR_CONFIG.trailLayers.length - 1 - index; // Reverse the order
           return (
             <path 
               key={`trail-layer-${reverseIndex}`}
               ref={(el) => { trailLayerRefs.current[reverseIndex] = el; }}
               fill="none" 
-              stroke={colors[reverseIndex]}
-              strokeWidth={strokeWidths[reverseIndex]}
+              stroke={CURSOR_CONFIG.trailLayers[reverseIndex].color}
+              strokeWidth={CURSOR_CONFIG.trailLayers[reverseIndex].strokeWidth}
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{ opacity: layer.opacity }}
             />
           );
         })}
