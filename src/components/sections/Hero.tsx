@@ -169,7 +169,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       {/* Hero Section */}
       <section 
         ref={heroRef}
-        className={`relative h-screen flex items-center pl-4 md:pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
+        className={`relative h-dvh flex items-center pl-4 md:pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
         style={{ 
           opacity: preloaderComplete ? 1 : 0,
           visibility: preloaderComplete ? 'visible' : 'hidden'
@@ -184,7 +184,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         </div>
 
         {/* Content Container */}
-        <div className="fixed z-10 text-left scale-75 md:scale-100 origin-left ">
+        <div className="absolute z-10 text-left scale-75 md:scale-100 origin-left ">
           {/* Main Title */}
           <h1 
             ref={textRef}
