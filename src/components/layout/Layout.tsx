@@ -24,17 +24,18 @@ const Layout = memo(function Layout({ children, className = '' }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} />
+      {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
+      
+      <Header />
       <ThemeToggle />
       
       <PageTransition>
         <main className={`flex-1 ${className}`}>
           {children}
-        </main>
-      
-        <Footer />
-        
+        </main>  
       </PageTransition>
+      
+      <Footer />
     </div>
   );
 });

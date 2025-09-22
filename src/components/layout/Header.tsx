@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { NavigationItem } from '@/types';
 import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
+import LogoBH from '../ui/LogoBH';
 
 interface HeaderProps {
   className?: string;
@@ -64,13 +65,13 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
           {/* Logo */}
           <TransitionLink
             href="/"
-            className="absolute left-0 space-x-2 text-2xl font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors font-display"
+            className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
           >
-            <span>BH<sup className="opacity-50">25</sup></span>
+            <LogoBH autoAnimate={false} />
           </TransitionLink>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* <nav className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
               <button
                 key={item.href}
@@ -89,10 +90,10 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
                 )}
               </button>
             ))}
-          </nav>
+          </nav> */}
 
-          {/* Mobile menu button */}
-          <button
+          {/* Mobile menu button - DO NOT DELETE.*/}
+          {/* <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
             aria-label="Toggle mobile menu"
@@ -120,11 +121,12 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
                 />
               )}
             </svg>
-          </button>
+          </button> */}
+
         </div>
 
-        {/* Mobile Navigation */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${
+        {/* Mobile Navigation - DO NOT DELETE.*/}
+        {/* <div className={`md:hidden transition-all duration-300 ease-in-out ${
           isMenuOpen 
             ? 'opacity-100 max-h-96' 
             : 'opacity-0 max-h-0 overflow-hidden'
@@ -150,7 +152,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
       </PageContainer>
     </header>
   );

@@ -48,15 +48,26 @@ const CURSOR_CONFIG = {
   hoverColor: 'rgba(59, 130, 246, 0.8)',
   clickColor: 'rgba(59, 130, 246, 0.8)',
   
+  // Trail settings
+  trailLength: 60, // Number of points to keep in the main trail
+  trailLayers: [
+    { percentage: 0.33, opacity: 0.3 }, // First layer: 33% of trailLength
+    { percentage: 0.66, opacity: 0.3 }, // Second layer: 66% of trailLength  
+    { percentage: 1.0, opacity: 0.3 }   // Third layer: 100% of trailLength
+  ],
+  
   // Behavior settings
   disabled: false
 };
 
 const AdvancedCursor = memo(function AdvancedCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<SVGPathElement>(null);
+  const ringRef = useRef<SVGPathElement>(null);
   const hasMouse = useMouseSupport();
   const pathRef = useRef<SVGPathElement>(null);
+  const trailLayerRefs = useRef<Array<SVGPathElement | null>>(
+    CURSOR_CONFIG.trailLayers.map(() => null)
+  );
 
   const [cursorState, setCursorState] = useState({
     x: 0,
@@ -69,6 +80,9 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
   // Store cursor trail points
   const [trailPoints, setTrailPoints] = useState<Array<{x: number, y: number}>>([]);
+  const [trailLayers, setTrailLayers] = useState<Array<Array<{x: number, y: number}>>>(
+    CURSOR_CONFIG.trailLayers.map(() => [])
+  );
   
   // Track if we're hovering over a link
   const [isHoveringLink, setIsHoveringLink] = useState(false);
@@ -95,6 +109,42 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     }, '');
     
     pathRef.current.setAttribute('d', pathData);
+  }, []);
+
+  // Update trail layer paths
+  const updateTrailLayers = useCallback((layers: Array<Array<{x: number, y: number}>>) => {
+    layers.forEach((layer, index) => {
+      const pathElement = trailLayerRefs.current[index];
+      const colors = ['RED', 'GREEN', 'BLUE'];
+      console.log(`${colors[index]} Layer ${index}: ${layer.length} points`);
+      
+      if (!pathElement || layer.length < 2) {
+        // Clear the path if no data
+        if (pathElement) pathElement.setAttribute('d', '');
+        return;
+      }
+      
+      const pathData = layer.reduce((path, point, pointIndex) => {
+        if (pointIndex === 0) {
+          return `M ${point.x} ${point.y}`;
+        } else {
+          return `${path} L ${point.x} ${point.y}`;
+        }
+      }, '');
+      
+      console.log(`${colors[index]} Layer ${index} path:`, pathData.substring(0, 50) + '...');
+      pathElement.setAttribute('d', pathData);
+    });
+  }, []);
+
+  // Create circle path for ring at specified size
+  const createCirclePath = useCallback((radius: number, centerX: number = radius, centerY: number = radius) => {
+    return `M ${centerX} ${centerY} A ${radius} ${radius} 0 1 1 ${centerX + 0.1} ${centerY} Z`;
+  }, []);
+
+  // Create filled circle path for cursor dot
+  const createCursorPath = useCallback((radius: number, centerX: number = radius, centerY: number = radius) => {
+    return `M ${centerX} ${centerY} A ${radius} ${radius} 0 1 1 ${centerX + 0.1} ${centerY} Z`;
   }, []);
 
   // Create rectangle path for link hover effect
@@ -145,9 +195,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
     ripple.style.pointerEvents = 'none';
     ripple.style.zIndex = '9997';
     ripple.style.transform = 'translate(-50%, -50%)';
-    
     document.body.appendChild(ripple);
-
     gsap.fromTo(ripple, 
       { scale: 0, opacity: 1 },
       { 
@@ -169,7 +217,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
 
 
-  // Update cursor position and state
+  // Update cursor position and state ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   const updateCursor = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
     const isHovering = isHoverable(target);
@@ -179,7 +227,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
       ...prev,
       x: e.clientX,
       y: e.clientY,
-      isHovering,
+      isHovering: false,
       isClicking: false,
       target,
       isVisible: true
@@ -187,29 +235,47 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
     // Animate cursor position
     if (cursorRef.current && ringRef.current) {
+      // Create cursor path directly at mouse position
+      const cursorPath = createCursorPath(5, e.clientX, e.clientY + 5);
       gsap.to(cursorRef.current, {
-        left: e.clientX,
-        top: e.clientY,
+        attr: { d: cursorPath },
         duration: 0,
         ease: 'power2.out'
       });
 
       gsap.to(ringRef.current, {
-        left: e.clientX,
-        top: e.clientY,
+        attr: { transform: `translate(${e.clientX - 80}, ${e.clientY})` },
         duration: 0,
         ease: 'power2.out'
       });
     }
 
+
+
+
+
+
+
+
+    
     // Update trail points for path animation (only when not hovering over links)
     if (!isHoveringLink) {
       const svgPoint = screenToSVG(e.clientX, e.clientY);
+      
+      // Update main trail
       setTrailPoints(prev => {
         const newPoints = [...prev, svgPoint];
-        // Keep only last 20 points for performance
-        return newPoints.slice(-30);
+        return newPoints.slice(-CURSOR_CONFIG.trailLength);
       });
+      
+      // Update trail layers
+      setTrailLayers(prev => 
+        prev.map((layer, index) => {
+          const newPoints = [...layer, svgPoint];
+          const layerLength = Math.floor(CURSOR_CONFIG.trailLayers[index].percentage * CURSOR_CONFIG.trailLength);
+          return newPoints.slice(-layerLength);
+        })
+      );
     }
 
   }, [isHoverable, isClickable, screenToSVG, isHoveringLink]);
@@ -255,7 +321,12 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   // Handle scroll
   const handleScroll = useCallback(() => {
     if (cursorRef.current && ringRef.current) {
-      gsap.to([cursorRef.current, ringRef.current], {
+      gsap.to(cursorRef.current, {
+        opacity: 0.3,
+        duration: 0.2,
+        ease: 'power2.out'
+      });
+      gsap.to(ringRef.current, {
         opacity: 0.3,
         duration: 0.2,
         ease: 'power2.out'
@@ -265,7 +336,12 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
   const handleScrollEnd = useCallback(() => {
     if (cursorRef.current && ringRef.current) {
-      gsap.to([cursorRef.current, ringRef.current], {
+      gsap.to(cursorRef.current, {
+        opacity: 0.5,
+        duration: 0.3,
+        ease: 'power2.out'
+      });
+      gsap.to(ringRef.current, {
         opacity: 0.5,
         duration: 0.3,
         ease: 'power2.out'
@@ -332,66 +408,86 @@ const AdvancedCursor = memo(function AdvancedCursor() {
 
     gsap.to(ringRef.current, {
       scale: cursorState.isHovering ? 1.1 : 1,
-      borderColor: currentColor,
+      stroke: currentColor,
       duration: 0.5,
       ease: 'power1.out'
     });
   }, [hasMouse, cursorState.isHovering, cursorState.isClicking]);
 
+  // Animate cursor based on state
+  useEffect(() => {
+    if (!cursorRef.current || !hasMouse) return;
+
+    const currentColor = cursorState.isClicking 
+      ? CURSOR_CONFIG.clickColor 
+      : CURSOR_CONFIG.dotColor;
+
+    gsap.to(cursorRef.current, {
+      fill: currentColor,
+      duration: 0.3,
+      ease: 'power1.out'
+    });
+  }, [hasMouse, cursorState.isClicking]);
+
+
   // Update path when trail points change
   useEffect(() => {
     if (!isHoveringLink) {
       updatePath(trailPoints);
+      updateTrailLayers(trailLayers);
     }
-  }, [trailPoints, updatePath, isHoveringLink]);
+  }, [trailPoints, trailLayers, updatePath, updateTrailLayers, isHoveringLink]);
 
-  // Setup link hover effects
+  // Setup advanced cursor hover effects (disabled for now)
   useEffect(() => {
     if (!hasMouse) return;
 
-    const links = document.querySelectorAll('a');
+    // TODO: Re-enable hover effects later
+    // const advancedCursorElements = document.querySelectorAll('[data-advanced-cursor="true"]');
     
-    const handleLinkMouseEnter = (e: Event) => {
-      const link = e.target as HTMLElement;
-      const rect = link.getBoundingClientRect();
-      const rectPath = createRectanglePath(rect);
+    // const handleElementMouseEnter = (e: Event) => {
+    //   const element = e.target as HTMLElement;
+    //   const rect = element.getBoundingClientRect();
+    //   const rectPath = createRectanglePath(rect);
       
-      setIsHoveringLink(true);
+    //   setIsHoveringLink(true);
       
-      if (pathRef.current) {
-        gsap.to(pathRef.current, {
-          attr: { d: rectPath },
-          duration: 0.4,
-          ease: "power3.out",
-        });
-      }
-    };
+    //   if (pathRef.current) {
+    //     gsap.fromTo(pathRef.current, {
+    //       d: "M0,0 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"
+    //     }, {
+    //       attr: { d: rectPath },
+    //       duration: 0.4,
+    //       ease: "power3.out",
+    //     });
+    //   }
+    // };
 
-    const handleLinkMouseLeave = () => {
-      setIsHoveringLink(false);
+    // const handleElementMouseLeave = () => {
+    //   setIsHoveringLink(false);
       
-      if (pathRef.current) {
-        gsap.to(pathRef.current, {
-          attr: { d: "M0,0 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" },
-          duration: 0.4,
-          ease: "power3.inOut",
-        });
-      }
-    };
+    //   if (pathRef.current) {
+    //     gsap.to(pathRef.current, {
+    //       attr: { d: "M0,0 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" },
+    //       duration: 0.4,
+    //       ease: "power3.inOut",
+    //     });
+    //   }
+    // };
 
-    // Add event listeners to all links
-    links.forEach(link => {
-      link.addEventListener('mouseenter', handleLinkMouseEnter);
-      link.addEventListener('mouseleave', handleLinkMouseLeave);
-    });
+    // // Add event listeners to all advanced cursor elements
+    // advancedCursorElements.forEach(element => {
+    //   element.addEventListener('mouseenter', handleElementMouseEnter);
+    //   element.addEventListener('mouseleave', handleElementMouseLeave);
+    // });
 
-    // Cleanup function
-    return () => {
-      links.forEach(link => {
-        link.removeEventListener('mouseenter', handleLinkMouseEnter);
-        link.removeEventListener('mouseleave', handleLinkMouseLeave);
-      });
-    };
+    // // Cleanup function
+    // return () => {
+    //   advancedCursorElements.forEach(element => {
+    //     element.removeEventListener('mouseenter', handleElementMouseEnter);
+    //     element.removeEventListener('mouseleave', handleElementMouseLeave);
+    //   });
+    // };
   }, [hasMouse, createRectanglePath]);
 
   if (CURSOR_CONFIG.disabled || !hasMouse) return null;
@@ -399,7 +495,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
   return (
     <>
       {/* Main cursor dot */}
-      <div
+      {/* <div
         ref={cursorRef}
         className="fixed pointer-events-none z-[9999] mix-blend-difference"
         style={{
@@ -412,10 +508,10 @@ const AdvancedCursor = memo(function AdvancedCursor() {
           left: 0,
           top: 0
         }}
-      />
+      /> */}
       
       {/* Ring around cursor */}
-      <div
+      {/* <div
         ref={ringRef}
         className="fixed pointer-events-none z-[9998]"
         style={{
@@ -428,7 +524,7 @@ const AdvancedCursor = memo(function AdvancedCursor() {
           left: 0,
           top: 0
         }}
-      />
+      /> */}
 
       {/* Animation Layer SVG */}
       <svg 
@@ -439,13 +535,55 @@ const AdvancedCursor = memo(function AdvancedCursor() {
         preserveAspectRatio="none"
         className="fixed top-0 left-0 pointer-events-none z-[9996] w-full h-full"
       >
+        {/* Trail layers (rendered in reverse order so shortest appears on top) */}
+        {CURSOR_CONFIG.trailLayers.map((layer, index) => {
+          // const colors = ['rgba(255, 0, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 0, 255, 1)'];
+          const colors = ['rgba(59, 130, 246, 1)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.4)'];
+          // Longer trails = thinner strokes (reverse relationship)
+          const strokeWidths = [6, 4, 3]; // Layer 0 (shortest) = thickest, Layer 2 (longest) = thinnest
+          const reverseIndex = CURSOR_CONFIG.trailLayers.length - 1 - index; // Reverse the order
+          return (
+            <path 
+              key={`trail-layer-${reverseIndex}`}
+              ref={(el) => { trailLayerRefs.current[reverseIndex] = el; }}
+              fill="none" 
+              stroke={colors[reverseIndex]}
+              strokeWidth={strokeWidths[reverseIndex]}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ opacity: layer.opacity }}
+            />
+          );
+        })}
+        
+        {/* Main trail (rendered on top) - temporarily hidden for debugging */}
         <path 
           ref={pathRef} 
           fill="none" 
           stroke="rgba(59, 130, 246, 0.6)" 
-          strokeWidth="4"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
+          opacity="0"
+        />
+        
+        {/* Ring around cursor */}
+        <path 
+          ref={ringRef} 
+          fill="none"
+          d={createCirclePath(40, 80, 40)} 
+          stroke="rgba(19, 110, 146, 0.9)" 
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        
+        {/* Main cursor dot */}
+        <path 
+          ref={cursorRef} 
+          fill={cursorState.isClicking ? CURSOR_CONFIG.clickColor : CURSOR_CONFIG.dotColor}
+          d={createCursorPath(5, 0, 0)} 
+          stroke="none"
         />
       </svg>
 

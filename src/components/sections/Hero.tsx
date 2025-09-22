@@ -132,7 +132,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     // Cleanup function
     return () => {
       masterTimeline.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      // Only kill ScrollTriggers created by this component
+      // ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, [shouldAnimate, delay]);
 

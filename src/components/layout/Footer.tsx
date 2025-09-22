@@ -6,6 +6,7 @@ import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import LogoBH from '../ui/LogoBH';
 
 interface FooterProps {
   className?: string;
@@ -42,96 +43,8 @@ const socialLinks = [
 ];
 
 export default function Footer({ className = '' }: FooterProps) {
-  const currentYear = new Date().getFullYear();
   const footerRef = useRef<HTMLElement>(null);
-  const myNameRef = useRef<HTMLSpanElement>(null);
 
-
-  // DO NOT DELETE THIS COMMENTED OUT CODE. I WANT TO KEEP IT FOR LATER.
-  // useEffect(() => {
-  //   // Register ScrollTrigger plugin
-  //   gsap.registerPlugin(ScrollTrigger);
-
-  //   if (myNameRef.current) {
-  //     const spans = myNameRef.current.querySelectorAll('span');
-  //     console.log(`Found ${spans.length} spans in #myName`);
-      
-  //     // Create a timeline for sequential animation
-  //     const tl = gsap.timeline();
-      
-  //     // Set initial state for all spans
-  //     spans.forEach(span => {
-  //       gsap.set(span, { width: 0, overflow: 'hidden' });
-  //     });
-  //   }
-
-
-  //   // Add a small delay to ensure the footer is rendered
-  //   const timer = setTimeout(() => {
-  //     if (footerRef.current) {
-  //       console.log("Setting up ScrollTrigger for footer");
-        
-  //       // Create timeline outside of ScrollTrigger for reuse
-  //       let tl: gsap.core.Timeline | null = null;
-        
-  //       if (myNameRef.current) {
-  //         const spans = myNameRef.current.querySelectorAll('span');
-  //         console.log(`Found ${spans.length} spans in #myName`);
-          
-  //         // Create timeline for sequential animation
-  //         tl = gsap.timeline({ paused: true });
-          
-  //         // Animate each span sequentially
-  //         spans.forEach((span, index) => {
-  //           // Calculate the natural width by temporarily setting to auto
-  //           const tempWidth = span.style.width;
-  //           span.style.width = 'auto';
-  //           const autoWidth = span.offsetWidth;
-  //           span.style.width = tempWidth;
-            
-  //           tl!.to(span, {
-  //             width: autoWidth,
-  //             duration: 0.3,
-  //             ease: "power2.inOut",
-  //           }, index * 0.1); // Stagger each span by 0.1s
-  //         });
-  //       }
-
-  //       // Create ScrollTrigger that controls the timeline
-  //       if (tl) {
-  //         const trigger = ScrollTrigger.create({
-  //           trigger: footerRef.current,
-  //           start: "top bottom-=250px",
-  //           end: "bottom bottom",
-  //           markers: true,
-  //           animation: tl,
-  //           toggleActions: "play none play reverse", // play on enter, reverse on leave, play on enter back, reverse on leave back
-  //           // onEnter: () => console.log("🎯 Footer entered - playing timeline"),
-  //           // onLeave: () => console.log("📤 Footer left - reversing timeline"),
-  //           // onEnterBack: () => console.log("📥 Footer back - playing timeline"),
-  //           // onLeaveBack: () => console.log("📤 Footer left back - reversing timeline")
-  //         });
-          
-  //         // console.log("ScrollTrigger created:", trigger);
-  //       } else {
-  //         // console.log("❌ Timeline is null, cannot create ScrollTrigger");
-  //       }
-  //     } else {
-  //       // console.log("Footer ref is null");
-  //     }
-  //   }, 100);
-
-  //   // Cleanup function
-  //   return () => {
-  //     clearTimeout(timer);
-  //     ScrollTrigger.getAll().forEach(trigger => {
-  //       if (trigger.trigger === footerRef.current) {
-  //         trigger.kill();
-  //       }
-  //     });
-  //   };
-  // }, []);
-// h-[95vh]
   return (
     <footer 
       ref={footerRef}
@@ -142,21 +55,19 @@ export default function Footer({ className = '' }: FooterProps) {
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
-              <span ref={myNameRef} className="text-2xl font-bold text-primary-600 dark:text-primary-400 font-display">
-                B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">25</sup>
-              </span>
+              <LogoBH triggerRef={footerRef} />
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg "> 
-              {/* Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
-              that combine artistic vision with technical excellence. */}
-              Me do good for happy people .. .. <em><strong>Yaaaay !!</strong></em>
+              Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 
+              that combine artistic vision with technical excellence.
+              {/* Me do good for happy people .. .. <em><strong>Yaaaay !!</strong></em> */}
             </p>
           </div>
 
           {/* Social Links */}
+          {/* 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display">                {/* Links to other pages */}
-            </h3>
+            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display"></h3>
 
             <nav>
               <ul className="flex flex-row justify-between flex-wrap items-center gap-4 list-none m-0 p-0">
@@ -172,26 +83,40 @@ export default function Footer({ className = '' }: FooterProps) {
               </ul>
             </nav>
 
-          </div>
+          </div> 
+          */}
+
+
         </div>
 
         {/* Bottom Section */}
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
           <div className="text-center flex flex-col items-center md:flex-row md:justify-between">
-            <p className="text-purple-800 dark:text-purple-400 text-sm">
-              Brandon-Davis: Haun <sup className="opacity-50">{currentYear}</sup> ALL RIGHTS RESERVED
-            </p>
+
+            <blockquote 
+              className="relative group text-purple-800 dark:text-purple-400 text-md"
+              cite="https://www.law.cornell.edu/ucc/1/1-308"
+            >
+              All Rights Reserved Without Prejudice
+              <span 
+                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
+                role="tooltip"
+                aria-hidden="true"
+              >
+                UCC 1-308
+              </span>
+            </blockquote>
 
 
 
             
             <blockquote 
-              className="text-yellow-600 relative group pt-4 md:pt-0 font-['Schoolbell']"
+              className="text-yellow-600 relative group pt-4 md:pt-0 text-lg font-['Schoolbell']"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
               This is the day which the LORD hath made; we will rejoice and be glad in it.
               <span 
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
+                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"
                 aria-hidden="true"
               >
