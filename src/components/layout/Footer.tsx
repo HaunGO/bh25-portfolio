@@ -91,13 +91,13 @@ export default function Footer({ className = '' }: FooterProps) {
 
         {/* Bottom Section */}
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
-          <div className="text-center flex flex-col items-center md:flex-row md:justify-between">
+          <div className="text-center flex flex-col-reverse items-center md:flex-row md:justify-between">
 
             <blockquote 
-              className="relative group text-purple-800 dark:text-purple-400 text-md"
+              className="relative group text-purple-800 dark:text-purple-400 text-md "
               cite="https://www.law.cornell.edu/ucc/1/1-308"
             >
-              All Rights Reserved Without Prejudice
+              <span className="opacity-60">All Rights Reserved. Without Prejudice</span>
               <span 
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"
@@ -111,10 +111,10 @@ export default function Footer({ className = '' }: FooterProps) {
 
             
             <blockquote 
-              className="text-yellow-600 relative group pt-4 md:pt-0 text-lg font-['Schoolbell']"
+              className="text-yellow-600 relative group md:pt-0 text-lg font-['Schoolbell']"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
-              This is the day which the LORD hath made; we will rejoice and be glad in it.
+              <span className="opacity-80">This is the day which the LORD hath made; we will rejoice and be glad in it.</span>
               <span 
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"

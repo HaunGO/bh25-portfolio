@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -21,6 +21,7 @@ export default function LogoBH({
 }: LogoBHProps) {
   const myNameRef = useRef<HTMLSpanElement>(null);
   const hoverTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     // Register ScrollTrigger plugin
@@ -75,7 +76,7 @@ export default function LogoBH({
           hoverTl.to(span, {
             width: autoWidth,
             duration: 0.3,
-            ease: "power2.out",
+            ease: "power2.inOut",
           }, index * 0.05); // Faster stagger for hover
         });
         hoverTimelineRef.current = hoverTl;
@@ -158,8 +159,23 @@ export default function LogoBH({
     };
   }, [triggerRef, triggerStart, triggerEnd, autoAnimate]);
 
+  const handleClick = () => {
+    if (hoverTimelineRef.current) {
+      if (isAnimating) {
+        hoverTimelineRef.current.reverse();
+      } else {
+        hoverTimelineRef.current.play();
+      }
+      setIsAnimating(!isAnimating);
+    }
+  };
+
   return (
-    <span ref={myNameRef} className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display ${className}`}>
+    <span 
+      ref={myNameRef} 
+      onClick={handleClick}
+      className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display cursor-pointer ${className}`}
+    >
       B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">25</sup>
     </span>
   );
