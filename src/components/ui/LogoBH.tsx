@@ -6,18 +6,20 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface LogoBHProps {
   className?: string;
+  autoAnimate?: boolean;
   triggerRef?: React.RefObject<HTMLElement | null>;
   triggerStart?: string;
   triggerEnd?: string;
-  autoAnimate?: boolean;
+  showMarkers?: boolean;
 }
 
 export default function LogoBH({ 
   className = '',
+  autoAnimate,
   triggerRef,
-  triggerStart = "top bottom-=250px",
-  triggerEnd = "bottom bottom",
-  autoAnimate = false
+  triggerStart,
+  triggerEnd,
+  showMarkers = false
 }: LogoBHProps) {
   const myNameRef = useRef<HTMLSpanElement>(null);
   const hoverTimelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -29,9 +31,6 @@ export default function LogoBH({
 
     if (myNameRef.current) {
       const spans = myNameRef.current.querySelectorAll('span');
-      // console.log(`Found ${spans.length} spans in LogoBH`);
-      
-      // Set initial state for all spans
       spans.forEach(span => {
         gsap.set(span, { width: 0, overflow: 'hidden' });
       });
@@ -85,26 +84,16 @@ export default function LogoBH({
         if (autoAnimate) {
           tl.play();
         } else if (triggerRef?.current) {
-          // console.log("🎯 Creating ScrollTrigger for LogoBH");
-          // console.log("Trigger element:", triggerRef.current);
-          // console.log("Start:", triggerStart);
-          // console.log("End:", triggerEnd);
-          
-          // Create ScrollTrigger that controls the timeline
+
           const trigger = ScrollTrigger.create({
             trigger: triggerRef.current,
-            start: "45% bottom", // When middle of footer hits bottom of viewport
-            end: "top top", // When top of footer reaches top of viewport (footer completely out of view)
-            // markers: true,
+            // start: "45% bottom", // When middle of footer hits bottom of viewport
+            // end: "top top", // When top of footer reaches top of viewport (footer completely out of view)
+            start: triggerStart,
+            end: triggerEnd,
+            markers: showMarkers,
             animation: tl,
-            toggleActions: "play none none reverse", // play on enter, no other actions
-            // onEnter: () => console.log("🎯 LogoBH ScrollTrigger ENTERED - playing timeline"),
-            // onLeave: () => {
-            //   console.log("📤 LogoBH ScrollTrigger LEFT - resetting timeline");
-              // tl.reverse(); // Reset animation when footer is completely out of view
-            // },
-            // onEnterBack: () => console.log("📥 LogoBH ScrollTrigger ENTER BACK - playing timeline"),
-            // onLeaveBack: () => console.log("📤 LogoBH ScrollTrigger LEAVE BACK - resetting timeline")
+            toggleActions: "play none none reverse"
           });
           
           // console.log("ScrollTrigger created:", trigger);
@@ -159,7 +148,21 @@ export default function LogoBH({
     };
   }, [triggerRef, triggerStart, triggerEnd, autoAnimate]);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent parent TransitionLink from handling the event
+    if (hoverTimelineRef.current) {
+      if (isAnimating) {
+        hoverTimelineRef.current.reverse();
+      } else {
+        hoverTimelineRef.current.play();
+      }
+      setIsAnimating(!isAnimating);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent default touch behavior
+    e.stopPropagation(); // Prevent parent TransitionLink from handling the event
     if (hoverTimelineRef.current) {
       if (isAnimating) {
         hoverTimelineRef.current.reverse();
@@ -174,6 +177,7 @@ export default function LogoBH({
     <span 
       ref={myNameRef} 
       onClick={handleClick}
+      onTouchEnd={handleTouchEnd}
       className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display cursor-pointer ${className}`}
     >
       B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">25</sup>

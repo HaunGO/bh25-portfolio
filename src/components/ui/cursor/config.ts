@@ -12,10 +12,10 @@ export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
     clickColor: 'rgba(59, 130, 246, 1)',
   },
   mouse: {
-    trailLength: 50,
+    trailLength: 30,
     trailLayers: [
-      { percentage: 0.1, color: 'rgba(59, 130, 246, 1)', strokeWidth: 10 },
-      { percentage: 0.2, color: 'rgba(59, 130, 246, 0.9)', strokeWidth: 9 },
+      { percentage: 0.1, color: 'rgba(59, 130, 246, 1)', strokeWidth: 15 },
+      { percentage: 0.2, color: 'rgba(59, 130, 246, 0.9)', strokeWidth: 10 },
       { percentage: 0.3, color: 'rgba(59, 130, 246, 0.8)', strokeWidth: 8 },
       { percentage: 0.4, color: 'rgba(59, 130, 246, 0.7)', strokeWidth: 7 },
       { percentage: 0.5, color: 'rgba(59, 130, 246, 0.6)', strokeWidth: 6 },
@@ -27,13 +27,13 @@ export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
     ],
   },
   touch: {
-    trailLength: 30,
+    trailLength: 40,
     trailLayers: [
-      { percentage: 0.3, color: 'rgba(59, 130, 246, 0.8)', strokeWidth: 20 },
-      { percentage: 0.5, color: 'rgba(59, 130, 246, 0.6)', strokeWidth: 16 },
-      { percentage: 0.7, color: 'rgba(59, 130, 246, 0.5)', strokeWidth: 12 },
-      { percentage: 0.9, color: 'rgba(59, 130, 246, 0.3)', strokeWidth: 7 },
-      { percentage: 1.0, color: 'rgba(59, 130, 246, 0.9)', strokeWidth: 4 },
+      { percentage: 0.3, color: 'rgba(59, 130, 246, 1)', strokeWidth: 20 },
+      { percentage: 0.5, color: 'rgba(59, 130, 246, 1)', strokeWidth: 16 },
+      { percentage: 0.7, color: 'rgba(59, 130, 246, 1)', strokeWidth: 12 },
+      { percentage: 0.9, color: 'rgba(59, 130, 246, 1)', strokeWidth: 7 },
+      { percentage: 1.0, color: 'rgba(59, 130, 246, 1)', strokeWidth: 4 },
     ],
     fadeDuration: 2.0,
     touchZones: {

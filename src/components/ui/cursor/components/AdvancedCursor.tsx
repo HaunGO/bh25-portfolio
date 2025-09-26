@@ -82,6 +82,7 @@ const AdvancedCursor = memo(function AdvancedCursor({
     <>
       {/* Debug indicator */}
       <div 
+        className='hidden '
         style={{
           position: 'fixed',
           top: '10px',
@@ -107,10 +108,10 @@ const AdvancedCursor = memo(function AdvancedCursor({
               left: 0,
               width: `${finalConfig.touch.touchZones.trailZone.right * 100}%`,
               height: '100%',
-              border: '2px solid rgba(59, 130, 246, 0.3)',
+            //   border: '2px solid rgba(59, 130, 246, 0.3)',
               pointerEvents: 'none',
               zIndex: 9997,
-              background: 'rgba(59, 130, 246, 0.05)'
+              background: 'rgba(59, 130, 246, 0)'
             }}
           />
           {/* Scroll zone indicator */}
@@ -121,7 +122,7 @@ const AdvancedCursor = memo(function AdvancedCursor({
               left: `${finalConfig.touch.touchZones.scrollZone.left * 100}%`,
               width: `${(finalConfig.touch.touchZones.scrollZone.right - finalConfig.touch.touchZones.scrollZone.left) * 100}%`,
               height: '100%',
-              border: '2px solid rgba(255, 0, 0, 0.3)',
+            //   border: '2px solid rgba(255, 0, 0, 0.3)',
               pointerEvents: 'none',
               zIndex: 9997,
               background: 'rgba(255, 0, 0, 0.05)'

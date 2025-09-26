@@ -68,7 +68,7 @@ const ThemeToggle = memo(function ThemeToggle({
       onClick={toggleTheme}
       className={`
         ${position === 'fixed' ? 'fixed' : 'absolute'}
-        top-3.5 right-3 z-50
+        top-1.5 md:top-3.5 right-2 md:right-3 z-50
         p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 
         text-neutral-700 dark:text-neutral-300 
         hover:bg-neutral-200 dark:hover:bg-neutral-700 

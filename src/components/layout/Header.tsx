@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, memo, useCallback } from 'react';
+import { useState, useEffect, memo, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavigationItem } from '@/types';
@@ -23,6 +23,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const triggerRef = useRef<HTMLElement | null>(null);
 
   // Handle navigation - memoized to prevent re-renders
   const handleNavigation = useCallback(async (href: string) => {
@@ -43,6 +44,14 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  // Get hero element reference for LogoBH trigger
+  useEffect(() => {
+    const triggerElement = document.querySelector('[data-hero-section-title]') as HTMLElement;
+    if (triggerElement) {
+      triggerRef.current = triggerElement;
+    }
+  }, []);
+
   // Get header background classes based on scroll state - memoized
   const getHeaderBackground = useCallback(() => {
     if (isScrolled) {
@@ -61,13 +70,13 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
       `}
     >
       <PageContainer className="mr-10 md:mr-auto">
-        <div className="relative flex justify-end md:justify-center items-center h-16 lg:h-20">
-          {/* Logo */}
+        <div className="relative flex justify-end md:justify-center items-center h-12 lg:h-14">
+      {/* Logo */}
           <TransitionLink
             href="/"
             className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
           >
-            <LogoBH autoAnimate={false} />
+            <LogoBH autoAnimate={false}  triggerRef={triggerRef} triggerStart="center top" triggerEnd="bottom bottom" />
           </TransitionLink>
 
           {/* Desktop Navigation */}

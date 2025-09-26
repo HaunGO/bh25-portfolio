@@ -29,6 +29,7 @@ const TrailRenderer = memo(function TrailRenderer({
       preserveAspectRatio="none"
       className={`fixed top-0 left-0 pointer-events-none z-[9998] w-full h-full ${className}`}
     >
+      <g className='opacity-50'> 
       {/* Trail layers (rendered in reverse order so shortest appears on top) */}
       {layers.map((layer, index) => {
         const reverseIndex = layers.length - 1 - index; // Reverse the order
@@ -44,6 +45,7 @@ const TrailRenderer = memo(function TrailRenderer({
           />
         );
       })}
+      </g>
     </svg>
   );
 });

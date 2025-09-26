@@ -48,14 +48,14 @@ export default function Footer({ className = '' }: FooterProps) {
   return (
     <footer 
       ref={footerRef}
-      className={`relative mt-12 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
+      className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
     >
       <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
-              <LogoBH triggerRef={footerRef} />
+              <LogoBH autoAnimate={false} triggerRef={footerRef} triggerStart="45% bottom" triggerEnd="top top" />
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg "> 
               Senior Frontend Engineer &amp; Creative Developer passionate about building beautiful, interactive experiences 

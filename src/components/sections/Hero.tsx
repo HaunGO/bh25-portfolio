@@ -169,12 +169,20 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       {/* Hero Section */}
       <section 
         ref={heroRef}
-        className={`relative h-dvh flex items-center pl-4 md:pl-16 pb-32 pt-32 justify-start overflow-hidden ${className}`}
+        data-hero-section
+        className={`relative flex items-center justify-start overflow-hidden 
+          pl-4 md:pl-16 
+          py-52 
+          h-auto lg:h-screen 
+          ${className}`}
         style={{ 
           opacity: preloaderComplete ? 1 : 0,
           visibility: preloaderComplete ? 'visible' : 'hidden'
         }}
       >
+        
+        {/* <div className="relative inset-0 py-24 md:py-32 border border-red-500"> */}
+
         {/* Animated Background */}
         <div 
           ref={backgroundRef}
@@ -182,74 +190,80 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           // className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
         </div>
-
-        {/* Content Container */}
-        <div className="absolute z-10 text-left scale-75 md:scale-100 origin-left ">
-          {/* Main Title */}
-          <h1 
-            ref={textRef}
-            className="text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display pointer-events-none whitespace-nowrap"
-          >
-            <span 
-              ref={greetingRef} 
-              className="block text-4xl font-normal relative left-16 top-4 " 
-            >
-              Hello, I&apos;m
-            </span>
-            <span 
-              ref={nameRef} 
-              className="block font-semibold"
-            >
-              Brandon
-            </span>
+        
+          
+          {/* Content Container */}
+          <div className="relative z-10 text-left scale-75 md:scale-100 origin-left md:origin-center ">  
             
-            <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
-
-            <span 
-              ref={subtitleRef} 
-              className="block text-5xl font-normal relative -top-2 "
-            >
-              A Creator of Sorts
-            </span>
-          </h1>
-
-
-
-          {/* Subtitle */}
-          {/* <p 
-            ref={subtitleRef}
-            className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body opacity-0"
-          >
-            Building beautiful, interactive experiences that combine{' '}
-            <span className="text-primary-600 dark:text-primary-400 font-semibold">
-            artistic vision
-            </span>{' '}
-            with{' '}
-            <span className="text-accent-600 dark:text-accent-400 font-semibold">
-            technical excellence
-            </span>
-          </p> */}
-
-          {/* Call to Action Buttons */}
-          {/* <div 
-            ref={ctaRef}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <button 
-              className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
-            >
-              <span className="relative z-10">View Portfolio</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
             
-            <button 
-              className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            {/* Main Title */}
+            <h1 
+              data-hero-section-title
+              ref={textRef}
+              className="text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display pointer-events-none whitespace-nowrap"
             >
-              <span className="relative z-10">Download Resume</span>
-              <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
-          </div> */}
-        </div>
+              <span 
+                ref={greetingRef} 
+                className="block text-4xl font-normal relative left-16 top-4 " 
+              >
+                Hello, I&apos;m
+              </span>
+              <span 
+                ref={nameRef} 
+                className="block font-semibold"
+              >
+                Brandon
+              </span>
+              
+              <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
+
+              <span 
+                ref={subtitleRef} 
+                className="block text-5xl font-normal relative -top-2 "
+              >
+                A Creator of Sorts
+              </span>
+            </h1>
+
+
+
+            {/* Subtitle */}
+            {/* <p 
+              ref={subtitleRef}
+              className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body opacity-0"
+            >
+              Building beautiful, interactive experiences that combine{' '}
+              <span className="text-primary-600 dark:text-primary-400 font-semibold">
+              artistic vision
+              </span>{' '}
+              with{' '}
+              <span className="text-accent-600 dark:text-accent-400 font-semibold">
+              technical excellence
+              </span>
+            </p> */}
+
+            {/* Call to Action Buttons */}
+            {/* <div 
+              ref={ctaRef}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <button 
+                className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
+              >
+                <span className="relative z-10">View Portfolio</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+              
+              <button 
+                className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              >
+                <span className="relative z-10">Download Resume</span>
+                <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+            </div> */}
+          </div>
+
+
 
         {/* Interactive Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
@@ -259,8 +273,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               backgroundImage: `radial-gradient(circle at 10px 10px, currentColor 1px, transparent 0)`,
               backgroundSize: '20px 20px',
               backgroundPosition: '0 0'
-            }} />
-          </div> */}
+              }} />
+              </div> */}
 
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="fixed inset-0  ">
             <defs>
@@ -282,6 +296,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
 
 
         </div>
+        {/* </div> */}
       </section>
     </>
   );
