@@ -15,7 +15,7 @@ interface LogoBHProps {
 
 export default function LogoBH({ 
   className = '',
-  autoAnimate,
+  autoAnimate = false,
   triggerRef,
   triggerStart,
   triggerEnd,

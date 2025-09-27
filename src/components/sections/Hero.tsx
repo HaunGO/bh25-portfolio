@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PageContainer } from '../ui/Container';
 
 interface HeroProps {
   className?: string;
@@ -191,9 +192,10 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         >
         </div>
         
-          
+        <PageContainer className="border-2 border-red-500">
           {/* Content Container */}
-          <div className="relative z-10 text-left scale-75 md:scale-100 origin-left md:origin-center ">  
+          {/*  scale-75 md:scale-100 origin-left md:origin-center */}
+          <div className="relative z-10 text-left ">  
             
             
             {/* Main Title */}
@@ -210,12 +212,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               </span>
               <span 
                 ref={nameRef} 
-                className="block font-semibold"
+                className="inline-block font-semibold"
               >
                 Brandon
+              <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
               </span>
               
-              <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
 
               <span 
                 ref={subtitleRef} 
@@ -262,6 +264,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               </button>
             </div> */}
           </div>
+        </PageContainer>
 
 
 

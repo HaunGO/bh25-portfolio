@@ -69,13 +69,9 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
         ${className}
       `}
     >
-      <PageContainer className="mr-10 md:mr-auto">
+      <PageContainer>
         <div className="relative flex justify-end md:justify-center items-center h-12 lg:h-14">
-      {/* Logo */}
-          <TransitionLink
-            href="/"
-            className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-          >
+          <TransitionLink href="/" className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
             <LogoBH autoAnimate={false}  triggerRef={triggerRef} triggerStart="center top" triggerEnd="bottom bottom" />
           </TransitionLink>
 
