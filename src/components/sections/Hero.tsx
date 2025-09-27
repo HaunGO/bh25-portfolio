@@ -144,20 +144,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
 
   return (
     <>
-      {/* Preloader - integrated into Hero component */}
       {showPreloader && !preloaderComplete && (
-        <div 
-          ref={preloaderRef}
-          className="fixed inset-0 z-[99999] bg-white dark:bg-neutral-900 flex items-center justify-center"
-        >
+        <div ref={preloaderRef} className="fixed inset-0 z-[99999] bg-white dark:bg-neutral-900 flex items-center justify-center">
           <div className="w-full max-w-md px-8">
-            {/* Loading Bar Container */}
             <div className="relative">
-              {/* Background Bar */}
               <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
-                {/* Animated Bar - starts at 0, animates to 100% */}
-                <div 
-                  ref={barRef}
+                <div ref={barRef}
                   className="h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full origin-left"
                   style={{ transform: 'scaleX(0)' }}
                 />
@@ -167,15 +159,10 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         </div>
       )}
 
-      {/* Hero Section */}
       <section 
         ref={heroRef}
         data-hero-section
-        className={`relative flex items-center justify-start overflow-hidden 
-          pl-4 md:pl-16 
-          py-52 
-          h-auto lg:h-screen 
-          ${className}`}
+        className={`relative flex items-center justify-start overflow-hidden py-52 h-auto lg:h-screen ${className}`}
         style={{ 
           opacity: preloaderComplete ? 1 : 0,
           visibility: preloaderComplete ? 'visible' : 'hidden'
@@ -184,49 +171,32 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         
         {/* <div className="relative inset-0 py-24 md:py-32 border border-red-500"> */}
 
-        {/* Animated Background */}
         <div 
           ref={backgroundRef}
           className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
-          // className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
         </div>
         
-        <PageContainer className="border-2 border-red-500">
-          {/* Content Container */}
-          {/*  scale-75 md:scale-100 origin-left md:origin-center */}
+        <PageContainer className="">
           <div className="relative z-10 text-left ">  
             
-            
-            {/* Main Title */}
-            <h1 
-              data-hero-section-title
-              ref={textRef}
-              className="text-8xl font-black text-neutral-900 dark:text-neutral-100 leading-tight font-display pointer-events-none whitespace-nowrap"
+            <div className="border-2 border-red-500 relative scale-75 md:scale-100 origin-center">
+            <h1 data-hero-section-title ref={textRef} className="
+                font-black text-neutral-900 dark:text-neutral-100 font-display pointer-events-none whitespace-nowrap
+                leading-tight text-8xl "
             >
-              <span 
-                ref={greetingRef} 
-                className="block text-4xl font-normal relative left-16 top-4 " 
-              >
+              <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
                 Hello, I&apos;m
               </span>
-              <span 
-                ref={nameRef} 
-                className="inline-block font-semibold"
-              >
+              <span ref={nameRef} className="inline-block font-semibold" >
                 Brandon
-              <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
+                <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
               </span>
-              
-
-              <span 
-                ref={subtitleRef} 
-                className="block text-5xl font-normal relative -top-2 "
-              >
+              <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
                 A Creator of Sorts
               </span>
             </h1>
-
+            </div>
 
 
             {/* Subtitle */}

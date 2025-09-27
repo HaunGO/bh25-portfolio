@@ -21,7 +21,7 @@ export default function HomePage() {
 
 
 
-          <h2 className="relative text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8">Experience</h2>      
+          <h2 className="relative pl-4 md:pl-12 text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 text-center">Experience</h2>      
           <ExperienceSection experience={resumeData.experience} className="" />
         </div>
       </PageContainer >
