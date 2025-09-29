@@ -180,22 +180,22 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         <PageContainer className="">
           <div className="relative z-10 text-left ">  
             
-            <div className="border-2 border-red-500 relative scale-75 md:scale-100 origin-center">
-            <h1 data-hero-section-title ref={textRef} className="
-                font-black text-neutral-900 dark:text-neutral-100 font-display pointer-events-none whitespace-nowrap
-                leading-tight text-8xl "
-            >
-              <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
-                Hello, I&apos;m
-              </span>
-              <span ref={nameRef} className="inline-block font-semibold" >
-                Brandon
-                <span id="theLine" className="relative -top-4 block h-1 w-full bg-white "></span>
-              </span>
-              <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
-                A Creator of Sorts
-              </span>
-            </h1>
+            <div className="relative scale-75 md:scale-100 origin-center">
+              <h1 data-hero-section-title ref={textRef} className="
+                  font-black text-neutral-900 dark:text-neutral-100 font-display pointer-events-none whitespace-nowrap
+                  leading-tight text-8xl "
+              >
+                <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
+                  Hello, I&apos;m
+                </span>
+                <span ref={nameRef} className="inline-block font-semibold" >
+                  Brandon
+                  <span id="theLine" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
+                </span>
+                <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
+                  A Creator of Sorts
+                </span>
+              </h1>
             </div>
 
 

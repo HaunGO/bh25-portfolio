@@ -20,22 +20,24 @@ const ThemeToggle = memo(function ThemeToggle({
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    let shouldBeDark = false;
+    let shouldBeDark = true; // Default to dark mode
     
     if (savedTheme === 'dark') {
       shouldBeDark = true;
     } else if (savedTheme === 'light') {
       shouldBeDark = false;
     } else {
-      // No saved preference, use system preference
-      shouldBeDark = prefersDark;
+      // No saved preference, default to dark mode
+      shouldBeDark = true;
     }
     
     // Apply theme to DOM immediately
     if (shouldBeDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
     
     // Set state after DOM is updated
@@ -50,9 +52,11 @@ const ThemeToggle = memo(function ThemeToggle({
     
     if (newTheme) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
       localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);

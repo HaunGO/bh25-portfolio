@@ -15,16 +15,16 @@ export default function HomePage() {
     <>
       <Hero />
 
+      <PageContainer>
+          <ExperienceSection experience={resumeData.experience} className="" />
+      </PageContainer>
 
-      <PageContainer className="flex justify-end items-end ">
+      {/* <PageContainer className="flex justify-end items-end ">
         <div className="md:w-7/12 ">
-
-
-
           <h2 className="relative pl-4 md:pl-12 text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 text-center">Experience</h2>      
           <ExperienceSection experience={resumeData.experience} className="" />
         </div>
-      </PageContainer >
+      </PageContainer> */}
 
 
       {/* <AdvancedCursorDemo /> */}

@@ -64,7 +64,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
   return (
     <header
       className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-300
+        fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700
         ${getHeaderBackground()}
         ${className}
       `}

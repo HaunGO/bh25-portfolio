@@ -27,10 +27,11 @@ const Layout = memo(function Layout({ children, className = '' }: LayoutProps) {
       {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
       
       <Header />
+      
       <ThemeToggle />
       
       <PageTransition>
-        <main className={`flex-1 ${className}`}>
+        <main>
           {children}
         </main>  
       </PageTransition>

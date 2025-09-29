@@ -48,9 +48,9 @@ export default function Footer({ className = '' }: FooterProps) {
   return (
     <footer 
       ref={footerRef}
-      className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 ${className}`}
+      className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 ${className}`}
     >
-      <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 bg-neutral-50 dark:bg-neutral-900 ">
+      <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
@@ -97,7 +97,7 @@ export default function Footer({ className = '' }: FooterProps) {
               className="relative group text-purple-800 dark:text-purple-400 text-md "
               cite="https://www.law.cornell.edu/ucc/1/1-308"
             >
-              <span className="opacity-60">All Rights Reserved. Without Prejudice</span>
+              <span className="opacity-60">All Rights Reserved. Without Prejudice.</span>
               <span 
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"

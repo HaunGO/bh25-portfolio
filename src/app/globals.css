@@ -17,9 +17,9 @@
 
 /* CRITICAL: Prevent theme flash by setting default state */
 html {
-  /* Default to light theme to prevent flash */
-  background-color: #ffffff;
-  color: #171717;
+  /* Default to dark theme to prevent flash */
+  background-color: #0a0a0a;
+  color: #ededed;
   /* Add smooth transitions to html element */
   transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -28,6 +28,12 @@ html {
 html.dark {
   background-color: #0a0a0a;
   color: #ededed;
+}
+
+/* Light theme overrides */
+html.light {
+  background-color: #ffffff;
+  color: #171717;
 }
 
 /* Prevent flash by setting initial theme state */
