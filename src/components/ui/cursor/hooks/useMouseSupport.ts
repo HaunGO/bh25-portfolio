@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
  */
 export const useMouseSupport = (): boolean => {
   const [hasMouse, setHasMouse] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     // Check if device supports mouse (not touch-only)
     const checkMouseSupport = () => {
       // Primary check: CSS media query for hover capability
@@ -33,5 +35,5 @@ export const useMouseSupport = (): boolean => {
     return () => mediaQuery.removeEventListener('change', checkMouseSupport);
   }, []);
 
-  return hasMouse;
+  return isClient ? hasMouse : false;
 };

@@ -58,6 +58,12 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
       {/* Timeline line */}
       <div className="absolute left-6 md:left-8 top-0 bottom-0 w-[1px] Tail bg-gradient-to-b from-primary-500 to-accent-500 dark:from-primary-400 dark:to-accent-400"></div>
       
+
+
+
+
+
+
       <div className="space-y-12">
         {experience.map((exp, index) => (
           <div
@@ -70,6 +76,7 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
             
             {/* Experience card */}
             <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-xl transition-shadow duration-300">
+              
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 font-display">
@@ -89,9 +96,13 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
                 </div>
               </div>
               
+
               <p className="text-neutral-700 dark:text-neutral-300 mb-4 font-body">
                 {exp.description}
               </p>
+              
+
+
               
               {/* Achievements */}
               {exp.achievements.length > 0 && (
@@ -110,6 +121,9 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
                 </div>
               )}
               
+
+
+
               {/* Technologies */}
               <div>
                 <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
@@ -127,8 +141,12 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
                 </div>
               </div>
             </div>
-
           </div>
+
+
+
+
+
         ))}
       </div>
     </div>

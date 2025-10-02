@@ -105,10 +105,18 @@ export default function LogoBH({
 
     // Handle window resize
     const handleResize = () => {
-      ScrollTrigger.refresh();
+      try {
+        if (typeof window !== 'undefined' && ScrollTrigger) {
+          ScrollTrigger.refresh();
+        }
+      } catch (error) {
+        console.warn('LogoBH: ScrollTrigger refresh failed:', error);
+      }
     };
 
-    window.addEventListener('resize', handleResize);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+    }
 
     // Hover event handlers
     const handleMouseEnter = () => {
@@ -132,7 +140,10 @@ export default function LogoBH({
     // Cleanup function
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', handleResize);
+      
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
       
       // Remove hover listeners
       if (myNameRef.current) {
@@ -140,11 +151,17 @@ export default function LogoBH({
         myNameRef.current.removeEventListener('mouseleave', handleMouseLeave);
       }
       
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (triggerRef?.current && trigger.trigger === triggerRef.current) {
-          trigger.kill();
+      try {
+        if (typeof window !== 'undefined' && ScrollTrigger) {
+          ScrollTrigger.getAll().forEach(trigger => {
+            if (triggerRef?.current && trigger.trigger === triggerRef.current) {
+              trigger.kill();
+            }
+          });
         }
-      });
+      } catch (error) {
+        console.warn('LogoBH: ScrollTrigger cleanup failed:', error);
+      }
     };
   }, [triggerRef, triggerStart, triggerEnd, autoAnimate]);
 

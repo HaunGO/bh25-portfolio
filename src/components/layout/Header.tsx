@@ -61,6 +61,21 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
     return 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm';
   }, [isScrolled]);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   return (
     <header
       className={`

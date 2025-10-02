@@ -15,9 +15,23 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <PageContainer>
+      <PageContainer className="flex flex-col md:flex-row">
+        
+        <div className="md:flex-row md:justify-end md:w-2/5"></div>
+        <div className="md:flex-row md:justify-end md:w-3/5">
           <ExperienceSection experience={resumeData.experience} className="" />
+        </div>
+
+
+
+
+
       </PageContainer>
+
+
+
+
+
 
       {/* <PageContainer className="flex justify-end items-end ">
         <div className="md:w-7/12 ">
@@ -25,6 +39,8 @@ export default function HomePage() {
           <ExperienceSection experience={resumeData.experience} className="" />
         </div>
       </PageContainer> */}
+
+
 
 
       {/* <AdvancedCursorDemo /> */}

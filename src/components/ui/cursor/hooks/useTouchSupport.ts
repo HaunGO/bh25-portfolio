@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
  */
 export const useTouchSupport = (): boolean => {
   const [hasTouch, setHasTouch] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const checkTouchSupport = () => {
       const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
       setHasTouch(touchSupported);
@@ -15,5 +17,5 @@ export const useTouchSupport = (): boolean => {
     checkTouchSupport();
   }, []);
 
-  return hasTouch;
+  return isClient ? hasTouch : false;
 };

@@ -4,6 +4,9 @@ import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageContainer } from '../ui/Container';
+import PreloaderWithCursor from '../ui/PreloaderWithCursor';
+import SimplePreloader from '../ui/SimplePreloader';
+import HoverLetters from '../ui/HoverLetters';
 
 interface HeroProps {
   className?: string;
@@ -21,122 +24,61 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   const ctaRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
-  // Preloader refs
-  const preloaderRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLDivElement>(null);
-  
-  // State for preloader
-  const [showPreloader, setShowPreloader] = useState(true);
-  const [preloaderComplete, setPreloaderComplete] = useState(false);
+  // State for preloader - temporarily set to true to bypass
+  const [preloaderComplete, setPreloaderComplete] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure client-side rendering
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Handle preloader completion
+  const handlePreloaderComplete = useCallback(() => {
+    setPreloaderComplete(true);
+  }, []);
 
   useEffect(() => {
-    // Check if this is the first visit in this session
-    // const hasVisited = sessionStorage.getItem('hasVisited');
-    
-    // if (hasVisited) {
-    //   // Return visit in this session - skip preloader immediately
-    //   setShowPreloader(false);
-    //   setPreloaderComplete(true);
-    //   return;
-    // }
-
-    // if (!heroRef.current || !shouldAnimate) return;
-
-
-
+    if (!heroRef.current || !shouldAnimate || !preloaderComplete) return;
 
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
 
+    // Create hero animation timeline
+    const heroTimeline = gsap.timeline();
 
-    // Create master timeline that includes both preloader and hero
-    const masterTimeline = gsap.timeline();
-
-    // PRELOADER PHASE (0-2 seconds)
-    if (preloaderRef.current && barRef.current) {
-      // Phase 1: Fade in preloader (0.2s)
-      masterTimeline.set(preloaderRef.current, { opacity: 0 })
-        .to(preloaderRef.current, {
-          opacity: 0.3,
-          duration: 0.2,
-          ease: 'power2.out'
-        });
-
-      // Phase 2: Loading bar animation (1.2s from 0 to 100%)
-      masterTimeline.to(barRef.current, {
-        scaleX: 1,
-        duration: 0.3, // THIS WILL SOMEHOW EVENTUALLY RELECT ACTUAL PRELOADING OF THE SITE. PROBABLY SOME LARGE 3D LIBRARY FILES AND FUNCTIONALITY
-        ease: 'power1.inOut'
-      }, '-=0.1');
-
-      // Phase 3: Fade out preloader (0.6s)
-      masterTimeline.to(preloaderRef.current, {
-        opacity: 0,
-        duration: 0.3,
-        ease: 'power2.in',
-        onComplete: () => {
-          setPreloaderComplete(true);
-          setShowPreloader(false);
-          sessionStorage.setItem('hasVisited', 'true');
-        }
-      }, '-=0.1');
-    }
-
-    // HERO PHASE (starts after preloader)
     // Background animation
-    masterTimeline.fromTo(backgroundRef.current,
+    heroTimeline.fromTo(backgroundRef.current,
       { opacity: 0, scale: 1.1 },
-      { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' },
-      '-=0.3' // Start slightly before preloader ends
+      { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }
     );
-
-    // Title animation with text reveal effect
-    // masterTimeline.fromTo(titleRef.current,
-    //   { opacity: 0, y: 50, scale: 0.9 },
-    //   { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'back.out(1.7)' },
-    //   '-=1.2' // Start after background begins
-    // );
 
     // Greeting text animation
-    masterTimeline.fromTo(greetingRef.current,
+    heroTimeline.fromTo(greetingRef.current,
       { opacity: 0, x: -10 },
       { opacity: 1, x: 0, duration: 1, ease: 'power2.out' },
-      '-=0.3' // Start after title begins
+      '-=0.3'
     );
 
-    // Subtitle animation
-    masterTimeline.fromTo(nameRef.current,
+    // Name animation
+    heroTimeline.fromTo(nameRef.current,
       { opacity: 0, y: -20 },
       { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-      '-=0.3' // Start after title begins
+      '-=0.3'
     );
 
     // Subtitle animation
-    masterTimeline.fromTo(subtitleRef.current,
+    heroTimeline.fromTo(subtitleRef.current,
       { opacity: 0, y: -5 },
       { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-      '-=0.3' // Start after title begins
+      '-=0.3'
     );
-
-
-
-
-    // // Add floating animation to background elements (continuous)
-    // masterTimeline.to(backgroundRef.current, {
-    //   y: -20,
-    //   duration: 6,
-    //   ease: 'power1.inOut',
-    //   yoyo: true,
-    //   repeat: -1
-    // }, '-=0.5'); // Start floating after main animations
 
     // Cleanup function
     return () => {
-      masterTimeline.kill();
-      // Only kill ScrollTriggers created by this component
-      // ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      heroTimeline.kill();
     };
-  }, [shouldAnimate, delay]);
+  }, [shouldAnimate, delay, preloaderComplete]);
 
 
 
@@ -144,19 +86,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
 
   return (
     <>
-      {showPreloader && !preloaderComplete && (
-        <div ref={preloaderRef} className="fixed inset-0 z-[99999] bg-white dark:bg-neutral-900 flex items-center justify-center">
-          <div className="w-full max-w-md px-8">
-            <div className="relative">
-              <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
-                <div ref={barRef}
-                  className="h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full origin-left"
-                  style={{ transform: 'scaleX(0)' }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Temporarily disabled preloader for debugging */}
+      {false && (
+        <SimplePreloader 
+          onComplete={handlePreloaderComplete}
+          duration={2000}
+        />
       )}
 
       <section 
@@ -164,8 +99,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         data-hero-section
         className={`relative flex items-center justify-start overflow-hidden py-52 h-auto lg:h-screen ${className}`}
         style={{ 
-          opacity: preloaderComplete ? 1 : 0,
-          visibility: preloaderComplete ? 'visible' : 'hidden'
+          opacity: (isClient && preloaderComplete) ? 1 : 0,
+          visibility: (isClient && preloaderComplete) ? 'visible' : 'hidden'
         }}
       >
         
@@ -176,65 +111,66 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
         </div>
-        
-        <PageContainer className="">
-          <div className="relative z-10 text-left ">  
-            
-            <div className="relative scale-75 md:scale-100 origin-center">
-              <h1 data-hero-section-title ref={textRef} className="
-                  font-black text-neutral-900 dark:text-neutral-100 font-display pointer-events-none whitespace-nowrap
-                  leading-tight text-8xl "
-              >
-                <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
-                  Hello, I&apos;m
-                </span>
-                <span ref={nameRef} className="inline-block font-semibold" >
-                  Brandon
-                  <span id="theLine" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
-                </span>
-                <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
-                  A Creator of Sorts
-                </span>
-              </h1>
-            </div>
-
-
-            {/* Subtitle */}
-            {/* <p 
-              ref={subtitleRef}
-              className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body opacity-0"
-            >
-              Building beautiful, interactive experiences that combine{' '}
-              <span className="text-primary-600 dark:text-primary-400 font-semibold">
-              artistic vision
-              </span>{' '}
-              with{' '}
-              <span className="text-accent-600 dark:text-accent-400 font-semibold">
-              technical excellence
-              </span>
-            </p> */}
-
-            {/* Call to Action Buttons */}
-            {/* <div 
-              ref={ctaRef}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              <button 
-                className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
-              >
-                <span className="relative z-10">View Portfolio</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
+          
+          <PageContainer className="">
+            <div className="relative z-10 text-left ">  
               
-              <button 
-                className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+              <div className="relative scale-75 md:scale-100 lg:scale-125 origin-center">
+                <h1 data-hero-section-title ref={textRef} className="
+                    font-black text-neutral-900 dark:text-neutral-100 font-display whitespace-nowrap
+                    leading-tight text-8xl "
+                >
+                  <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
+                    Hello, I&apos;m
+                  </span>
+                  <span ref={nameRef} className="inline-block font-semibold">
+                    {/* <HoverLetters  text="Brandon" className="inline-block" /> */}
+                    Brandon
+                    <span id="theLine" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
+                  </span>
+                  <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
+                    A Creator of Sorts
+                  </span>
+                </h1>
+              </div>
+
+
+              {/* Subtitle */}
+              {/* <p 
+                ref={subtitleRef}
+                className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body opacity-0"
               >
-                <span className="relative z-10">Download Resume</span>
-                <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
-            </div> */}
-          </div>
-        </PageContainer>
+                Building beautiful, interactive experiences that combine{' '}
+                <span className="text-primary-600 dark:text-primary-400 font-semibold">
+                artistic vision
+                </span>{' '}
+                with{' '}
+                <span className="text-accent-600 dark:text-accent-400 font-semibold">
+                technical excellence
+                </span>
+              </p> */}
+
+              {/* Call to Action Buttons */}
+              {/* <div 
+                ref={ctaRef}
+                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              >
+                <button 
+                  className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
+                >
+                  <span className="relative z-10">View Portfolio</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </button>
+                
+                <button 
+                  className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  <span className="relative z-10">Download Resume</span>
+                  <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </button>
+              </div> */}
+            </div>
+          </PageContainer>
 
 
 
@@ -268,7 +204,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           </svg>
 
 
-        </div>
+        </div>  
         {/* </div> */}
       </section>
     </>
