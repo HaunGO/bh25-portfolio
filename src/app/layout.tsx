@@ -21,23 +21,23 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import AdvancedCursor from '@/components/ui/AdvancedCursor';
 
 export const metadata: Metadata = {
-  title: 'BH25 Creative Portfolio - Senior Frontend Developer',
-  description: 'Creative developer passionate about building beautiful, interactive experiences that combine technical excellence with artistic vision.',
-  keywords: ['frontend developer', 'creative developer', 'portfolio', 'React', 'Next.js', 'GSAP', 'Three.js'],
-  authors: [{ name: 'BH25' }],
-  creator: 'BH25',
+  title: 'Brandon Haun - Frontend Engineer & Creative Developer',
+  description: 'Frontend Engineer • Creative Developer • UX/UI Specialist • AI Enthusiast • Electro-Magnetic Tinkerer • Bushcraft Master • Real American Hero • Chuck Norris Jokester',
+  keywords: ['frontend engineer', 'creative developer', 'UX/UI specialist', 'AI enthusiast', 'electro-magnetic tinkerer', 'bushcraft master', 'React', 'Next.js', 'GSAP', 'Three.js', 'portfolio'],
+  authors: [{ name: 'Brandon Haun' }],
+  creator: 'Brandon Haun',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://yourdomain.com',
-    title: 'BH25 Creative Portfolio',
-    description: 'Creative developer passionate about building beautiful, interactive experiences.',
-    siteName: 'BH25 Portfolio',
+    url: 'https://brandonhaun.com',
+    title: 'Brandon Haun - Creative Developer Portfolio',
+    description: 'Frontend Engineer passionate about building beautiful, interactive experiences that combine technical excellence with creative vision.',
+    siteName: 'Brandon Haun Portfolio',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BH25 Creative Portfolio',
-    description: 'Creative developer passionate about building beautiful, interactive experiences.',
+    title: 'Brandon Haun - Creative Developer Portfolio',
+    description: 'Frontend Engineer passionate about building beautiful, interactive experiences that combine technical excellence with creative vision.',
   },
   robots: {
     index: true,
