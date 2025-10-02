@@ -87,7 +87,7 @@ export default function PreloaderWithCursor({
     return () => {
       masterTimeline.kill();
     };
-  }, [duration, showCursorAfter, onComplete]);
+  }, [duration, showCursorAfter, onComplete, showCursor]);
 
   return (
     <>

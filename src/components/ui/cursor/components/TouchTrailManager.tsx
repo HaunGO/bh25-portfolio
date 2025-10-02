@@ -69,13 +69,13 @@ const TouchTrailManager = memo(function TouchTrailManager({
     );
   }, [isTouching, currentTouchZone, config.trailLength, config.trailLayers]);
 
-  const handleTouchEnd = useCallback((e: TouchEvent) => {
+  const handleTouchEnd = useCallback(() => {
     setIsTouching(false);
     setCurrentTouchZone(null);
     
     // Start fade out animation only if we were in trail zone
     if (currentTouchZone === 'trail') {
-      mobileTrailLayerRefs.current.forEach((pathElement, index) => {
+      mobileTrailLayerRefs.current.forEach((pathElement) => {
         if (pathElement) {
           gsap.to(pathElement, {
             opacity: 0,

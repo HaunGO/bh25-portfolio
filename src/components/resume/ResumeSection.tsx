@@ -1,8 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ReactNode, useRef } from 'react';
 import { ContentContainer } from '../ui/Container';
 
 interface ResumeSectionProps {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import gsap from 'gsap';
 
 interface HoverLettersProps {
@@ -22,7 +22,6 @@ const rainbowColors = [
 export default function HoverLetters({ 
   text, 
   className = '',
-  animationDuration = 3, 
 }: HoverLettersProps) {
   const [hoveredLetter, setHoveredLetter] = useState<number | null>(null);
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);

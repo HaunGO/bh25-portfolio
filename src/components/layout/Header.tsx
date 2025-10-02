@@ -1,9 +1,6 @@
 'use client';
 
-import { useState, useEffect, memo, useCallback, useRef } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { NavigationItem } from '@/types';
+import { useEffect, memo, useCallback, useRef } from 'react';
 import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
@@ -12,37 +9,11 @@ interface HeaderProps {
   className?: string;
 }
 
-const navigationItems: NavigationItem[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Resume', href: '/resume' },
-  { label: 'Contact', href: '/contact' },
-];
 
 const Header = memo(function Header({ className = '' }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const pathname = usePathname();
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  // Handle navigation - memoized to prevent re-renders
-  const handleNavigation = useCallback(async (href: string) => {
-    if (href === pathname) return; // Don't navigate to current page
-    
-    // Close mobile menu
-    setIsMenuOpen(false);
-    
-    // Navigate with transition
-    const startTransition = (window as any).startTransition;
-    if (startTransition) {
-      await startTransition(href);
-    }
-  }, [pathname]);
 
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
 
   // Get hero element reference for LogoBH trigger
   useEffect(() => {
@@ -54,12 +25,9 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
 
   // Get header background classes based on scroll state - memoized
   const getHeaderBackground = useCallback(() => {
-    if (isScrolled) {
-      return 'bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-lg';
-    }
     // When not scrolled, use subtle backgrounds that work in both themes
     return 'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm';
-  }, [isScrolled]);
+  }, []);
 
 
 

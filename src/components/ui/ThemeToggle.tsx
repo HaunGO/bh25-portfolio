@@ -18,7 +18,7 @@ const ThemeToggle = memo(function ThemeToggle({
   useEffect(() => {
     // Immediately check and apply theme before any rendering
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     let shouldBeDark = true; // Default to dark mode
     

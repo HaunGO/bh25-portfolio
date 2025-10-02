@@ -145,7 +145,7 @@ export class CursorPhysicsEngine {
     this.lastCleanup = now;
   }
 
-  createAttractor(x: number, y: number, strength: number = 0.01): Matter.Body {
+  createAttractor(x: number, y: number): Matter.Body {
     const attractor = Matter.Bodies.circle(x, y, 50, {
       isStatic: true,
       isSensor: true,
@@ -295,7 +295,7 @@ export class CursorPhysicsEngine {
       });
       
       // Add element reference
-      (testBody as any).element = { tagName: 'TEST', className: 'test-element' };
+      (testBody as Matter.Body & { element?: HTMLElement }).element = { tagName: 'TEST', className: 'test-element' } as HTMLElement;
       
       Matter.World.add(this.physics.world, testBody);
       
@@ -336,7 +336,7 @@ export class CursorPhysicsEngine {
     console.log('🔧 Created body with ID:', body.id);
 
     // Store reference to the element
-    (body as any).element = element;
+    (body as Matter.Body & { element?: HTMLElement }).element = element;
     Matter.World.add(this.physics.world, body);
     this.physics.elementBodies.set(element, body);
     
@@ -371,7 +371,7 @@ export class CursorPhysicsEngine {
     console.log('✅ Collision detection setup complete');
   }
   
-  private handleCollisionEvent(event: any, onCollision: (element: HTMLElement) => void): void {
+  private handleCollisionEvent(event: { pairs: Array<{ bodyA: Matter.Body; bodyB: Matter.Body }> }, onCollision: (element: HTMLElement) => void): void {
     const pairs = event.pairs;
     
     for (let i = 0; i < pairs.length; i++) {
@@ -392,8 +392,8 @@ export class CursorPhysicsEngine {
         console.log('🎯 Cursor collision detected with body:', otherBody.id);
         
         // Check if the other body has an element reference
-        if ((otherBody as any).element) {
-          const element = (otherBody as any).element as HTMLElement;
+        if ((otherBody as Matter.Body & { element?: HTMLElement }).element) {
+          const element = (otherBody as Matter.Body & { element?: HTMLElement }).element as HTMLElement;
           console.log('✅ Element found, calling collision handler');
           onCollision(element);
         } else {

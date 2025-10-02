@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { gsap } from 'gsap';
 import { TransitionVariant, TransitionState } from './types';
@@ -21,52 +21,6 @@ export const usePageTransition = (overlayRef: React.RefObject<HTMLDivElement>) =
     setState(prev => ({ ...prev, currentVariant: variant }));
   }, []);
 
-  // Animation functions
-  const animateOverlayIn = async (element: HTMLDivElement, variant: TransitionVariant): Promise<void> => {
-    return new Promise((resolve) => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        resolve();
-        return;
-      }
-
-      if (timelineRef.current) {
-        timelineRef.current.kill();
-      }
-
-      const props = getVariantProperties(variant, true);
-      timelineRef.current = gsap.timeline({ onComplete: () => resolve() });
-
-      // Set initial state
-      gsap.set(element, { autoAlpha: 0, pointerEvents: 'auto' });
-      timelineRef.current.to(element, props);
-    });
-  };
-
-  const animateOverlayOut = async (element: HTMLDivElement, variant: TransitionVariant): Promise<void> => {
-    return new Promise((resolve) => {
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        gsap.set(element, { autoAlpha: 0, pointerEvents: 'none' });
-        resolve();
-        return;
-      }
-
-      if (timelineRef.current) {
-        timelineRef.current.kill();
-      }
-
-      const props = getVariantProperties(variant, false);
-      timelineRef.current = gsap.timeline({
-        onComplete: () => {
-          gsap.set(element, { pointerEvents: 'none' });
-          resolve();
-        }
-      });
-
-      timelineRef.current.to(element, props);
-    });
-  };
 
   const getVariantProperties = (variant: TransitionVariant, isIn: boolean) => {
     const baseProps = { duration: 0.4, ease: 'power2.inOut' };
@@ -93,6 +47,53 @@ export const usePageTransition = (overlayRef: React.RefObject<HTMLDivElement>) =
   // Main transition function
   const startTransition = useCallback(async (to: string) => {
     console.log('🚀 startTransition called:', { to, pathname, isTransitioning: state.isTransitioning, overlayRef, overlayRefCurrent: overlayRef?.current });
+    
+    // Animation functions
+    const animateOverlayIn = async (element: HTMLDivElement, variant: TransitionVariant): Promise<void> => {
+      return new Promise((resolve) => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          resolve();
+          return;
+        }
+
+        if (timelineRef.current) {
+          timelineRef.current.kill();
+        }
+
+        const props = getVariantProperties(variant, true);
+        timelineRef.current = gsap.timeline({ onComplete: () => resolve() });
+
+        // Set initial state
+        gsap.set(element, { autoAlpha: 0, pointerEvents: 'auto' });
+        timelineRef.current.to(element, props);
+      });
+    };
+
+    const animateOverlayOut = async (element: HTMLDivElement, variant: TransitionVariant): Promise<void> => {
+      return new Promise((resolve) => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          gsap.set(element, { autoAlpha: 0, pointerEvents: 'none' });
+          resolve();
+          return;
+        }
+
+        if (timelineRef.current) {
+          timelineRef.current.kill();
+        }
+
+        const props = getVariantProperties(variant, false);
+        timelineRef.current = gsap.timeline({
+          onComplete: () => {
+            gsap.set(element, { pointerEvents: 'none' });
+            resolve();
+          }
+        });
+
+        timelineRef.current.to(element, props);
+      });
+    };
     
     // Prevent rapid double clicks
     if (isNavigatingRef.current || state.isTransitioning) {

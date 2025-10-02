@@ -1,12 +1,8 @@
 'use client';
 
 import Hero from '@/components/sections/Hero';
-import TransitionDemo from '@/components/sections/TransitionDemo';
 import { resumeData } from '@/data/resume';
-import ResumeSection from '@/components/resume/ResumeSection';
 import ExperienceSection from '@/components/resume/ExperienceSection';
-import { PageSection } from '@/components/ui/Section';
-import AdvancedCursorDemo from '@/components/ui/AdvancedCursorDemo';
 // import QuickNavigation from '@/components/sections/QuickNavigation';
 import { PageContainer } from '@/components/ui/Container';
 

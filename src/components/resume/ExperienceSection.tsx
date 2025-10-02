@@ -1,9 +1,7 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { Experience } from '@/types/resume';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface ExperienceSectionProps {
   experience: Experience[];

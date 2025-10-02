@@ -85,7 +85,7 @@ export default function LogoBH({
           tl.play();
         } else if (triggerRef?.current) {
 
-          const trigger = ScrollTrigger.create({
+          ScrollTrigger.create({
             trigger: triggerRef.current,
             // start: "45% bottom", // When middle of footer hits bottom of viewport
             // end: "top top", // When top of footer reaches top of viewport (footer completely out of view)
@@ -95,8 +95,6 @@ export default function LogoBH({
             animation: tl,
             toggleActions: "play none none reverse"
           });
-          
-          // console.log("ScrollTrigger created:", trigger);
         } else {
           // console.log("❌ LogoBH: triggerRef.current is null");
         }
@@ -145,16 +143,18 @@ export default function LogoBH({
         window.removeEventListener('resize', handleResize);
       }
       
-      // Remove hover listeners
-      if (myNameRef.current) {
-        myNameRef.current.removeEventListener('mouseenter', handleMouseEnter);
-        myNameRef.current.removeEventListener('mouseleave', handleMouseLeave);
+      // Remove hover listeners - capture ref values
+      const myNameElement = myNameRef.current;
+      if (myNameElement) {
+        myNameElement.removeEventListener('mouseenter', handleMouseEnter);
+        myNameElement.removeEventListener('mouseleave', handleMouseLeave);
       }
       
       try {
         if (typeof window !== 'undefined' && ScrollTrigger) {
+          const triggerElement = triggerRef?.current;
           ScrollTrigger.getAll().forEach(trigger => {
-            if (triggerRef?.current && trigger.trigger === triggerRef.current) {
+            if (triggerElement && trigger.trigger === triggerElement) {
               trigger.kill();
             }
           });
@@ -163,7 +163,7 @@ export default function LogoBH({
         console.warn('LogoBH: ScrollTrigger cleanup failed:', error);
       }
     };
-  }, [triggerRef, triggerStart, triggerEnd, autoAnimate]);
+  }, [triggerRef, triggerStart, triggerEnd, autoAnimate, showMarkers]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent parent TransitionLink from handling the event

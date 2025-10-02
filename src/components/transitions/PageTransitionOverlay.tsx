@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { TransitionVariant } from './types';

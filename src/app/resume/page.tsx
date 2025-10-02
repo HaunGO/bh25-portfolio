@@ -1,12 +1,8 @@
 'use client';
 
-import { Metadata } from 'next';
 import { resumeData } from '@/data/resume';
 import ResumeSection from '@/components/resume/ResumeSection';
-import SkillsSection from '@/components/resume/SkillsSection';
 import ExperienceSection from '@/components/resume/ExperienceSection';
-import EducationSection from '@/components/resume/EducationSection';
-import DownloadButton from '@/components/resume/DownloadButton';
 
 export default function ResumePage() {
   return (

@@ -4,9 +4,7 @@ import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageContainer } from '../ui/Container';
-import PreloaderWithCursor from '../ui/PreloaderWithCursor';
 import SimplePreloader from '../ui/SimplePreloader';
-import HoverLetters from '../ui/HoverLetters';
 
 interface HeroProps {
   className?: string;
@@ -16,12 +14,10 @@ interface HeroProps {
 
 const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
   const nameRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
   // State for preloader - temporarily set to true to bypass

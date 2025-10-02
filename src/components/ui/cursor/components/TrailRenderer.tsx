@@ -1,5 +1,5 @@
-import { memo, useRef, useEffect, useState } from 'react';
-import { TrailRendererProps, TrailPoint } from '../types';
+import { memo, useRef, useEffect } from 'react';
+import { TrailRendererProps } from '../types';
 import { updateTrailLayers } from '../utils/pathHelpers';
 
 /**

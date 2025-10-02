@@ -7,7 +7,7 @@ interface TransitionLinkProps {
   children: ReactNode;
   className?: string;
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const TransitionLink: React.FC<TransitionLinkProps> = ({ 
@@ -22,7 +22,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
     
     if (!e.defaultPrevented) {
       e.preventDefault();
-      const startTransition = (window as any).startTransition;
+      const startTransition = (window as { startTransition?: (href: string) => Promise<void> }).startTransition;
       if (startTransition) {
         await startTransition(href);
       }

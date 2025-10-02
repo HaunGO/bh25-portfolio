@@ -51,7 +51,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
 
   // Expose globally (client-side only)
   if (typeof window !== 'undefined') {
-    (window as any).startTransition = startTransition;
+    (window as { startTransition?: (href: string) => Promise<void> }).startTransition = startTransition;
   }
 
   return (

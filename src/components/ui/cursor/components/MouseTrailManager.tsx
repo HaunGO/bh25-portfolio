@@ -1,7 +1,7 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { MouseTrailManagerProps, TrailPoint } from '../types';
-import { screenToSVG, isHoverable, isClickable } from '../utils/coordinateUtils';
+import { screenToSVG, isClickable } from '../utils/coordinateUtils';
 
 /**
  * Desktop mouse event handling + trail generation
@@ -50,9 +50,9 @@ const MouseTrailManager = memo(function MouseTrailManager({
 
   // Update cursor position and state
   const updateCursor = useCallback((e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    const isHovering = isHoverable(target);
-    const isClickableElement = isClickable(target);
+    // const target = e.target as HTMLElement;
+    // const isHovering = isHoverable(target);
+    // const isClickableElement = isClickable(target);
     
     // Debug logging (only log occasionally to avoid spam)
     if (Math.random() < 0.01) {

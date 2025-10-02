@@ -16,7 +16,7 @@ const EducationSection = ({ education }: EducationSectionProps) => {
     gsap.registerPlugin(ScrollTrigger);
 
     // Animate education cards
-    educationRefs.current.forEach((ref, index) => {
+    educationRefs.current.forEach((ref) => {
       if (ref) {
         gsap.fromTo(ref,
           { opacity: 0, y: 30 },

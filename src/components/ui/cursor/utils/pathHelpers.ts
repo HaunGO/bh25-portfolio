@@ -1,4 +1,4 @@
-import { TrailPoint, ViewportSize } from '../types';
+import { TrailPoint } from '../types';
 
 /**
  * Create circle path for ring at specified size
