@@ -102,6 +102,7 @@ export const resumeData: ResumeData = {
         'Developed and maintained custom WordPress themes, plugins, and Gutenberg blocks for clients as well as internal component libraries. Leveraged Vue and React to create apps and components.',
       achievements: [
         'Presented project demos, feature tutorials, and documentation to clients',
+        'Built design systems for custom branded themes',
         'Delivered solutions for clients including Krusteaz, UT Medical Center, MoonPie, World Food Program, NADA, Lodge Cast Iron, My First Farmers Bank'
       ],
       technologies: ['WordPress', 'PHP', 'Vue.js', 'React', 'JavaScript', 'CSS']
