@@ -25,7 +25,7 @@ export default function Footer({ className = '' }: FooterProps) {
               <LogoBH autoAnimate={false} triggerRef={footerRef} triggerStart="45% bottom" triggerEnd="top top" />
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg "> 
-              Creative Engineer passionate in building 
+              Frontend Engineer / Creative Developer.  UX/UI Specialist.  AI Enthusiast.  Wacky Wizard sortof Weirdo.
               {/* Me do good for happy people .. .. <em><strong>Yaaaay !!</strong></em> */}
             </p>
           </div>
