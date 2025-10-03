@@ -86,7 +86,7 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
                 </div>
                 <div className="text-right mt-2 md:mt-0">
                   <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {formatDate(exp.startDate)} - {exp.endDate === 'Present' ? 'Present' : formatDate(exp.endDate)}
+                    {exp.startDate} - {exp.endDate === 'Present' ? 'Present' :exp.endDate}
                   </div>
                   <div className="text-sm text-neutral-600 dark:text-neutral-300">
                     {exp.location}

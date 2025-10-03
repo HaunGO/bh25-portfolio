@@ -6,10 +6,10 @@ export const resumeData: ResumeData = {
     title: 'Senior Frontend Engineer & Creative Developer',
     email: 'Hello@BrandonHaun.com',
     phone: '(865) 257-9123',
-    location: 'Chicago, IL (Remote)',
+    location: 'Knoxville, TN (Remote)',
     website: 'https://www.BrandonHaun.com',
     linkedin: 'https://linkedin.com/in/brandonhaun',
-    github: undefined,
+    github: 'https://github.com/HaunGO/',
     summary:
       '20+ years of creative web experience building accessible, high-performance UX. Skilled in translating complex creative designs into smooth, interactive, production-ready applications, with expertise in scalable component architecture, accessibility, and SEO. Exploring generative AI and agentic workflows to accelerate development, and proven contributor to Agile remote teams through collaboration, code reviews, and performance optimization.'
   },
@@ -77,8 +77,8 @@ export const resumeData: ResumeData = {
       company: 'Wolters Kluwer Health',
       position: 'Senior Product Software Engineer',
       location: 'Chicago, IL (Remote)',
-      startDate: '2023',
-      endDate: '2025',
+      startDate: 'Apr 2023',
+      endDate: 'July 2025',
       type: 'full-time',
       description:
         'Built and maintained accessible, high-performance UIs using React and Angular. Led frontend architecture and component development with a focus on usability, maintainability, and scalability.',
@@ -95,8 +95,8 @@ export const resumeData: ResumeData = {
       company: 'Tombras',
       position: 'Senior Software Engineer',
       location: 'Knoxville, TN | Atlanta, GA | New York, NY',
-      startDate: '2016',
-      endDate: '2023',
+      startDate: 'Oc 2016',
+      endDate: 'Feb 2023',
       type: 'full-time',
       description:
         'Developed and maintained custom WordPress themes, plugins, and Gutenberg blocks for clients as well as internal component libraries. Leveraged Vue and React to create apps and components.',
