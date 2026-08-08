@@ -20,7 +20,7 @@
     "geist": "^1.4.2",
     "gsap": "^3.12.5",
     "matter-js": "^0.20.0",
-    "next": "15.5.2",
+    "next": "15.5.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "three": "^0.162.0"
@@ -33,7 +33,7 @@
     "@types/three": "^0.162.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^9",
-    "eslint-config-next": "15.5.2",
+    "eslint-config-next": "15.5.9",
     "postcss": "^8.4.0",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.0",

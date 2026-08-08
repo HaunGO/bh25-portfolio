@@ -73,6 +73,24 @@ export const resumeData: ResumeData = {
   ],
   experience: [
     {
+      id: 'fcb',
+      company: 'First Citizens Bank',
+      position: 'Modern Web Component`o logist',
+      location: 'Raleigh, NC (Remote)',
+      startDate: 'Oct 2025',
+      endDate: 'Present',
+      type: 'full-time',
+      description:
+        `Engineering a modern, accessible, and maintainable Frontend Design System for a bank of banks by building reusable UI components, along with Storybook documentation, accessibility guidance, and maintainable SCSS architecture for this enterprise applications.`,
+      achievements: [ 
+        'Banged out a bunch of quality components with full documentaiton',
+        'Respected as the Lord of Linting for enforcing syncronized code standards. ',
+        'Made subtle interactive motion graphics great again.',
+        ''
+      ],
+      technologies: [ 'SCSS', 'Storybook', 'TypeScript', 'Maintainability', 'Scalability']
+    },
+    {
       id: 'wolters',
       company: 'Wolters Kluwer Health',
       position: 'Senior Product Software Engineer',
@@ -184,8 +202,8 @@ export const resumeData: ResumeData = {
     {
       id: 'psu',
       institution: 'Pellissippi State & East Tennessee State University',
-      degree: 'Coursework',
-      field: 'General Studies',
+      degree: 'Computer Science',
+      field: 'General Courses',
       location: 'Tennessee',
       startDate: '2000',
       endDate: '2003'

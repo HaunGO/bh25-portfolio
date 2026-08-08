@@ -77,10 +77,10 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
               
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 font-display">
+                  <h3 className="text-xl font-bold font-display text-primary-600 dark:text-primary-600 ">
                     {exp.position}
                   </h3>
-                  <p className="text-lg text-primary-600 dark:text-primary-400 font-medium">
+                  <p className="text-lg font-medium text-neutral-500 dark:text-neutral-400">
                     {exp.company}
                   </p>
                 </div>

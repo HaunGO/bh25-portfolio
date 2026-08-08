@@ -3,7 +3,7 @@
 import Hero from '@/components/sections/Hero';
 import { resumeData } from '@/data/resume';
 import ExperienceSection from '@/components/resume/ExperienceSection';
-// import QuickNavigation from '@/components/sections/QuickNavigation';
+import QuickNavigation from '@/components/sections/QuickNavigation';
 import { PageContainer } from '@/components/ui/Container';
 
 export default function HomePage() {
@@ -39,9 +39,7 @@ export default function HomePage() {
 
 
 
-      {/* <AdvancedCursorDemo /> */}
-      {/* <TransitionDemo /> */}
-      {/* <QuickNavigation /> */}      
+      {/* <QuickNavigation /> */}
     </>
   );
 }

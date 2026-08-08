@@ -2,7 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageContainer } from '../ui/Container';
+import { TransitionLink } from '../transitions/TransitionLink';
 
 interface QuickNavigationProps {
   className?: string;
@@ -36,6 +38,8 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
 
   useEffect(() => {
     if (!sectionRef.current) return;
+
+    gsap.registerPlugin(ScrollTrigger);
 
     // Create scroll-triggered animation
     const tl = gsap.timeline({
@@ -78,7 +82,7 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
   return (
     <section 
       ref={sectionRef}
-      className={`py-20 bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-800 transition-colors duration-500 ${className}`}
+      className={`relative py-20 bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-800 transition-colors duration-500 ${className}`}
     >
       {/* Visual separator */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-700 to-transparent" />
@@ -109,12 +113,12 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
               <p className="text-neutral-600 dark:text-neutral-400 mb-6 transition-colors duration-300 font-body">
                 {item.description}
               </p>
-              <a
+              <TransitionLink
                 href={item.href}
                 className="inline-block bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               >
                 Explore
-              </a>
+              </TransitionLink>
             </div>
           ))}
         </div>

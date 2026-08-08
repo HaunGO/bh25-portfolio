@@ -34,8 +34,9 @@ const CursorVisual = memo(function CursorVisual({
       gsap.to(ringRef.current, {
         attr: { transform: `translate(${position.x - 80}, ${position.y})` },
         duration: 0,
-        ease: 'power2.out'
+        ease: 'power2.out',
       });
+
     }
   }, [position.x, position.y]);
 
@@ -72,19 +73,30 @@ const CursorVisual = memo(function CursorVisual({
     });
   }, [state.isClicking, config.clickColor, config.dotColor]);
 
-  // Initial setup
+  // Initial setup: keep hidden until first cursor move
   useEffect(() => {
     if (cursorRef.current && ringRef.current) {
       gsap.set(cursorRef.current, { opacity: 0 });
       gsap.set(ringRef.current, { opacity: 0 });
-      
-      gsap.to([cursorRef.current, ringRef.current], {
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power2.out'
-      });
     }
   }, []);
+
+  // Fade in on first move (when cursor becomes visible)
+  useEffect(() => {
+    if (!state.isVisible || !cursorRef.current || !ringRef.current) return;
+
+    gsap.to(cursorRef.current, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    });
+
+    gsap.to(ringRef.current, {
+      opacity: 1,
+      duration: 0.6,
+      ease: 'power2.out',
+    });
+  }, [state.isVisible]);
 
   return (
     <svg 

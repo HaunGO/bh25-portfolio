@@ -21,7 +21,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import AdvancedCursor from '@/components/ui/AdvancedCursor';
 
 export const metadata: Metadata = {
-  title: 'BH`25',
+  title: 'BH`26',
   description: 'Frontend Engineer • Creative Developer • UX/UI Specialist • AI Enthusiast • Electro-Magnetic Tinkerer • Bushcraft Master • Real American Hero • Chuck Norris Evangelist',
   keywords: ['frontend engineer', 'creative developer', 'UX/UI specialist', 'AI enthusiast', 'electro-magnetic tinkerer', 'bushcraft master', 'React', 'Next.js', 'GSAP', 'Three.js', 'portfolio'],
   authors: [{ name: 'Brandon Haun' }],
