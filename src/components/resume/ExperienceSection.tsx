@@ -43,13 +43,6 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
   //   };
   // }, [experience]);
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short' 
-    });
-  };
-
   return (
     <div ref={timelineRef} className={`relative ${className}`}>
 
@@ -73,7 +66,11 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
             <div className="absolute left-4 md:left-6 w-4 h-4 bg-primary-500 dark:bg-primary-400 rounded-full border-4 border-white dark:border-neutral-900 z-10"></div>
             
             {/* Experience card */}
-            <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-xl transition-shadow duration-300">
+            <div
+              data-cursor-hit="active"
+              data-cursor-dazzle={index % 2 === 0 ? 'pulse' : 'orbit'}
+              className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-xl transition-shadow duration-300"
+            >
               
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                 <div>

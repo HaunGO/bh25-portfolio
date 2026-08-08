@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { TouchTrailManagerProps, TrailPoint } from '../types';
-import { screenToSVG, getTouchZone } from '../utils/coordinateUtils';
+import { screenToSVG, getTouchZone, findCursorHitTarget } from '../utils/coordinateUtils';
 
 /**
  * Mobile touch event handling + trail generation
@@ -9,9 +9,9 @@ import { screenToSVG, getTouchZone } from '../utils/coordinateUtils';
 const TouchTrailManager = memo(function TouchTrailManager({ 
   config, 
   onTrailUpdate, 
+  onCursorUpdate,
   disabled = false 
 }: TouchTrailManagerProps) {
-  const [mobileTrailPoints, setMobileTrailPoints] = useState<TrailPoint[]>([]);
   const [mobileTrailLayers, setMobileTrailLayers] = useState<TrailPoint[][]>(
     config.trailLayers.map(() => [])
   );
@@ -27,9 +27,22 @@ const TouchTrailManager = memo(function TouchTrailManager({
   const handleTouchStart = useCallback((e: TouchEvent) => {
     const touch = e.touches[0];
     const touchZone = getTouchZone(touch.clientX, viewportWidth, config.touchZones);
+    const hitTarget = findCursorHitTarget(
+      touch.clientX,
+      touch.clientY,
+      config.hitRadius,
+      e.target instanceof HTMLElement ? e.target : null
+    );
     
     setCurrentTouchZone(touchZone);
     setIsTouching(true);
+    onCursorUpdate({
+      x: touch.clientX,
+      y: touch.clientY,
+      isHovering: Boolean(hitTarget),
+      isVisible: true,
+      target: hitTarget,
+    });
     
     // Only generate trails in the trail zone
     if (touchZone === 'trail') {
@@ -38,26 +51,34 @@ const TouchTrailManager = memo(function TouchTrailManager({
       
       const svgPoint = screenToSVG(touch.clientX, touch.clientY);
       
-      // Initialize mobile trail points
-      setMobileTrailPoints([svgPoint]);
       setMobileTrailLayers(prev => 
         prev.map(() => [svgPoint])
       );
     }
     // In scroll zone, allow default behavior (scrolling)
-  }, [viewportWidth, config.touchZones]);
+  }, [viewportWidth, config.touchZones, config.hitRadius, onCursorUpdate]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isTouching || currentTouchZone !== 'trail') return;
-    
+    if (!isTouching) return;
+
     const touch = e.touches[0];
     const svgPoint = screenToSVG(touch.clientX, touch.clientY);
-    
-    // Update mobile trail points
-    setMobileTrailPoints(prev => {
-      const newPoints = [...prev, svgPoint];
-      return newPoints.slice(-config.trailLength);
+    const hitTarget = findCursorHitTarget(
+      touch.clientX,
+      touch.clientY,
+      config.hitRadius,
+      e.target instanceof HTMLElement ? e.target : null
+    );
+
+    onCursorUpdate({
+      x: touch.clientX,
+      y: touch.clientY,
+      isHovering: Boolean(hitTarget),
+      isVisible: true,
+      target: hitTarget,
     });
+
+    if (currentTouchZone !== 'trail') return;
     
     // Update mobile trail layers
     setMobileTrailLayers(prev => 
@@ -67,11 +88,16 @@ const TouchTrailManager = memo(function TouchTrailManager({
         return newPoints.slice(-layerLength);
       })
     );
-  }, [isTouching, currentTouchZone, config.trailLength, config.trailLayers]);
+  }, [isTouching, currentTouchZone, config.hitRadius, config.trailLength, config.trailLayers, onCursorUpdate]);
 
   const handleTouchEnd = useCallback(() => {
     setIsTouching(false);
     setCurrentTouchZone(null);
+    onCursorUpdate({
+      isHovering: false,
+      isVisible: false,
+      target: null,
+    });
     
     // Start fade out animation only if we were in trail zone
     if (currentTouchZone === 'trail') {
@@ -83,7 +109,6 @@ const TouchTrailManager = memo(function TouchTrailManager({
             ease: "power2.out",
             onComplete: () => {
               // Clear the trail after fade
-              setMobileTrailPoints([]);
               setMobileTrailLayers(prev => 
                 prev.map(() => [])
               );
@@ -92,7 +117,7 @@ const TouchTrailManager = memo(function TouchTrailManager({
         }
       });
     }
-  }, [config.fadeDuration, currentTouchZone]);
+  }, [config.fadeDuration, currentTouchZone, onCursorUpdate]);
 
   // Update viewport width
   useEffect(() => {

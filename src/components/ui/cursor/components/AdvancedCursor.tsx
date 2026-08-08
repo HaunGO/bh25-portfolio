@@ -1,5 +1,5 @@
 import { memo, useState, useCallback, useEffect } from 'react';
-import { AdvancedCursorProps, CursorState, TrailPoint, ViewportSize } from '../types';
+import { AdvancedCursorProps, CursorConfig, CursorState, CursorUpdate, TrailPoint, ViewportSize } from '../types';
 import { DEFAULT_CURSOR_CONFIG } from '../config';
 import { useMouseSupport } from '../hooks/useMouseSupport';
 import { useTouchSupport } from '../hooks/useTouchSupport';
@@ -20,7 +20,32 @@ const AdvancedCursor = memo(function AdvancedCursor({
   const hasTouch = useTouchSupport();
   
   // Merge default config with provided config
-  const finalConfig = { ...DEFAULT_CURSOR_CONFIG, ...config };
+  const finalConfig: CursorConfig = {
+    ...DEFAULT_CURSOR_CONFIG,
+    ...config,
+    mouse: {
+      ...DEFAULT_CURSOR_CONFIG.mouse,
+      ...config.mouse,
+      trailLayers: config.mouse?.trailLayers ?? DEFAULT_CURSOR_CONFIG.mouse.trailLayers,
+    },
+    touch: {
+      ...DEFAULT_CURSOR_CONFIG.touch,
+      ...config.touch,
+      trailLayers: config.touch?.trailLayers ?? DEFAULT_CURSOR_CONFIG.touch.trailLayers,
+      touchZones: {
+        ...DEFAULT_CURSOR_CONFIG.touch.touchZones,
+        ...config.touch?.touchZones,
+      },
+    },
+    visual: {
+      ...DEFAULT_CURSOR_CONFIG.visual,
+      ...config.visual,
+      dazzleStyles: {
+        ...DEFAULT_CURSOR_CONFIG.visual.dazzleStyles,
+        ...config.visual?.dazzleStyles,
+      },
+    },
+  };
   
   // Debug logging
   useEffect(() => {
@@ -46,12 +71,13 @@ const AdvancedCursor = memo(function AdvancedCursor({
   const [viewportSize, setViewportSize] = useState<ViewportSize>({ width: 1920, height: 1080 });
 
   // Handle cursor position updates from mouse manager
-  const handleCursorUpdate = useCallback((position: { x: number; y: number }) => {
+  const handleCursorUpdate = useCallback((update: CursorUpdate) => {
     setCursorState(prev => ({
       ...prev,
-      x: position.x,
-      y: position.y,
-      isVisible: true,
+      ...update,
+      x: update.x ?? prev.x,
+      y: update.y ?? prev.y,
+      isVisible: update.isVisible ?? true,
     }));
   }, []);
 
@@ -160,11 +186,18 @@ const AdvancedCursor = memo(function AdvancedCursor({
           <TouchTrailManager
             config={finalConfig.touch}
             onTrailUpdate={handleTrailUpdate}
+            onCursorUpdate={handleCursorUpdate}
             disabled={disabled}
           />
           <TrailRenderer
             layers={finalConfig.touch.trailLayers}
             trailData={trailLayers}
+            viewportSize={viewportSize}
+          />
+          <CursorVisual
+            position={{ x: cursorState.x, y: cursorState.y }}
+            state={cursorState}
+            config={finalConfig.visual}
             viewportSize={viewportSize}
           />
         </>

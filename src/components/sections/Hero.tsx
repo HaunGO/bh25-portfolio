@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, memo, useCallback } from 'react';
+import { useEffect, useRef, useState, memo, useCallback, type MouseEvent, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { PageContainer } from '../ui/Container';
@@ -11,6 +11,29 @@ interface HeroProps {
   delay?: number;
   shouldAnimate?: boolean;
 }
+
+const heroTitle = {
+  greeting: ['Hello,', "I'm"],
+  name: ['Brandon'],
+  subtitle: ['A', 'Creator', 'of', 'Sorts'],
+};
+const rainbowColors = [
+  '#ef4444', // red
+  '#f97316', // orange
+  '#eab308', // yellow
+  '#22c55e', // green
+  '#3b82f6', // blue
+  '#4f46e5', // indigo
+  '#8b5cf6', // violet
+];
+
+const getHeroTextColor = () => (
+  document.documentElement.classList.contains('dark') ? '#f5f5f5' : '#171717'
+);
+
+const getRandomRainbowColor = () => (
+  rainbowColors[Math.floor(Math.random() * rainbowColors.length)]
+);
 
 const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
@@ -33,6 +56,61 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   const handlePreloaderComplete = useCallback(() => {
     setPreloaderComplete(true);
   }, []);
+
+  const handleCharacterEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      color: getRandomRainbowColor(),
+      duration: 0.035,
+      ease: 'power3.out',
+    });
+  }, []);
+
+  const handleCharacterLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      color: getHeroTextColor(),
+      duration: 0.06,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(target, { clearProps: 'color' });
+      },
+    });
+  }, []);
+
+  const renderHighlightedWord = useCallback((word: string) => (
+    <span
+      key={word}
+      data-cursor-hit="active"
+      data-cursor-level="word"
+      aria-label={word}
+      className="inline-block"
+    >
+      {Array.from(word).map((character, index) => (
+        <span
+          key={`${word}-${character}-${index}`}
+          data-cursor-hit="active"
+          data-cursor-level="char"
+          aria-hidden="true"
+          className="inline-block"
+          onMouseEnter={handleCharacterEnter}
+          onMouseLeave={handleCharacterLeave}
+        >
+          {character}
+        </span>
+      ))}
+    </span>
+  ), [handleCharacterEnter, handleCharacterLeave]);
+
+  const renderHighlightedWords = useCallback((words: string[]) => (
+    words.map((word) => renderHighlightedWord(word)).reduce((acc, word, index) => (
+      index === 0 ? [word] : [...acc, ' ', word]
+    ), [] as ReactNode[])
+  ), [renderHighlightedWord]);
 
   useEffect(() => {
     if (!heroRef.current || !shouldAnimate || !preloaderComplete) return;
@@ -116,16 +194,16 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                     font-black text-neutral-900 dark:text-neutral-100 font-display whitespace-nowrap
                     leading-tight text-8xl "
                 >
-                  <span ref={greetingRef} className="block text-4xl font-normal relative left-16 top-8 "  >
-                    Hello, I&apos;m
+                  <span ref={greetingRef} className="relative z-20 block text-4xl font-normal left-16 top-8 "  >
+                    {renderHighlightedWords(heroTitle.greeting)}
                   </span>
                   <span ref={nameRef} className="inline-block font-semibold">
                     {/* <HoverLetters  text="Brandon" className="inline-block" /> */}
-                    Brandon
-                    <span id="theLine" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
+                    {renderHighlightedWords(heroTitle.name)}
+                    <span id="theLine" aria-hidden="true" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
                   </span>
                   <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
-                    A Creator of Sorts
+                    {renderHighlightedWords(heroTitle.subtitle)}
                   </span>
                 </h1>
               </div>

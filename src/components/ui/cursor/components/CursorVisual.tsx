@@ -1,7 +1,7 @@
 import { memo, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { CursorVisualProps } from '../types';
-import { createCirclePath, createCursorPath } from '../utils/pathHelpers';
+import { createCursorPath, createMeshCursorAwareTargetPath, createMeshHaloPath } from '../utils/pathHelpers';
 
 /**
  * Cursor ring and dot rendering component
@@ -13,18 +13,36 @@ const CursorVisual = memo(function CursorVisual({
   viewportSize 
 }: CursorVisualProps) {
   const cursorRef = useRef<SVGPathElement>(null);
+  const jellyRef = useRef<SVGPathElement>(null);
   const ringRef = useRef<SVGPathElement>(null);
+  const dazzleTweenRef = useRef<gsap.core.Tween | null>(null);
 
   // Animate cursor position
   useEffect(() => {
-    if (cursorRef.current && ringRef.current) {
+    if (cursorRef.current && ringRef.current && jellyRef.current) {
       // Debug logging (only log occasionally to avoid spam)
       if (Math.random() < 0.01) {
         console.log('CursorVisual: Updating position', { x: position.x, y: position.y });
       }
       
-      // Create cursor path directly at mouse position
-      const cursorPath = createCursorPath(5, position.x, position.y + 5);
+      const target = state.target;
+      const ringPath = target
+        ? createMeshCursorAwareTargetPath(
+            target.rect,
+            position.x,
+            position.y,
+            config.ringSize,
+            config.hitPadding,
+            config.morphStyle,
+            config.meshPoints,
+            config.meshPointExponent
+          )
+        : createMeshHaloPath(position.x, position.y, config.ringSize, config.meshPoints, config.morphStyle);
+      const morphDuration = target ? config.morphDuration : config.releaseDuration;
+      const isGooey = config.morphStyle === 'gooey';
+
+      // Create cursor path directly at pointer position
+      const cursorPath = createCursorPath(config.size / 2, position.x, position.y);
       gsap.to(cursorRef.current, {
         attr: { d: cursorPath },
         duration: 0,
@@ -32,31 +50,96 @@ const CursorVisual = memo(function CursorVisual({
       });
 
       gsap.to(ringRef.current, {
-        attr: { transform: `translate(${position.x - 80}, ${position.y})` },
-        duration: 0,
-        ease: 'power2.out',
+        attr: { d: ringPath },
+        duration: morphDuration,
+        opacity: target ? config.targetOpacity : 1,
+        ease: target ? 'power3.out' : 'power2.out',
+      });
+
+      gsap.to(jellyRef.current, {
+        attr: { d: ringPath },
+        fill: target ? config.overlayColor : 'rgba(59, 130, 246, 0)',
+        opacity: target ? config.targetOpacity : 0,
+        stroke: target ? config.hoverColor : config.ringColor,
+        strokeWidth: target ? config.jellyStrokeWidth : config.ringThickness,
+        duration: target ? config.morphDuration * (isGooey ? 1.35 : 1) : config.releaseDuration * 1.2,
+        ease: target && isGooey ? 'elastic.out(1, 0.7)' : 'power3.out',
       });
 
     }
-  }, [position.x, position.y]);
+  }, [
+    position.x,
+    position.y,
+    state.target,
+    config.hitPadding,
+    config.ringSize,
+    config.size,
+    config.morphStyle,
+    config.meshPoints,
+    config.meshPointExponent,
+    config.overlayColor,
+    config.targetOpacity,
+    config.morphDuration,
+    config.releaseDuration,
+    config.jellyStrokeWidth,
+    config.hoverColor,
+    config.ringColor,
+    config.ringThickness,
+  ]);
 
   // Animate ring based on state
   useEffect(() => {
-    if (!ringRef.current) return;
+    if (!ringRef.current || !jellyRef.current) return;
 
-    const currentColor = state.isClicking 
+    const dazzleStyle = config.enableDazzle && state.target
+      ? config.dazzleStyles[state.target.dazzleStyle]
+      : null;
+    const currentColor = dazzleStyle
+      ? dazzleStyle.color
+      : state.isClicking 
       ? config.clickColor 
       : state.isHovering 
         ? config.hoverColor 
         : config.ringColor;
 
+    dazzleTweenRef.current?.kill();
+    gsap.set(ringRef.current, {
+      filter: dazzleStyle ? 'url(#cursor-dazzle-glow)' : 'none',
+      strokeDasharray: dazzleStyle?.dashArray ?? 'none',
+      strokeDashoffset: 0,
+    });
+    gsap.set(jellyRef.current, {
+      strokeDasharray: 'none',
+      strokeDashoffset: 0,
+    });
+
     gsap.to(ringRef.current, {
-      scale: state.isHovering ? 1.1 : 1,
+      scale: 1,
       stroke: currentColor,
+      strokeWidth: dazzleStyle?.strokeWidth ?? config.ringThickness,
       duration: 0.5,
       ease: 'power1.out'
     });
-  }, [state.isHovering, state.isClicking, config.ringColor, config.hoverColor, config.clickColor]);
+    gsap.to(jellyRef.current, {
+      stroke: currentColor,
+      duration: 0.5,
+      ease: 'power1.out',
+    });
+
+    if (dazzleStyle) {
+      dazzleTweenRef.current = gsap.to(ringRef.current, {
+        strokeDashoffset: -64,
+        duration: dazzleStyle.duration,
+        ease: 'none',
+        repeat: -1,
+      });
+    }
+
+    return () => {
+      dazzleTweenRef.current?.kill();
+      dazzleTweenRef.current = null;
+    };
+  }, [state.isHovering, state.isClicking, state.target, config.ringColor, config.hoverColor, config.clickColor, config.ringThickness, config.enableDazzle, config.dazzleStyles]);
 
   // Animate cursor based on state
   useEffect(() => {
@@ -75,9 +158,10 @@ const CursorVisual = memo(function CursorVisual({
 
   // Initial setup: keep hidden until first cursor move
   useEffect(() => {
-    if (cursorRef.current && ringRef.current) {
+    if (cursorRef.current && ringRef.current && jellyRef.current) {
       gsap.set(cursorRef.current, { opacity: 0 });
       gsap.set(ringRef.current, { opacity: 0 });
+      gsap.set(jellyRef.current, { opacity: 0 });
     }
   }, []);
 
@@ -106,11 +190,32 @@ const CursorVisual = memo(function CursorVisual({
       preserveAspectRatio="none"
       className="fixed top-0 left-0 pointer-events-none z-[9999] w-full h-full"
     >
+      <defs>
+        <filter id="cursor-dazzle-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor={config.enableDazzle && state.target ? config.dazzleStyles[state.target.dazzleStyle].glowColor : config.hoverColor} />
+        </filter>
+        <filter id="cursor-jelly-soften" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="0.35" />
+        </filter>
+      </defs>
+
+      {/* Soft viscous overlay that lags behind the crisp ring */}
+      <path
+        ref={jellyRef}
+        fill="rgba(59, 130, 246, 0)"
+        d={createMeshHaloPath(0, 0, config.ringSize, config.meshPoints, config.morphStyle)}
+        stroke={config.ringColor}
+        strokeWidth={config.jellyStrokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        filter="url(#cursor-jelly-soften)"
+      />
+
       {/* Ring around cursor */}
       <path 
         ref={ringRef} 
         fill="none"
-        d={createCirclePath(40, 80, 40)} 
+        d={createMeshHaloPath(0, 0, config.ringSize, config.meshPoints, config.morphStyle)} 
         stroke={config.ringColor}
         strokeWidth={config.ringThickness}
         strokeLinecap="round"

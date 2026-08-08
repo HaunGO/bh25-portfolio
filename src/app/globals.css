@@ -118,3 +118,16 @@ h1,h2,h3,h4,h5,h6 {
   @apply relative;
 }
 
+/* Keep the native cursor visually steady; the SVG cursor communicates hover state. */
+a,
+button,
+summary,
+[role="button"],
+[data-cursor-hit],
+[data-cursor-hit] *,
+[data-advanced-cursor="true"],
+[data-advanced-cursor="true"] *,
+.cursor-pointer {
+  cursor: default !important;
+}
+

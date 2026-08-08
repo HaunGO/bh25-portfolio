@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { MouseTrailManagerProps, TrailPoint } from '../types';
-import { screenToSVG, isClickable } from '../utils/coordinateUtils';
+import { screenToSVG, isClickable, findCursorHitTarget } from '../utils/coordinateUtils';
 
 /**
  * Desktop mouse event handling + trail generation
@@ -12,11 +12,9 @@ const MouseTrailManager = memo(function MouseTrailManager({
   onCursorUpdate, 
   disabled = false 
 }: MouseTrailManagerProps) {
-  const [trailPoints, setTrailPoints] = useState<TrailPoint[]>([]);
   const [trailLayers, setTrailLayers] = useState<TrailPoint[][]>(
     config.trailLayers.map(() => [])
   );
-  const [isHoveringLink, setIsHoveringLink] = useState(false);
 
   // Create ripple effect on click
   const createRipple = useCallback((x: number, y: number) => {
@@ -50,37 +48,38 @@ const MouseTrailManager = memo(function MouseTrailManager({
 
   // Update cursor position and state
   const updateCursor = useCallback((e: MouseEvent) => {
-    // const target = e.target as HTMLElement;
-    // const isHovering = isHoverable(target);
-    // const isClickableElement = isClickable(target);
-    
     // Debug logging (only log occasionally to avoid spam)
     if (Math.random() < 0.01) {
       console.log('MouseTrailManager: Mouse move', { x: e.clientX, y: e.clientY });
     }
+
+    const hitTarget = findCursorHitTarget(
+      e.clientX,
+      e.clientY,
+      config.hitRadius,
+      e.target instanceof HTMLElement ? e.target : null
+    );
     
-    onCursorUpdate({ x: e.clientX, y: e.clientY });
+    onCursorUpdate({
+      x: e.clientX,
+      y: e.clientY,
+      isHovering: Boolean(hitTarget),
+      isVisible: true,
+      target: hitTarget,
+    });
 
     // Update trail points for path animation (only when not hovering over links)
-    if (!isHoveringLink) {
-      const svgPoint = screenToSVG(e.clientX, e.clientY);
-      
-      // Update main trail
-      setTrailPoints(prev => {
-        const newPoints = [...prev, svgPoint];
-        return newPoints.slice(-config.trailLength);
-      });
-      
-      // Update trail layers
-      setTrailLayers(prev => 
-        prev.map((layer, index) => {
-          const newPoints = [...layer, svgPoint];
-          const layerLength = Math.floor(config.trailLayers[index].percentage * config.trailLength);
-          return newPoints.slice(-layerLength);
-        })
-      );
-    }
-  }, [config.trailLength, config.trailLayers, onCursorUpdate, isHoveringLink]);
+    const svgPoint = screenToSVG(e.clientX, e.clientY);
+    
+    // Update trail layers
+    setTrailLayers(prev => 
+      prev.map((layer, index) => {
+        const newPoints = [...layer, svgPoint];
+        const layerLength = Math.floor(config.trailLayers[index].percentage * config.trailLength);
+        return newPoints.slice(-layerLength);
+      })
+    );
+  }, [config.hitRadius, config.trailLength, config.trailLayers, onCursorUpdate]);
 
   // Handle mouse down
   const handleMouseDown = useCallback((e: MouseEvent) => {
@@ -91,17 +90,23 @@ const MouseTrailManager = memo(function MouseTrailManager({
       // Create ripple effect
       createRipple(e.clientX, e.clientY);
     }
-  }, [createRipple]);
+    
+    onCursorUpdate({ isClicking: true });
+  }, [createRipple, onCursorUpdate]);
 
   // Handle mouse up
   const handleMouseUp = useCallback(() => {
-    // Mouse up logic if needed
-  }, []);
+    onCursorUpdate({ isClicking: false });
+  }, [onCursorUpdate]);
 
   // Handle mouse leave
   const handleMouseLeave = useCallback(() => {
-    // Mouse leave logic if needed
-  }, []);
+    onCursorUpdate({
+      isHovering: false,
+      isVisible: false,
+      target: null,
+    });
+  }, [onCursorUpdate]);
 
   // Handle scroll
   const handleScroll = useCallback(() => {
@@ -115,7 +120,6 @@ const MouseTrailManager = memo(function MouseTrailManager({
   // Handle window resize
   const handleResize = useCallback(() => {
     // Clear trail points on resize
-    setTrailPoints([]);
     setTrailLayers(config.trailLayers.map(() => []));
   }, [config.trailLayers]);
 

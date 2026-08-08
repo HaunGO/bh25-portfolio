@@ -8,14 +8,16 @@ export default function AdvancedCursorDemo() {
       {/* Example Button */}
       <button 
         className="btn-primary"
-        data-advanced-cursor="true"
+        data-cursor-hit="active"
+        data-cursor-dazzle="pulse"
       >
         Hover me for Advanced Cursor Effect
       </button>
       
       {/* Example Card */}
       <div 
-        data-advanced-cursor="true"
+        data-cursor-hit="active"
+        data-cursor-dazzle="orbit"
       >
         <h3 className="text-lg font-semibold mb-2">Interactive Card</h3>
         <p className="text-gray-600 dark:text-gray-400">

@@ -9,13 +9,40 @@ export interface TrailPoint {
   y: number;
 }
 
+export type CursorDazzleStyle = 'pulse' | 'orbit' | 'spark';
+export type CursorMorphStyle = 'gooey' | 'angular';
+
+export interface CursorHitRect {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+export interface CursorHitTarget {
+  element: HTMLElement;
+  rect: CursorHitRect;
+  dazzleStyle: CursorDazzleStyle;
+}
+
 export interface CursorState {
   x: number;
   y: number;
   isHovering: boolean;
   isClicking: boolean;
   isVisible: boolean;
-  target: HTMLElement | null;
+  target: CursorHitTarget | null;
+}
+
+export interface CursorUpdate {
+  x?: number;
+  y?: number;
+  isHovering?: boolean;
+  isClicking?: boolean;
+  isVisible?: boolean;
+  target?: CursorHitTarget | null;
 }
 
 export interface ViewportSize {
@@ -25,11 +52,13 @@ export interface ViewportSize {
 
 export interface MouseTrailConfig {
   trailLength: number;
+  hitRadius: number;
   trailLayers: TrailLayer[];
 }
 
 export interface TouchTrailConfig {
   trailLength: number;
+  hitRadius: number;
   trailLayers: TrailLayer[];
   fadeDuration: number;
   touchZones: {
@@ -52,6 +81,24 @@ export interface CursorVisualConfig {
   dotColor: string;
   hoverColor: string;
   clickColor: string;
+  hitPadding: number;
+  hitRadius: number;
+  overlayColor: string;
+  targetOpacity: number;
+  morphStyle: CursorMorphStyle;
+  meshPoints: number;
+  meshPointExponent: number;
+  morphDuration: number;
+  releaseDuration: number;
+  jellyStrokeWidth: number;
+  enableDazzle: boolean;
+  dazzleStyles: Record<CursorDazzleStyle, {
+    color: string;
+    glowColor: string;
+    strokeWidth: number;
+    dashArray: string;
+    duration: number;
+  }>;
 }
 
 export interface CursorConfig {
@@ -71,13 +118,14 @@ export interface TrailRendererProps {
 export interface MouseTrailManagerProps {
   config: MouseTrailConfig;
   onTrailUpdate: (layers: TrailPoint[][]) => void;
-  onCursorUpdate: (position: { x: number; y: number }) => void;
+  onCursorUpdate: (update: CursorUpdate) => void;
   disabled?: boolean;
 }
 
 export interface TouchTrailManagerProps {
   config: TouchTrailConfig;
   onTrailUpdate: (layers: TrailPoint[][]) => void;
+  onCursorUpdate: (update: CursorUpdate) => void;
   disabled?: boolean;
 }
 

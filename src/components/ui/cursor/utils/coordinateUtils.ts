@@ -1,4 +1,7 @@
-import { ViewportSize } from '../types';
+import { CursorDazzleStyle, CursorHitRect, CursorHitTarget, ViewportSize } from '../types';
+
+const CURSOR_HIT_SELECTOR = '[data-cursor-hit], [data-advanced-cursor="true"]';
+const DAZZLE_STYLES: CursorDazzleStyle[] = ['pulse', 'orbit', 'spark'];
 
 /**
  * Convert screen coordinates to SVG coordinates
@@ -44,6 +47,84 @@ export const isClickable = (element: HTMLElement | null): boolean => {
   return clickableSelectors.some(selector => 
     element.matches(selector) || element.closest(selector)
   );
+};
+
+const normalizeDazzleStyle = (value: string | undefined): CursorDazzleStyle => {
+  if (value && DAZZLE_STYLES.includes(value as CursorDazzleStyle)) {
+    return value as CursorDazzleStyle;
+  }
+
+  return 'pulse';
+};
+
+const toHitRect = (rect: DOMRect): CursorHitRect => ({
+  top: rect.top,
+  right: rect.right,
+  bottom: rect.bottom,
+  left: rect.left,
+  width: rect.width,
+  height: rect.height,
+});
+
+const getDistanceToRect = (x: number, y: number, rect: DOMRect): number => {
+  const closestX = Math.max(rect.left, Math.min(x, rect.right));
+  const closestY = Math.max(rect.top, Math.min(y, rect.bottom));
+  const distanceX = x - closestX;
+  const distanceY = y - closestY;
+
+  return Math.hypot(distanceX, distanceY);
+};
+
+const createHitTarget = (element: HTMLElement): CursorHitTarget | null => {
+  if (element.dataset.cursorHit === 'false') return null;
+
+  const rect = element.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return null;
+
+  return {
+    element,
+    rect: toHitRect(rect),
+    dazzleStyle: normalizeDazzleStyle(element.dataset.cursorDazzle),
+  };
+};
+
+/**
+ * Find the nearest opted-in element that overlaps the cursor halo.
+ */
+export const findCursorHitTarget = (
+  x: number,
+  y: number,
+  hitRadius: number,
+  sourceElement?: HTMLElement | null
+): CursorHitTarget | null => {
+  const hoveredTarget = sourceElement?.closest<HTMLElement>(CURSOR_HIT_SELECTOR);
+
+  if (hoveredTarget) {
+    const target = createHitTarget(hoveredTarget);
+
+    if (target && getDistanceToRect(x, y, hoveredTarget.getBoundingClientRect()) <= hitRadius) {
+      return target;
+    }
+  }
+
+  const candidates = Array.from(document.querySelectorAll<HTMLElement>(CURSOR_HIT_SELECTOR));
+  let nearestTarget: CursorHitTarget | null = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  candidates.forEach((element) => {
+    const rect = element.getBoundingClientRect();
+    const target = createHitTarget(element);
+
+    if (!target) return;
+
+    const distance = getDistanceToRect(x, y, rect);
+    if (distance > hitRadius || distance >= nearestDistance) return;
+
+    nearestDistance = distance;
+    nearestTarget = target;
+  });
+
+  return nearestTarget;
 };
 
 /**
