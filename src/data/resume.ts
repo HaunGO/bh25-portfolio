@@ -81,12 +81,13 @@ export const resumeData: ResumeData = {
       endDate: 'Present',
       type: 'full-time',
       description:
-        `Engineering a modern, accessible, and maintainable Frontend Design System for a bank of banks by building reusable UI components, along with Storybook documentation, accessibility guidance, and maintainable SCSS architecture for this enterprise applications.`,
+        `Engineering a modern, accessible, and maintainable enterprise design system for a leading banking organization, building reusable UI components, Storybook documentation, accessibility guidance, and scalable SCSS architecture.`,
       achievements: [ 
-        'Banged out a bunch of quality components with full documentaiton',
-        'Respected as the Lord of Linting for enforcing syncronized code standards. ',
-        'Made subtle interactive motion graphics great again.',
-        ''
+        'Bangin` out a bunch of quality components with full Storybook documentaton.',
+        'Respected as the Lord of Linting for enforcing syncronized code standards',
+        'Standardized buttery smoothness to the UI for the UX',
+        'Suprising myself with DevOps chops!',
+        
       ],
       technologies: [ 'SCSS', 'Storybook', 'TypeScript', 'Maintainability', 'Scalability']
     },
