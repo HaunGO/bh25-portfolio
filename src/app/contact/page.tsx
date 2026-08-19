@@ -24,7 +24,7 @@ export default function ContactPage() {
         <div className="max-w-xl mx-auto">
           <div className="bg-white dark:bg-neutral-800 rounded-xl p-8 shadow-lg border border-neutral-200 dark:border-neutral-700 space-y-6">
             <div>
-              <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-1">
+              <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 tracking-wide mb-1">
                 Email
               </h2>
               <a
@@ -35,18 +35,9 @@ export default function ContactPage() {
               </a>
             </div>
 
-            <div>
-              <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-1">
-                Location
-              </h2>
-              <p className="text-lg text-neutral-700 dark:text-neutral-300 font-body">
-                {personalInfo.location}
-              </p>
-            </div>
-
             {personalInfo.linkedin && (
               <div>
-                <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-1">
+                <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 tracking-wide mb-1">
                   LinkedIn
                 </h2>
                 <a
@@ -60,26 +51,19 @@ export default function ContactPage() {
               </div>
             )}
 
-            {personalInfo.github && (
-              <div>
-                <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide mb-1">
-                  GitHub
-                </h2>
-                <a
-                  href={personalInfo.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-lg text-primary-600 dark:text-primary-400 hover:underline font-body"
-                >
-                  {personalInfo.github.replace('https://', '')}
-                </a>
-              </div>
-            )}
+
+            <div>
+              <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 tracking-wide mb-1">
+                Location
+              </h2>
+              <p className="text-lg text-neutral-700 dark:text-neutral-300 font-body">
+                {personalInfo.location}
+              </p>
+            </div>
+
+
           </div>
 
-          <p className="text-center text-neutral-500 dark:text-neutral-500 font-body mt-8">
-            Contact form coming soon — for now, email is the best way to reach me.
-          </p>
         </div>
       </div>
     </div>

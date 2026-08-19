@@ -6,8 +6,8 @@ export const resumeData: ResumeData = {
     title: 'Senior Frontend Engineer & Creative Developer',
     email: 'Hello@BrandonHaun.com',
     phone: '(865) 257-9123',
-    location: 'Knoxville, TN (Remote)',
-    website: 'https://www.BrandonHaun.com',
+    location: 'Knoxville, TN',
+    website: 'www.BrandonHaun.com',
     linkedin: 'https://linkedin.com/in/brandonhaun',
     github: 'https://github.com/HaunGO/',
     summary:
@@ -75,21 +75,21 @@ export const resumeData: ResumeData = {
     {
       id: 'fcb',
       company: 'First Citizens Bank',
-      position: 'Modern Web Component`o logist',
+      position: 'Design System Engineer',
       location: 'Raleigh, NC (Remote)',
       startDate: 'Oct 2025',
       endDate: 'Present',
       type: 'full-time',
       description:
-        `Engineering a modern, accessible, and maintainable enterprise design system for a leading banking organization, building reusable UI components, Storybook documentation, accessibility guidance, and scalable SCSS architecture.`,
+        `Helping turn a sprawling enterprise UI into a proper design system. Building reusable and themeable components, useful Storybook documentation, accessible patterns, and scalable SCSS architecture so teams can ship consistent, maintainable interfaces without reinventing the button every Tuesday.`,
       achievements: [ 
-        'Bangin` out a bunch of quality components with full Storybook documentaton.',
+        'Bangin` out a bunch of high quality, bullet-proof components.',
         'Respected as the Lord of Linting for enforcing syncronized code standards',
-        'Standardized buttery smoothness to the UI for the UX',
-        'Suprising myself with DevOps chops!',
+        'Standardizing the buttery smoothness in the UI for the UX.',
+        'Suprising myself with some DevOps chops!',
         
       ],
-      technologies: [ 'SCSS', 'Storybook', 'TypeScript', 'Maintainability', 'Scalability']
+      technologies: [ 'SCSS', 'Storybook', 'TypeScript', 'A11Y', 'Performance']
     },
     {
       id: 'wolters',
@@ -107,7 +107,7 @@ export const resumeData: ResumeData = {
         'Implemented performance improvements and integrated into testing workflows',
         'Explored and applied GitHub Copilot and generative AI to accelerate development and improve team productivity'
       ],
-      technologies: ['React', 'Angular', 'TypeScript', 'GitHub Copilot', 'Jest']
+      technologies: ['React', 'Angular', 'TypeScript', 'Copilot', 'Jest']
     },
     {
       id: 'tombras',
@@ -124,12 +124,12 @@ export const resumeData: ResumeData = {
         'Built design systems for custom branded themes',
         'Delivered solutions for clients including Krusteaz, UT Medical Center, MoonPie, World Food Program, NADA, Lodge Cast Iron, My First Farmers Bank'
       ],
-      technologies: ['WordPress', 'PHP', 'Vue.js', 'React', 'JavaScript', 'CSS']
+      technologies: ['WordPress', 'PHP', 'Vue', 'React', 'JavaScript', 'SCSS']
     },
     {
       id: 'pagetree',
       company: 'PageTree Inc.',
-      position: 'Frontend Developer',
+      position: 'Lead Frontend Developer',
       location: 'Charleston, SC',
       startDate: '2014',
       endDate: '2016',
@@ -156,7 +156,7 @@ export const resumeData: ResumeData = {
         'Orchestrated design and delivery of engaging training modules',
         'Reinforced training concepts with multimedia interactivity'
       ],
-      technologies: ['Flash', 'ActionScript', 'HTML', 'CSS', 'JavaScript']
+      technologies: ['Flash', 'ActionScript 3', 'HTML', 'CSS', 'JavaScript']
     },
     {
       id: 'dnp',

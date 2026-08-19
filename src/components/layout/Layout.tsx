@@ -3,7 +3,6 @@
 import { ReactNode, memo } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import ThemeToggle from '../ui/ThemeToggle';
 import PageTransition from '../transitions/PageTransition';
 
 interface LayoutProps {
@@ -24,8 +23,6 @@ const Layout = memo(function Layout({ children }: LayoutProps) {
       {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
       
       <Header />
-      
-      <ThemeToggle />
       
       <PageTransition>
         <main>

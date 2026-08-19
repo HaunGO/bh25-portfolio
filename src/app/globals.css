@@ -118,16 +118,27 @@ h1,h2,h3,h4,h5,h6 {
   @apply relative;
 }
 
-/* Keep the native cursor visually steady; the SVG cursor communicates hover state. */
+/* Keep cursor-target areas steady; real interactive controls still show the native hand. */
+[data-cursor-hit],
+[data-advanced-cursor="true"],
+[data-advanced-cursor="true"] * {
+  cursor: default !important;
+}
+
 a,
 button,
 summary,
 [role="button"],
-[data-cursor-hit],
-[data-cursor-hit] *,
-[data-advanced-cursor="true"],
-[data-advanced-cursor="true"] *,
-.cursor-pointer {
+.cursor-pointer,
+[data-cursor-hit] a,
+[data-cursor-hit] button,
+[data-cursor-hit] summary,
+[data-cursor-hit] [role="button"] {
+  cursor: pointer !important;
+}
+
+[data-hero-section-title],
+[data-hero-section-title] * {
   cursor: default !important;
 }
 

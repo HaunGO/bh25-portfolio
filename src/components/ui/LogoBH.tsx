@@ -1,29 +1,77 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject, type TouchEvent } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface LogoBHProps {
   className?: string;
+  logoKey?: string;
   autoAnimate?: boolean;
-  triggerRef?: React.RefObject<HTMLElement | null>;
+  triggerRef?: RefObject<HTMLElement | null>;
   triggerStart?: string;
   triggerEnd?: string;
+  reopenLogoKeyOnClose?: string;
   showMarkers?: boolean;
 }
 
+type LogoRegistryEntry = {
+  id: symbol;
+  key?: string;
+  open: () => void;
+  close: () => void;
+};
+
+const openLogoTimelines = new Set<LogoRegistryEntry>();
+
+const closeOtherLogos = (currentLogoId: symbol) => {
+  openLogoTimelines.forEach((logo) => {
+    if (logo.id !== currentLogoId) {
+      logo.close();
+    }
+  });
+};
+
+const openLogoByKey = (targetLogoKey: string, currentLogoId: symbol) => {
+  openLogoTimelines.forEach((logo) => {
+    if (logo.key === targetLogoKey && logo.id !== currentLogoId) {
+      closeOtherLogos(logo.id);
+      logo.open();
+    }
+  });
+};
+
 export default function LogoBH({ 
   className = '',
+  logoKey,
   autoAnimate = false,
   triggerRef,
   triggerStart,
   triggerEnd,
+  reopenLogoKeyOnClose,
   showMarkers = false
 }: LogoBHProps) {
   const myNameRef = useRef<HTMLSpanElement>(null);
   const hoverTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const scrollTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const logoIdRef = useRef(Symbol('LogoBH'));
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const reverseClosed = useCallback(() => {
+    scrollTimelineRef.current?.reverse();
+    hoverTimelineRef.current?.reverse();
+    setIsAnimating(false);
+  }, []);
+
+  const playOpen = useCallback(() => {
+    closeOtherLogos(logoIdRef.current);
+
+    if (hoverTimelineRef.current) {
+      hoverTimelineRef.current.play();
+      setIsAnimating(true);
+    }
+  }, []);
 
   useEffect(() => {
     // Register ScrollTrigger plugin
@@ -79,13 +127,30 @@ export default function LogoBH({
           }, index * 0.05); // Faster stagger for hover
         });
         hoverTimelineRef.current = hoverTl;
+        const registryEntry: LogoRegistryEntry = {
+          id: logoIdRef.current,
+          key: logoKey,
+          open: () => {
+            hoverTl.pause(0);
+            tl.play();
+            setIsAnimating(true);
+          },
+          close: () => {
+            tl.reverse();
+            hoverTl.reverse();
+            setIsAnimating(false);
+          },
+        };
+        openLogoTimelines.add(registryEntry);
 
         // If autoAnimate is true, play immediately
         if (autoAnimate) {
+          closeOtherLogos(logoIdRef.current);
           tl.play();
         } else if (triggerRef?.current) {
 
-          ScrollTrigger.create({
+          scrollTimelineRef.current = tl;
+          scrollTriggerRef.current = ScrollTrigger.create({
             trigger: triggerRef.current,
             // start: "45% bottom", // When middle of footer hits bottom of viewport
             // end: "top top", // When top of footer reaches top of viewport (footer completely out of view)
@@ -93,7 +158,20 @@ export default function LogoBH({
             end: triggerEnd,
             markers: showMarkers,
             animation: tl,
-            toggleActions: "play none none reverse"
+            toggleActions: "none none none none",
+            onEnter: () => {
+              closeOtherLogos(logoIdRef.current);
+              tl.play();
+              setIsAnimating(true);
+            },
+            onLeaveBack: () => {
+              tl.reverse();
+              setIsAnimating(false);
+
+              if (reopenLogoKeyOnClose) {
+                openLogoByKey(reopenLogoKeyOnClose, logoIdRef.current);
+              }
+            },
           });
         } else {
           // console.log("❌ LogoBH: triggerRef.current is null");
@@ -118,15 +196,11 @@ export default function LogoBH({
 
     // Hover event handlers
     const handleMouseEnter = () => {
-      if (hoverTimelineRef.current) {
-        hoverTimelineRef.current.play();
-      }
+      playOpen();
     };
 
     const handleMouseLeave = () => {
-      if (hoverTimelineRef.current) {
-        hoverTimelineRef.current.reverse();
-      }
+      reverseClosed();
     };
 
     // Add hover listeners to the logo element
@@ -149,44 +223,40 @@ export default function LogoBH({
         myNameElement.removeEventListener('mouseenter', handleMouseEnter);
         myNameElement.removeEventListener('mouseleave', handleMouseLeave);
       }
+
+      openLogoTimelines.forEach((logo) => {
+        if (logo.id === logoIdRef.current) {
+          openLogoTimelines.delete(logo);
+        }
+      });
       
       try {
-        if (typeof window !== 'undefined' && ScrollTrigger) {
-          const triggerElement = triggerRef?.current;
-          ScrollTrigger.getAll().forEach(trigger => {
-            if (triggerElement && trigger.trigger === triggerElement) {
-              trigger.kill();
-            }
-          });
+        if (scrollTriggerRef.current) {
+          scrollTriggerRef.current.kill();
+          scrollTriggerRef.current = null;
         }
       } catch (error) {
         console.warn('LogoBH: ScrollTrigger cleanup failed:', error);
       }
     };
-  }, [triggerRef, triggerStart, triggerEnd, autoAnimate, showMarkers]);
+  }, [triggerRef, triggerStart, triggerEnd, autoAnimate, showMarkers, logoKey, reopenLogoKeyOnClose, playOpen, reverseClosed]);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     e.stopPropagation(); // Prevent parent TransitionLink from handling the event
-    if (hoverTimelineRef.current) {
-      if (isAnimating) {
-        hoverTimelineRef.current.reverse();
-      } else {
-        hoverTimelineRef.current.play();
-      }
-      setIsAnimating(!isAnimating);
+    if (isAnimating) {
+      reverseClosed();
+    } else {
+      playOpen();
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = (e: TouchEvent) => {
     e.preventDefault(); // Prevent default touch behavior
     e.stopPropagation(); // Prevent parent TransitionLink from handling the event
-    if (hoverTimelineRef.current) {
-      if (isAnimating) {
-        hoverTimelineRef.current.reverse();
-      } else {
-        hoverTimelineRef.current.play();
-      }
-      setIsAnimating(!isAnimating);
+    if (isAnimating) {
+      reverseClosed();
+    } else {
+      playOpen();
     }
   };
 

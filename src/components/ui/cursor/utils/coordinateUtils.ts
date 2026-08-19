@@ -1,4 +1,4 @@
-import { CursorDazzleStyle, CursorHitRect, CursorHitTarget, ViewportSize } from '../types';
+import { CursorBorderEdge, CursorDazzleStyle, CursorHitRect, CursorHitTarget, CursorMorphVariant, ViewportSize } from '../types';
 
 const CURSOR_HIT_SELECTOR = '[data-cursor-hit], [data-advanced-cursor="true"]';
 const DAZZLE_STYLES: CursorDazzleStyle[] = ['pulse', 'orbit', 'spark'];
@@ -57,6 +57,24 @@ const normalizeDazzleStyle = (value: string | undefined): CursorDazzleStyle => {
   return 'pulse';
 };
 
+const normalizeMorphVariant = (element: HTMLElement): CursorMorphVariant => {
+  const explicitVariant = element.dataset.cursorMorph;
+  if (explicitVariant === 'line' || explicitVariant === 'outline' || explicitVariant === 'border') {
+    return explicitVariant;
+  }
+
+  const level = element.dataset.cursorLevel ?? '';
+  if (level.startsWith('header') || level.startsWith('footer')) {
+    return 'line';
+  }
+
+  return 'outline';
+};
+
+const normalizeBorderEdge = (element: HTMLElement): CursorBorderEdge => (
+  element.dataset.cursorBorderEdge === 'bottom' ? 'bottom' : 'top'
+);
+
 const toHitRect = (rect: DOMRect): CursorHitRect => ({
   top: rect.top,
   right: rect.right,
@@ -85,6 +103,8 @@ const createHitTarget = (element: HTMLElement): CursorHitTarget | null => {
     element,
     rect: toHitRect(rect),
     dazzleStyle: normalizeDazzleStyle(element.dataset.cursorDazzle),
+    morphVariant: normalizeMorphVariant(element),
+    borderEdge: normalizeBorderEdge(element),
   };
 };
 

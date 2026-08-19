@@ -61,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="" suppressHydrationWarning>
       <head>
         {/* Prevent theme flash by setting theme immediately */}
         <script
@@ -95,29 +95,6 @@ export default function RootLayout({
                     document.documentElement.classList.add('dark');
                   }
                 }
-                // // THIS IS AN ANNOYING UN-RELATED ETH WARNING FROM THE BROWSER I GUESS.
-                // // Block ethereum-related errors from external sources
-                window.addEventListener('error', function(e) {
-                  if (e.message && e.message.includes('ethereum')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                  }
-                });
-                
-                // Override ethereum to prevent errors
-                if (typeof window !== 'undefined') {
-                  Object.defineProperty(window, 'ethereum', {
-                    value: {
-                      selectedAddress: null,
-                      isConnected: function() { return false; },
-                      request: function() { return Promise.reject('Not available'); }
-                    },
-                    writable: false,
-                    configurable: false
-                  });
-                }
-                
               })();
             `,
           }}

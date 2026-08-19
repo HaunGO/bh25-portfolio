@@ -45,7 +45,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
     await gsap.to(overlayRef.current, { 
       autoAlpha: 0, 
       duration: .3, 
-      ease: 'power2.ut' 
+      ease: 'power2.out' 
     });
   };
 

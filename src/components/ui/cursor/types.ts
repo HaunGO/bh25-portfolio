@@ -11,6 +11,8 @@ export interface TrailPoint {
 
 export type CursorDazzleStyle = 'pulse' | 'orbit' | 'spark';
 export type CursorMorphStyle = 'gooey' | 'angular';
+export type CursorMorphVariant = 'outline' | 'line' | 'border';
+export type CursorBorderEdge = 'top' | 'bottom';
 
 export interface CursorHitRect {
   top: number;
@@ -25,6 +27,8 @@ export interface CursorHitTarget {
   element: HTMLElement;
   rect: CursorHitRect;
   dazzleStyle: CursorDazzleStyle;
+  morphVariant: CursorMorphVariant;
+  borderEdge: CursorBorderEdge;
 }
 
 export interface CursorState {
@@ -74,6 +78,7 @@ export interface TouchTrailConfig {
 }
 
 export interface CursorVisualConfig {
+  enableRing: boolean;
   size: number;
   ringSize: number;
   ringThickness: number;

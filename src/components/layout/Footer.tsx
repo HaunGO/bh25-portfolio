@@ -1,20 +1,90 @@
 'use client';
 
-import { useRef } from 'react';
+import { Fragment, useCallback, useRef, type MouseEvent } from 'react';
+import gsap from 'gsap';
+import { Code2, ExternalLink, Mail, MapPin } from 'lucide-react';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
+import { resumeData } from '@/data/resume';
 
 interface FooterProps {
   className?: string;
 }
 
+const footerTaglineItems = [
+  '• A Creator of Great and Many Things',
+  '• Frontend UX & Design System Engineer',
+  '• Creative Developer',
+  '• ElectroMagnetic Tinkerer',
+  '• Modern Bushcrafter',
+  '• Proper Goofball',
+  '• Real American',
+];
+
+const rainbowColors = [
+  '#ef4444',
+  '#f97316',
+  '#eab308',
+  '#22c55e',
+  '#3b82f6',
+  '#4f46e5',
+  '#8b5cf6',
+];
+
+const getFooterTextColor = () => (
+  document.documentElement.classList.contains('dark') ? '#a3a3a3' : '#525252'
+);
+
+const getRandomRainbowColor = () => (
+  rainbowColors[Math.floor(Math.random() * rainbowColors.length)]
+);
 
 export default function Footer({ className = '' }: FooterProps) {
   const footerRef = useRef<HTMLElement>(null);
 
+  const handleTaglineItemEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      color: getRandomRainbowColor(),
+      duration: 0,
+      ease: 'power3.out',
+    });
+  }, []);
+
+  const handleTaglineItemLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      color: getFooterTextColor(),
+      duration: 30,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(target, { clearProps: 'color' });
+      },
+    });
+  }, []);
+
+  const renderHighlightedItem = useCallback((item: string) => (
+    <span
+      aria-label={item}
+      className="inline-block"
+      onMouseEnter={handleTaglineItemEnter}
+      onMouseLeave={handleTaglineItemLeave}
+    >
+      {item}
+    </span>
+  ), [handleTaglineItemEnter, handleTaglineItemLeave]);
+
   return (
     <footer 
       ref={footerRef}
+      data-cursor-hit="active"
+      data-cursor-level="footer"
+      data-cursor-morph="border"
+      data-cursor-border-edge="top"
       className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 ${className}`}
     >
       <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 ">
@@ -22,35 +92,62 @@ export default function Footer({ className = '' }: FooterProps) {
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
-              <LogoBH autoAnimate={false} triggerRef={footerRef} triggerStart="45% bottom" triggerEnd="top top" />
+              <LogoBH
+                logoKey="footer"
+                autoAnimate={false}
+                triggerRef={footerRef}
+                triggerStart="45% bottom"
+                triggerEnd="top top"
+                reopenLogoKeyOnClose="header"
+              />
             </div>
-            <p className="text-neutral-600 dark:text-neutral-400 text-lg "> 
-            • A Creator of Great and Many Things • Frontend UX & Design System Engineer • Creative Developer • ElectroMagnetic Tinkerer • Modern Bushcrafter • Proper Goofball • Real American • 
+            <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
+              {footerTaglineItems.map((item, index) => (
+                <Fragment key={`${item}-${index}`}>
+                  {index > 0 && ' '}
+                  {renderHighlightedItem(item)}
+                </Fragment>
+              ))}
             </p>
 
           </div>
 
-          {/* Social Links */}
-          {/* 
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 font-display"></h3>
+          <div id="contact" className="scroll-mt-24 space-y-2 text-left text-sm text-neutral-600 dark:text-neutral-400 md:pt-12">
+            <a
+              href={`mailto:${resumeData.personalInfo.email}`}
+              className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
+            >
+              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>{resumeData.personalInfo.email}</span>
+            </a>
+            {resumeData.personalInfo.linkedin && (
+              <a
+                href={resumeData.personalInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
+              >
+                <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{resumeData.personalInfo.linkedin.replace('https://', '')}</span>
+              </a>
+            )}
+            {/* {resumeData.personalInfo.github && (
+              <a
+                href={resumeData.personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
+              >
+                <Code2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{resumeData.personalInfo.github.replace('https://', '')}</span>
+              </a>
+            )} */}
+            {/* <p className="flex items-center gap-2 ">
+              <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>{resumeData.personalInfo.location}</span>
+            </p> */}
+          </div>
 
-            <nav>
-              <ul className="flex flex-row justify-between flex-wrap items-center gap-4 list-none m-0 p-0">
-                <li>
-                  <TransitionLink href="/portfolio">Portfolio</TransitionLink>
-                </li>
-                <li>
-                  <TransitionLink href="/resume">Resume</TransitionLink>
-                </li>
-                <li>LinkedIn</li>
-                <li>GitHub</li>
-                <li>Contact</li>
-              </ul>
-            </nav>
-
-          </div> 
-          */}
 
 
         </div>
@@ -77,7 +174,7 @@ export default function Footer({ className = '' }: FooterProps) {
 
             
             <blockquote 
-              className="text-yellow-600 relative group md:pt-0 text-lg font-['Schoolbell']"
+              className="text-yellow-600 relative group md:pt-0 text-lg font-script"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
               <span className="opacity-80">This is the day which the LORD hath made; we will rejoice and be glad in it.</span>

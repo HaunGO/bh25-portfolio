@@ -31,6 +31,10 @@ const getHeroTextColor = () => (
   document.documentElement.classList.contains('dark') ? '#f5f5f5' : '#171717'
 );
 
+const getHeroLineColor = () => (
+  document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000'
+);
+
 const getRandomRainbowColor = () => (
   rainbowColors[Math.floor(Math.random() * rainbowColors.length)]
 );
@@ -61,10 +65,10 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     const target = event.currentTarget;
 
     gsap.killTweensOf(target);
-    gsap.to(target, {
+    gsap.set(target, {
       color: getRandomRainbowColor(),
-      duration: 0.035,
-      ease: 'power3.out',
+      duration: 0,
+      // ease: 'power3.out',
     });
   }, []);
 
@@ -74,7 +78,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     gsap.killTweensOf(target);
     gsap.to(target, {
       color: getHeroTextColor(),
-      duration: 0.06,
+      duration: 30,
       ease: 'power3.out',
       onComplete: () => {
         gsap.set(target, { clearProps: 'color' });
@@ -82,19 +86,40 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     });
   }, []);
 
+  const handleLineEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      backgroundColor: getRandomRainbowColor(),
+      duration: 0,
+      ease: 'power3.out',
+    });
+  }, []);
+
+  const handleLineLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
+    const target = event.currentTarget;
+
+    gsap.killTweensOf(target);
+    gsap.to(target, {
+      backgroundColor: getHeroLineColor(),
+      duration: 30,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(target, { clearProps: 'backgroundColor' });
+      },
+    });
+  }, []);
+
   const renderHighlightedWord = useCallback((word: string) => (
     <span
       key={word}
-      data-cursor-hit="active"
-      data-cursor-level="word"
       aria-label={word}
       className="inline-block"
     >
       {Array.from(word).map((character, index) => (
         <span
           key={`${word}-${character}-${index}`}
-          data-cursor-hit="active"
-          data-cursor-level="char"
           aria-hidden="true"
           className="inline-block"
           onMouseEnter={handleCharacterEnter}
@@ -200,7 +225,13 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                   <span ref={nameRef} className="inline-block font-semibold">
                     {/* <HoverLetters  text="Brandon" className="inline-block" /> */}
                     {renderHighlightedWords(heroTitle.name)}
-                    <span id="theLine" aria-hidden="true" className="relative -top-4 block h-1 w-full bg-black dark:bg-white"></span>
+                    <span
+                      id="theLine"
+                      aria-hidden="true"
+                      className="relative -top-4 block h-1 w-full bg-black dark:bg-white"
+                      onMouseEnter={handleLineEnter}
+                      onMouseLeave={handleLineLeave}
+                    ></span>
                   </span>
                   <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
                     {renderHighlightedWords(heroTitle.subtitle)}

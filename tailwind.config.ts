@@ -99,6 +99,7 @@ const config: Config = {
         mono: ['ui-monospace', 'SFMono-Regular', 'Monaco', 'monospace'],
         display: ['var(--font-bitter)', 'Bitter', 'Georgia', 'serif'],
         body: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        script: ['Schoolbell', 'cursive'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

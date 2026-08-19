@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, memo, useCallback, useRef } from 'react';
+import { useEffect, memo, useCallback, useRef, type MouseEvent } from 'react';
+import { gsap } from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
@@ -9,6 +11,11 @@ interface HeaderProps {
   className?: string;
 }
 
+const navigationItems = [
+  { label: 'About', href: '#about' },
+  { label: 'Work', href: '#experience' },
+  { label: 'Contact', href: '#contact' },
+];
 
 const Header = memo(function Header({ className = '' }: HeaderProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -17,10 +24,32 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
 
   // Get hero element reference for LogoBH trigger
   useEffect(() => {
+    gsap.registerPlugin(ScrollToPlugin);
+
     const triggerElement = document.querySelector('[data-hero-section-title]') as HTMLElement;
     if (triggerElement) {
       triggerRef.current = triggerElement;
     }
+  }, []);
+
+  const handleSectionNavigation = useCallback((event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    gsap.to(window, {
+      duration: 1,
+      ease: 'power1.inOut',
+      // ease: 'none', 
+      scrollTo: {
+        y: target,
+        offsetY: 72,
+      },
+      onComplete: () => {
+        window.history.replaceState(null, '', href);
+      },
+    });
   }, []);
 
   // Get header background classes based on scroll state - memoized
@@ -46,6 +75,10 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
   
   return (
     <header
+      data-cursor-hit="active"
+      data-cursor-level="header"
+      data-cursor-morph="border"
+      data-cursor-border-edge="bottom"
       className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700
         ${getHeaderBackground()}
@@ -53,32 +86,35 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
       `}
     >
       <PageContainer>
-        <div className="relative flex justify-end md:justify-center items-center h-12 lg:h-14">
+        <div className="relative flex justify-end items-center h-12 lg:h-14">
           <TransitionLink href="/" className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
-            <LogoBH autoAnimate={false}  triggerRef={triggerRef} triggerStart="center top" triggerEnd="bottom bottom" />
+            <span className="relative top-1 inline-block origin-left scale-110">
+              <LogoBH
+                logoKey="header"
+                autoAnimate={false}
+                triggerRef={triggerRef}
+                triggerStart="center top"
+                triggerEnd="bottom bottom"
+              />
+            </span>
           </TransitionLink>
 
-          {/* Desktop Navigation */}
-          {/* <nav className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - single-page section links */}
+          <nav className="hidden md:flex items-end space-x-8">
             {navigationItems.map((item) => (
-              <button
+              <a
                 key={item.href}
-                onClick={() => handleNavigation(item.href)}
+                href={item.href}
+                onClick={(event) => handleSectionNavigation(event, item.href)}
                 className={`
                   relative px-3 py-2 text-sm font-medium transition-colors duration-200
-                  ${pathname === item.href
-                    ? 'text-primary-600 dark:text-primary-400'
-                    : 'text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400'
-                  }
+                  text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400
                 `}
               >
                 {item.label}
-                {pathname === item.href && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-neutral-400" />
-                )}
-              </button>
+              </a>
             ))}
-          </nav> */}
+          </nav>
 
           {/* Mobile menu button - DO NOT DELETE.*/}
           {/* <button

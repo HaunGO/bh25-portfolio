@@ -1,4 +1,4 @@
-import { CursorHitRect, CursorMorphStyle, TrailPoint } from '../types';
+import { CursorBorderEdge, CursorHitRect, CursorMorphStyle, TrailPoint } from '../types';
 
 const MIN_MESH_POINTS = 12;
 
@@ -133,6 +133,38 @@ const createRectangleMeshPoints = (
   });
 };
 
+const createFlatLineMeshPoints = (
+  rect: CursorHitRect,
+  pointCount: number,
+  yOffset: number = 4
+): TrailPoint[] => {
+  const normalizedPointCount = normalizeMeshPointCount(pointCount);
+  const halfPointCount = Math.ceil(normalizedPointCount / 2);
+  const remainingPointCount = normalizedPointCount - halfPointCount;
+  const minWidth = 24;
+  const targetWidth = Math.max(minWidth, rect.width);
+  const centerX = rect.left + rect.width / 2;
+  const left = centerX - targetWidth / 2;
+  const right = centerX + targetWidth / 2;
+  const y = rect.bottom + yOffset;
+
+  return Array.from({ length: normalizedPointCount }, (_, index) => {
+    if (index < halfPointCount) {
+      const progress = halfPointCount === 1 ? 1 : index / (halfPointCount - 1);
+      return {
+        x: left + (right - left) * progress,
+        y,
+      };
+    }
+
+    const progress = remainingPointCount <= 1 ? 1 : (index - halfPointCount) / (remainingPointCount - 1);
+    return {
+      x: right - (right - left) * progress,
+      y,
+    };
+  });
+};
+
 const createSuperellipseMeshPoints = (
   rect: CursorHitRect,
   pointCount: number,
@@ -219,6 +251,34 @@ export const createMeshHaloPath = (
     morphStyle === 'gooey' ? 1 : 0
   )
 );
+
+export const createFlatLineTargetPath = (
+  targetRect: CursorHitRect,
+  pointCount: number
+): string => (
+  createClosedMeshPath(
+    createFlatLineMeshPoints(targetRect, pointCount),
+    0
+  )
+);
+
+export const createBorderLineTargetPath = (
+  targetRect: CursorHitRect,
+  pointCount: number,
+  edge: CursorBorderEdge
+): string => {
+  const y = edge === 'bottom' ? targetRect.bottom : targetRect.top;
+
+  return createClosedMeshPath(
+    createFlatLineMeshPoints({
+      ...targetRect,
+      top: y,
+      bottom: y,
+      height: 0,
+    }, pointCount, 0),
+    0
+  );
+};
 
 /**
  * Create a morph target that keeps the cursor halo inside the active outline.
