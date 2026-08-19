@@ -12,13 +12,13 @@ interface FooterProps {
 }
 
 const footerTaglineItems = [
-  '• A Creator of Great and Many Things',
+  '• A Creator of Great and Many',
   '• Frontend UX & Design System Engineer',
   '• Creative Developer',
-  '• ElectroMagnetic Tinkerer',
-  '• Modern Bushcrafter',
+  '• Electro-Magnetic Tinkerer',
+  '• Bushcraft Master',
   '• Proper Goofball',
-  '• Real American',
+  '• Natural American',
 ];
 
 const rainbowColors = [

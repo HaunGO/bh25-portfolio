@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { MouseTrailManagerProps, TrailPoint } from '../types';
 import { screenToSVG, isClickable, findCursorHitTarget } from '../utils/coordinateUtils';
@@ -15,6 +15,8 @@ const MouseTrailManager = memo(function MouseTrailManager({
   const [trailLayers, setTrailLayers] = useState<TrailPoint[][]>(
     config.trailLayers.map(() => [])
   );
+  const lastPointerRef = useRef<{ x: number; y: number } | null>(null);
+  const scrollFrameRef = useRef<number | null>(null);
 
   // Create ripple effect on click
   const createRipple = useCallback((x: number, y: number) => {
@@ -46,27 +48,31 @@ const MouseTrailManager = memo(function MouseTrailManager({
     );
   }, []);
 
-  // Update cursor position and state
-  const updateCursor = useCallback((e: MouseEvent) => {
-    // Debug logging (only log occasionally to avoid spam)
-    if (Math.random() < 0.01) {
-      console.log('MouseTrailManager: Mouse move', { x: e.clientX, y: e.clientY });
-    }
-
+  const syncCursorTarget = useCallback((x: number, y: number, sourceElement?: HTMLElement | null) => {
     const hitTarget = findCursorHitTarget(
-      e.clientX,
-      e.clientY,
+      x,
+      y,
       config.hitRadius,
-      e.target instanceof HTMLElement ? e.target : null
+      sourceElement
     );
-    
+
     onCursorUpdate({
-      x: e.clientX,
-      y: e.clientY,
+      x,
+      y,
       isHovering: Boolean(hitTarget),
       isVisible: true,
       target: hitTarget,
     });
+  }, [config.hitRadius, onCursorUpdate]);
+
+  // Update cursor position and state
+  const updateCursor = useCallback((e: MouseEvent) => {
+    lastPointerRef.current = { x: e.clientX, y: e.clientY };
+    syncCursorTarget(
+      e.clientX,
+      e.clientY,
+      e.target instanceof HTMLElement ? e.target : null
+    );
 
     // Update trail points for path animation (only when not hovering over links)
     const svgPoint = screenToSVG(e.clientX, e.clientY);
@@ -79,7 +85,7 @@ const MouseTrailManager = memo(function MouseTrailManager({
         return newPoints.slice(-layerLength);
       })
     );
-  }, [config.hitRadius, config.trailLength, config.trailLayers, onCursorUpdate]);
+  }, [config.trailLength, config.trailLayers, syncCursorTarget]);
 
   // Handle mouse down
   const handleMouseDown = useCallback((e: MouseEvent) => {
@@ -101,6 +107,7 @@ const MouseTrailManager = memo(function MouseTrailManager({
 
   // Handle mouse leave
   const handleMouseLeave = useCallback(() => {
+    lastPointerRef.current = null;
     onCursorUpdate({
       isHovering: false,
       isVisible: false,
@@ -110,8 +117,20 @@ const MouseTrailManager = memo(function MouseTrailManager({
 
   // Handle scroll
   const handleScroll = useCallback(() => {
-    // Scroll logic if needed
-  }, []);
+    const lastPointer = lastPointerRef.current;
+    if (!lastPointer || scrollFrameRef.current !== null) return;
+
+    scrollFrameRef.current = window.requestAnimationFrame(() => {
+      scrollFrameRef.current = null;
+      const sourceElement = document.elementFromPoint(lastPointer.x, lastPointer.y);
+
+      syncCursorTarget(
+        lastPointer.x,
+        lastPointer.y,
+        sourceElement instanceof HTMLElement ? sourceElement : null
+      );
+    });
+  }, [syncCursorTarget]);
 
   const handleScrollEnd = useCallback(() => {
     // Scroll end logic if needed
@@ -137,6 +156,11 @@ const MouseTrailManager = memo(function MouseTrailManager({
     window.addEventListener('resize', handleResize);
 
     return () => {
+      if (scrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(scrollFrameRef.current);
+        scrollFrameRef.current = null;
+      }
+
       document.removeEventListener('mousemove', updateCursor);
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);

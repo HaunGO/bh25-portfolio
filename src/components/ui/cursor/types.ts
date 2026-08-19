@@ -90,12 +90,19 @@ export interface CursorVisualConfig {
   hitRadius: number;
   overlayColor: string;
   targetOpacity: number;
+  targetRadius: number;
   morphStyle: CursorMorphStyle;
   meshPoints: number;
   meshPointExponent: number;
   morphDuration: number;
   releaseDuration: number;
   jellyStrokeWidth: number;
+  targetGlowColor: string;
+  targetGlowWidth: number;
+  targetGlowOpacity: number;
+  flatTargetGlowColor: string;
+  flatTargetGlowWidth: number;
+  flatTargetGlowOpacity: number;
   enableDazzle: boolean;
   dazzleStyles: Record<CursorDazzleStyle, {
     color: string;

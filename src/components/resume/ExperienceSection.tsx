@@ -68,7 +68,8 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
             {/* Experience card */}
             <div
               data-cursor-hit="active"
-              data-cursor-dazzle={index % 2 === 0 ? 'pulse' : 'orbit'}
+              data-cursor-level="featured-experience"
+              data-cursor-dazzle={index % 3 === 0 ? 'spark' : index % 2 === 0 ? 'pulse' : 'orbit'}
               className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-xl transition-shadow duration-300"
             >
               

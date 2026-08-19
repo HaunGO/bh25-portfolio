@@ -133,6 +133,87 @@ const createRectangleMeshPoints = (
   });
 };
 
+const createRoundedRectangleMeshPoints = (
+  rect: CursorHitRect,
+  pointCount: number,
+  radius: number
+): TrailPoint[] => {
+  const normalizedPointCount = normalizeMeshPointCount(pointCount);
+  const width = Math.max(1, rect.width);
+  const height = Math.max(1, rect.height);
+  const cornerRadius = Math.min(Math.max(0, radius), width / 2, height / 2);
+
+  if (cornerRadius === 0) {
+    return createRectangleMeshPoints(rect, normalizedPointCount);
+  }
+
+  const top = rect.top;
+  const right = rect.right;
+  const bottom = rect.bottom;
+  const left = rect.left;
+  const horizontalLength = Math.max(0, width - cornerRadius * 2);
+  const verticalLength = Math.max(0, height - cornerRadius * 2);
+  const cornerLength = (Math.PI * cornerRadius) / 2;
+  const perimeter = horizontalLength * 2 + verticalLength * 2 + cornerLength * 4;
+
+  return Array.from({ length: normalizedPointCount }, (_, index) => {
+    let distance = (index / normalizedPointCount) * perimeter;
+
+    if (distance <= horizontalLength) {
+      return { x: left + cornerRadius + distance, y: top };
+    }
+
+    distance -= horizontalLength;
+    if (distance <= cornerLength) {
+      const angle = -Math.PI / 2 + distance / cornerRadius;
+      return {
+        x: right - cornerRadius + Math.cos(angle) * cornerRadius,
+        y: top + cornerRadius + Math.sin(angle) * cornerRadius,
+      };
+    }
+
+    distance -= cornerLength;
+    if (distance <= verticalLength) {
+      return { x: right, y: top + cornerRadius + distance };
+    }
+
+    distance -= verticalLength;
+    if (distance <= cornerLength) {
+      const angle = distance / cornerRadius;
+      return {
+        x: right - cornerRadius + Math.cos(angle) * cornerRadius,
+        y: bottom - cornerRadius + Math.sin(angle) * cornerRadius,
+      };
+    }
+
+    distance -= cornerLength;
+    if (distance <= horizontalLength) {
+      return { x: right - cornerRadius - distance, y: bottom };
+    }
+
+    distance -= horizontalLength;
+    if (distance <= cornerLength) {
+      const angle = Math.PI / 2 + distance / cornerRadius;
+      return {
+        x: left + cornerRadius + Math.cos(angle) * cornerRadius,
+        y: bottom - cornerRadius + Math.sin(angle) * cornerRadius,
+      };
+    }
+
+    distance -= cornerLength;
+    if (distance <= verticalLength) {
+      return { x: left, y: bottom - cornerRadius - distance };
+    }
+
+    distance -= verticalLength;
+    const angle = Math.PI + distance / cornerRadius;
+    return {
+      x: left + cornerRadius + Math.cos(angle) * cornerRadius,
+      y: top + cornerRadius + Math.sin(angle) * cornerRadius,
+    };
+  });
+};
+
 const createFlatLineMeshPoints = (
   rect: CursorHitRect,
   pointCount: number,
@@ -335,6 +416,48 @@ export const createMeshCursorAwareTargetPath = (
     height: bottom - top,
   };
   const points = createSuperellipseMeshPoints(targetBounds, pointCount, morphStyle, pointExponent);
+  const tension = morphStyle === 'gooey' ? 0.95 : 0;
+
+  return createClosedMeshPath(points, tension);
+};
+
+export const createMeshTargetPath = (
+  targetRect: CursorHitRect,
+  padding: number,
+  morphStyle: CursorMorphStyle,
+  pointCount: number,
+  pointExponent: number
+): string => {
+  const targetBounds = {
+    top: targetRect.top - padding,
+    right: targetRect.right + padding,
+    bottom: targetRect.bottom + padding,
+    left: targetRect.left - padding,
+    width: targetRect.width + padding * 2,
+    height: targetRect.height + padding * 2,
+  };
+  const points = createSuperellipseMeshPoints(targetBounds, pointCount, morphStyle, pointExponent);
+  const tension = morphStyle === 'gooey' ? 0.95 : 0;
+
+  return createClosedMeshPath(points, tension);
+};
+
+export const createMeshRoundedTargetPath = (
+  targetRect: CursorHitRect,
+  padding: number,
+  radius: number,
+  morphStyle: CursorMorphStyle,
+  pointCount: number
+): string => {
+  const targetBounds = {
+    top: targetRect.top - padding,
+    right: targetRect.right + padding,
+    bottom: targetRect.bottom + padding,
+    left: targetRect.left - padding,
+    width: targetRect.width + padding * 2,
+    height: targetRect.height + padding * 2,
+  };
+  const points = createRoundedRectangleMeshPoints(targetBounds, pointCount, radius);
   const tension = morphStyle === 'gooey' ? 0.95 : 0;
 
   return createClosedMeshPath(points, tension);

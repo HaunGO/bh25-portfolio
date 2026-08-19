@@ -46,18 +46,6 @@ const AdvancedCursor = memo(function AdvancedCursor({
       },
     },
   };
-  
-  // Debug logging
-  useEffect(() => {
-    if (!hasMouse && !hasTouch) {
-      console.log('AdvancedCursor: No mouse or touch support detected');
-    } else if (finalConfig.disabled || disabled) {
-      console.log('AdvancedCursor: Disabled by config');
-    } else {
-      console.log('AdvancedCursor: Active - hasMouse:', hasMouse, 'hasTouch:', hasTouch);
-    }
-  }, [hasMouse, hasTouch, disabled, finalConfig.disabled]);
-  
   const [cursorState, setCursorState] = useState<CursorState>({
     x: 0,
     y: 0,
@@ -106,57 +94,6 @@ const AdvancedCursor = memo(function AdvancedCursor({
 
   return (
     <>
-      {/* Debug indicator */}
-      <div 
-        className='hidden '
-        style={{
-          position: 'fixed',
-          top: '10px',
-          right: '10px',
-          background: 'red',
-          color: 'white',
-          padding: '5px',
-          zIndex: 10000,
-          fontSize: '12px'
-        }}
-      >
-        Cursor: {hasMouse ? 'Mouse' : hasTouch ? 'Touch' : 'None'}
-      </div>
-      
-      {/* Touch zone indicators (only on touch devices) */}
-      {hasTouch && !hasMouse && (
-        <>
-          {/* Trail zone indicator */}
-          <div 
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: `${finalConfig.touch.touchZones.trailZone.right * 100}%`,
-              height: '100%',
-            //   border: '2px solid rgba(59, 130, 246, 0.3)',
-              pointerEvents: 'none',
-              zIndex: 9997,
-              background: 'rgba(59, 130, 246, 0)'
-            }}
-          />
-          {/* Scroll zone indicator */}
-          <div 
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: `${finalConfig.touch.touchZones.scrollZone.left * 100}%`,
-              width: `${(finalConfig.touch.touchZones.scrollZone.right - finalConfig.touch.touchZones.scrollZone.left) * 100}%`,
-              height: '100%',
-            //   border: '2px solid rgba(255, 0, 0, 0.3)',
-              pointerEvents: 'none',
-              zIndex: 9997,
-              background: 'rgba(255, 0, 0, 0.05)'
-            }}
-          />
-        </>
-      )}
-      
       {/* Mouse trail system */}
       {hasMouse && (
         <>
