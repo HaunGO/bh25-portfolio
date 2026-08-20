@@ -2,7 +2,7 @@
 
 import { Fragment, useCallback, useRef, type MouseEvent } from 'react';
 import gsap from 'gsap';
-import { Code2, ExternalLink, Mail, MapPin } from 'lucide-react';
+import { ExternalLink, Mail } from 'lucide-react';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
 import { resumeData } from '@/data/resume';

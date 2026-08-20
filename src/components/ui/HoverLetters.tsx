@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
 
 interface HoverLettersProps {
@@ -23,7 +23,6 @@ export default function HoverLetters({
   text, 
   className = '',
 }: HoverLettersProps) {
-  const [hoveredLetter, setHoveredLetter] = useState<number | null>(null);
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   
   // Generate random colors for each letter
@@ -36,8 +35,6 @@ export default function HoverLetters({
     const element = letterRefs.current[index];
     if (!element) return;
     
-    setHoveredLetter(index);
-    
     gsap.to(element, {
       color: getRandomColor(index),
       duration: 0.1,
@@ -48,8 +45,6 @@ export default function HoverLetters({
   const handleMouseLeave = (index: number) => {
     const element = letterRefs.current[index];
     if (!element) return;
-    
-    setHoveredLetter(null);
     
     gsap.to(element, {
       color: 'inherit',

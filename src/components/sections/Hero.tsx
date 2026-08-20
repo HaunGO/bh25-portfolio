@@ -15,7 +15,7 @@ interface HeroProps {
 const heroTitle = {
   greeting: ['Hello,', "I'm"],
   name: ['Brandon'],
-  subtitle: ['A', 'Creator', 'of', 'Sorts'],
+  subtitle: ['A', 'Creator', 'of', 'Great', '&', 'Many'],
 };
 const rainbowColors = [
   '#ef4444', // red
@@ -43,7 +43,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   const heroRef = useRef<HTMLElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
   const nameRef = useRef<HTMLSpanElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const subtitleRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
@@ -240,40 +240,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               </div>
 
 
-              {/* Subtitle */}
-              {/* <p 
-                ref={subtitleRef}
-                className="text-xl md:text-2xl lg:text-3xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed font-body opacity-0"
-              >
-                Building beautiful, interactive experiences that combine{' '}
-                <span className="text-primary-600 dark:text-primary-400 font-semibold">
-                artistic vision
-                </span>{' '}
-                with{' '}
-                <span className="text-accent-600 dark:text-accent-400 font-semibold">
-                technical excellence
-                </span>
-              </p> */}
-
-              {/* Call to Action Buttons */}
-              {/* <div 
-                ref={ctaRef}
-                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              >
-                <button 
-                  className="group relative overflow-hidden bg-primary-600 hover:bg-primary-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl "
-                >
-                  <span className="relative z-10">View Portfolio</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </button>
-                
-                <button 
-                  className="group relative overflow-hidden bg-transparent border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                >
-                  <span className="relative z-10">Download Resume</span>
-                  <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </button>
-              </div> */}
+ 
             </div>
           </PageContainer>
 

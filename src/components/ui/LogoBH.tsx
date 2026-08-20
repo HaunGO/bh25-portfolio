@@ -203,10 +203,13 @@ export default function LogoBH({
       reverseClosed();
     };
 
+    const myNameElement = myNameRef.current;
+    const logoId = logoIdRef.current;
+
     // Add hover listeners to the logo element
-    if (myNameRef.current) {
-      myNameRef.current.addEventListener('mouseenter', handleMouseEnter);
-      myNameRef.current.addEventListener('mouseleave', handleMouseLeave);
+    if (myNameElement) {
+      myNameElement.addEventListener('mouseenter', handleMouseEnter);
+      myNameElement.addEventListener('mouseleave', handleMouseLeave);
     }
 
     // Cleanup function
@@ -217,15 +220,13 @@ export default function LogoBH({
         window.removeEventListener('resize', handleResize);
       }
       
-      // Remove hover listeners - capture ref values
-      const myNameElement = myNameRef.current;
       if (myNameElement) {
         myNameElement.removeEventListener('mouseenter', handleMouseEnter);
         myNameElement.removeEventListener('mouseleave', handleMouseLeave);
       }
 
       openLogoTimelines.forEach((logo) => {
-        if (logo.id === logoIdRef.current) {
+        if (logo.id === logoId) {
           openLogoTimelines.delete(logo);
         }
       });

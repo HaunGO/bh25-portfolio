@@ -1,9 +1,9 @@
 'use client';
 
 import Hero from '@/components/sections/Hero';
+import AboutSection from '@/components/sections/AboutSection';
 import { resumeData } from '@/data/resume';
 import ExperienceSection from '@/components/resume/ExperienceSection';
-import QuickNavigation from '@/components/sections/QuickNavigation';
 import { PageContainer } from '@/components/ui/Container';
 
 const featuredExperience = resumeData.experience.slice(0, 3);
@@ -13,6 +13,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+
+      <AboutSection />
 
       <section id="experience" className="relative z-10 scroll-mt-24 ">
         <PageContainer className="flex flex-col md:flex-row gap-8">
@@ -83,7 +85,6 @@ export default function HomePage() {
         </PageContainer>
       </section>
 
-      {/* <QuickNavigation /> */}
     </>
   );
 }

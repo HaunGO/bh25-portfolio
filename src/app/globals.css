@@ -125,6 +125,13 @@ h1,h2,h3,h4,h5,h6 {
   cursor: default !important;
 }
 
+[data-cursor-hit],
+[data-cursor-hit] *,
+[data-advanced-cursor="true"],
+[data-advanced-cursor="true"] * {
+  transition-duration: 0ms !important;
+}
+
 a,
 button,
 summary,
@@ -140,5 +147,6 @@ summary,
 [data-hero-section-title],
 [data-hero-section-title] * {
   cursor: default !important;
+  transition-duration: 0ms !important;
 }
 

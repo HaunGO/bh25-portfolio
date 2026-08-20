@@ -3,7 +3,7 @@ import { CursorConfig } from './types';
 export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
   disabled: false,
   visual: {
-    enableRing: true,
+    enableRing: false,
     size: 7,
     ringSize: 76,
     ringThickness: 0.8,
@@ -28,7 +28,7 @@ export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
     flatTargetGlowColor: 'rgba(56, 189, 248, 0.76)',
     flatTargetGlowWidth: 6,
     flatTargetGlowOpacity: 0.72,
-    enableDazzle: true,
+    enableDazzle: false,
     dazzleStyles: {
       pulse: {
         color: 'rgba(56, 189, 248, 1)',

@@ -3,8 +3,6 @@
 import { resumeData } from '@/data/resume';
 import ResumeSection from '@/components/resume/ResumeSection';
 import ExperienceSection from '@/components/resume/ExperienceSection';
-import SkillsSection from '@/components/resume/SkillsSection';
-import EducationSection from '@/components/resume/EducationSection';
 
 export default function ResumePage() {
   const { personalInfo } = resumeData;

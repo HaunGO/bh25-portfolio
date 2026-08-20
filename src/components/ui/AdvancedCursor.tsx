@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import { AdvancedCursor } from './cursor';
 
-export default function AdvancedCursorWrapper() {
+interface AdvancedCursorWrapperProps {
+  disabled?: boolean;
+}
+
+export default function AdvancedCursorWrapper({ disabled = false }: AdvancedCursorWrapperProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -14,5 +18,5 @@ export default function AdvancedCursorWrapper() {
     return null;
   }
 
-  return <AdvancedCursor />;
+  return <AdvancedCursor disabled={disabled} />;
 }

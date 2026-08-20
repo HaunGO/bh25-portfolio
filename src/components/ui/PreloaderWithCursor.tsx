@@ -21,7 +21,6 @@ export default function PreloaderWithCursor({
   
   const [showPreloader, setShowPreloader] = useState(true);
   const [showCursor, setShowCursor] = useState(false);
-  const [preloaderComplete, setPreloaderComplete] = useState(false);
 
   useEffect(() => {
     console.log('PreloaderWithCursor: useEffect triggered');
@@ -35,7 +34,6 @@ export default function PreloaderWithCursor({
       console.log('PreloaderWithCursor: Return visit - skipping preloader');
       setShowPreloader(false);
       setShowCursor(true);
-      setPreloaderComplete(true);
       onComplete?.();
       return;
     }
@@ -76,7 +74,6 @@ export default function PreloaderWithCursor({
       duration: 0.4,
       ease: 'power2.in',
       onComplete: () => {
-        setPreloaderComplete(true);
         setShowPreloader(false);
         sessionStorage.setItem('hasVisited', 'true');
         onComplete?.();
