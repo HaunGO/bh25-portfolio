@@ -2,6 +2,7 @@
 
 import Hero from '@/components/sections/Hero';
 import AboutSection from '@/components/sections/AboutSection';
+import ContactSection from '@/components/sections/ContactSection';
 import { resumeData } from '@/data/resume';
 import ExperienceSection from '@/components/resume/ExperienceSection';
 import { PageContainer } from '@/components/ui/Container';
@@ -84,6 +85,8 @@ export default function HomePage() {
           </div>
         </PageContainer>
       </section>
+
+      <ContactSection />
 
     </>
   );

@@ -112,7 +112,7 @@ export default function Footer({ className = '' }: FooterProps) {
 
           </div>
 
-          <div id="contact" className="scroll-mt-24 space-y-2 text-left text-sm text-neutral-600 dark:text-neutral-400 md:pt-12">
+          <div className="space-y-2 text-left text-sm text-neutral-600 dark:text-neutral-400 md:pt-12">
             <a
               href={`mailto:${resumeData.personalInfo.email}`}
               className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"

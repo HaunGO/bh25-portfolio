@@ -81,7 +81,7 @@ export const resumeData: ResumeData = {
       endDate: 'Present',
       type: 'full-time',
       description:
-        `Helping turn a sprawling enterprise UI into a proper design system. Building reusable and themeable components, useful Storybook documentation, accessible patterns, and scalable SCSS architecture so teams can ship consistent, maintainable interfaces without reinventing the button every Tuesday.`,
+        'Contributing to an enterprise design system that helps product teams ship consistent, accessible UI at scale. Building industry-quality, themeable components with SCSS, TypeScript, and Storybook; documenting usage patterns; and strengthening frontend standards for maintainable product delivery.',
       achievements: [ 
         'Bangin` out a bunch of high quality, bullet-proof components.',
         'Respected as the Lord of Linting for enforcing syncronized code standards',
