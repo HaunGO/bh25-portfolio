@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Skill } from '@/types/resume';
 import gsap from 'gsap';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface SkillsSectionProps {
   skills: Skill[];
@@ -113,9 +114,7 @@ const SkillsSection = ({ skills }: SkillsSectionProps) => {
                 onClick={() => setSelectedSkill(null)}
                 className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <CloseIcon className="h-6 w-6" fontSize="inherit" />
               </button>
             </div>
             

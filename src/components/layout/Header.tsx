@@ -6,23 +6,71 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { TransitionLink } from '../transitions/TransitionLink';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import { playTrailChoreography } from '@/components/ui/cursor';
 
 interface HeaderProps {
   className?: string;
 }
 
 const navigationItems = [
-  { label: 'About', href: '#about' },
-  { label: 'Resume', href: '#experience' },
+  // { label: 'About', href: '#about' },
+  // { label: 'Resume', href: '#experience' },
   { label: 'Contact', href: '#contact' },
 ];
 
 const Header = memo(function Header({ className = '' }: HeaderProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
 
+  const scrollToHash = useCallback((href: string, duration = 1) => {
+    gsap.registerPlugin(ScrollToPlugin);
 
+    const finish = () => {
+      window.history.replaceState(null, '', href);
+    };
 
-  // Get hero element reference for LogoBH trigger
+    if (href === '#contact') {
+      playTrailChoreography({
+        id: 'contact',
+        target: '#contact',
+        travelDuration: duration,
+        scribbleDuration: 1,
+        loops: 2,
+        holdDuration: 0,
+        returnDuration: 0.9,
+        padding: 24,
+        entrySide: 'left',
+        clockwise: false,
+      });
+
+      gsap.to(window, {
+        duration,
+        ease: 'power1.inOut',
+        scrollTo: { y: 'max' },
+        onComplete: finish,
+      });
+      return;
+    }
+
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    gsap.to(window, {
+      duration,
+      ease: 'power1.inOut',
+      scrollTo: {
+        y: target,
+        offsetY: 72,
+      },
+      onComplete: finish,
+    });
+  }, []);
+
+  const handleSectionNavigation = useCallback((event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    event.preventDefault();
+    scrollToHash(href);
+  }, [scrollToHash]);
+
   useEffect(() => {
     gsap.registerPlugin(ScrollToPlugin);
 
@@ -30,27 +78,12 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
     if (triggerElement) {
       triggerRef.current = triggerElement;
     }
-  }, []);
 
-  const handleSectionNavigation = useCallback((event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    event.preventDefault();
-
-    const target = document.querySelector(href);
-    if (!target) return;
-
-    gsap.to(window, {
-      duration: 1,
-      ease: 'power1.inOut',
-      // ease: 'none', 
-      scrollTo: {
-        y: target,
-        offsetY: 72,
-      },
-      onComplete: () => {
-        window.history.replaceState(null, '', href);
-      },
-    });
-  }, []);
+    if (window.location.hash === '#contact') {
+      const frame = window.requestAnimationFrame(() => scrollToHash('#contact', 0.85));
+      return () => window.cancelAnimationFrame(frame);
+    }
+  }, [scrollToHash]);
 
   // Get header background classes based on scroll state - memoized
   const getHeaderBackground = useCallback(() => {
@@ -107,11 +140,16 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
                 href={item.href}
                 onClick={(event) => handleSectionNavigation(event, item.href)}
                 className={`
-                  relative px-3 py-2 text-sm font-medium transition-colors duration-200
+                  relative inline-flex items-center px-3 py-2 transition-colors duration-200
                   text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400
                 `}
+                aria-label={item.label}
               >
-                {item.label}
+                {item.href === '#contact' ? (
+                  <ContactMailIcon className="shrink-0" sx={{ fontSize: 28 }} aria-hidden="true" />
+                ) : (
+                  item.label
+                )}
               </a>
             ))}
           </nav>

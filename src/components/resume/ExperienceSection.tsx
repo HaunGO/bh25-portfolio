@@ -1,14 +1,21 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Experience } from '@/types/resume';
 
 interface ExperienceSectionProps {
   experience: Experience[];
   className?: string;
+  children?: ReactNode;
 }
 
-const ExperienceSection = ({ experience, className }: ExperienceSectionProps) => {
+export function TimelineDot() {
+  return (
+    <div className="absolute left-4 top-0 z-10 h-4 w-4 rounded-full border-4 border-white bg-primary-500 dark:border-neutral-900 dark:bg-primary-400 md:left-6" />
+  );
+}
+
+const ExperienceSection = ({ experience, className, children }: ExperienceSectionProps) => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const experienceRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -62,8 +69,7 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
             ref={(el) => { experienceRefs.current[index] = el; }}
             className="relative pl-14 md:pl-20"
           >
-            {/* Timeline dot */}
-            <div className="absolute left-4 md:left-6 w-4 h-4 bg-primary-500 dark:bg-primary-400 rounded-full border-4 border-white dark:border-neutral-900 z-10"></div>
+            <TimelineDot />
             
             {/* Experience card */}
             <div
@@ -145,6 +151,7 @@ const ExperienceSection = ({ experience, className }: ExperienceSectionProps) =>
 
         ))}
       </div>
+      {children}
     </div>
   );
 };

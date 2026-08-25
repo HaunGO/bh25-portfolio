@@ -16,6 +16,8 @@ export type * from './types';
 
 // Configuration
 export { DEFAULT_CURSOR_CONFIG } from './config';
+export { playTrailChoreography } from './choreography';
+export type { TrailChoreographyRequest, TrailChoreographySide } from './choreography';
 
 // Utilities
 export * from './utils/coordinateUtils';

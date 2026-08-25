@@ -2,7 +2,9 @@
 
 import { Fragment, useCallback, useRef, type MouseEvent } from 'react';
 import gsap from 'gsap';
-import { ExternalLink, Mail } from 'lucide-react';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import MailIcon from '@mui/icons-material/Mail';
 import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
 import { resumeData } from '@/data/resume';
@@ -16,9 +18,10 @@ const footerTaglineItems = [
   '• Frontend UX & Design System Engineer',
   '• Creative Developer',
   '• Electro-Magnetic Tinkerer',
-  '• Bushcraft Master',
+  '• Experienced Bushcrafter',
   '• Proper Goofball',
-  '• Natural American',
+  '• American',
+  '• Follower of the Way',
 ];
 
 const rainbowColors = [
@@ -112,55 +115,67 @@ export default function Footer({ className = '' }: FooterProps) {
 
           </div>
 
-          <div className="space-y-2 text-left text-sm text-neutral-600 dark:text-neutral-400 md:pt-12">
-            <a
-              href={`mailto:${resumeData.personalInfo.email}`}
-              className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
+          <div className="">
+            <div
+              id="contact"
+              className="relative w-fit space-y-2 px-10 py-7 text-left text-sm text-neutral-600 dark:text-neutral-400"
             >
-              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{resumeData.personalInfo.email}</span>
-            </a>
-            {resumeData.personalInfo.linkedin && (
+              <h2 className="sr-only">Contact</h2>
               <a
-                href={resumeData.personalInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
+                href={`mailto:${resumeData.personalInfo.email}`}
+                className="relative z-10 flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline "
               >
-                <ExternalLink className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span>{resumeData.personalInfo.linkedin.replace('https://', '')}</span>
+                <MailIcon className="shrink-0" sx={{ fontSize: 24 }} aria-hidden="true" />
+                <span>{resumeData.personalInfo.email}</span>
               </a>
-            )}
-            {/* {resumeData.personalInfo.github && (
+              {resumeData.personalInfo.linkedin && (
+                <a
+                  href={resumeData.personalInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                  <LinkedInIcon className="shrink-0" sx={{ fontSize: 24 }} aria-hidden="true" />
+                  linkedin.com/in/BrandonHaun
+                </a>
+              )}
+              {/* {resumeData.personalInfo.github && (
               <a
                 href={resumeData.personalInfo.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline break-all"
               >
-                <Code2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <GitHubIcon className="h-4 w-4 shrink-0" fontSize="inherit" aria-hidden="true" />
                 <span>{resumeData.personalInfo.github.replace('https://', '')}</span>
               </a>
             )} */}
-            {/* <p className="flex items-center gap-2 ">
-              <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>{resumeData.personalInfo.location}</span>
-            </p> */}
+              <a
+                href="https://www.google.com/maps/place/Tennessee"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline"
+                aria-label="Tennessee on Google Maps"
+              >
+                <LocationOnIcon className="shrink-0" sx={{ fontSize: 24 }} aria-hidden="true" />
+                <span>Tennessee, USA</span>
+              </a>
+            </div>
           </div>
 
 
 
         </div>
 
-        {/* Bottom Section */}
+        {/* Bottom Section */}  
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
           <div className="text-center flex flex-col-reverse items-center md:flex-row md:justify-between">
 
             <blockquote 
-              className="relative group text-purple-800 dark:text-purple-400 text-md "
+              className="relative group text-purple-800 dark:text-purple-400 text-md w-full md:w-1/2 md:pr-4"
               cite="https://www.law.cornell.edu/ucc/1/1-308"
             >
-              <span className="opacity-60">All Rights Reserved. Without Prejudice.</span>
+              <span className="opacity-60">&copy; {new Date().getFullYear()} Brandon Haun. All Rights Reserved.</span>
               <span 
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"
@@ -170,14 +185,11 @@ export default function Footer({ className = '' }: FooterProps) {
               </span>
             </blockquote>
 
-
-
-            
             <blockquote 
-              className="text-yellow-600 relative group md:pt-0 text-lg font-script"
+              className="text-yellow-600 relative group md:pt-0 text-lg font-script w-full md:w-1/2 md:pl-4"
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
             >
-              <span className="opacity-80">This is the day which the LORD hath made; we will rejoice and be glad in it.</span>
+              <span className="opacity-80">This is the day which the LORD hath made; <br />we will rejoice and be glad in it.</span>
               <span 
                 className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
                 role="tooltip"
@@ -189,6 +201,7 @@ export default function Footer({ className = '' }: FooterProps) {
             
           </div>
         </div>
+   
       </PageContainer>
     </footer>
   );
