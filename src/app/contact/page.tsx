@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import CopyEmail from '@/components/ui/CopyEmail';
 import { resumeData } from '@/data/resume';
 
 export const metadata: Metadata = {
@@ -27,12 +28,10 @@ export default function ContactPage() {
               <h2 className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 tracking-wide mb-1">
                 Email
               </h2>
-              <a
-                href={`mailto:${personalInfo.email}`}
-                className="text-lg text-primary-600 dark:text-primary-400 hover:underline font-body"
-              >
-                {personalInfo.email}
-              </a>
+              <CopyEmail
+                showIcon={false}
+                className="text-lg font-body text-primary-600 hover:underline dark:text-primary-400"
+              />
             </div>
 
             {personalInfo.linkedin && (

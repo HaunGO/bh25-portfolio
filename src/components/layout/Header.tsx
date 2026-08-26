@@ -132,8 +132,8 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
             </span>
           </TransitionLink>
 
-          {/* Desktop Navigation - single-page section links */}
-          <nav className="hidden md:flex items-end space-x-8">
+          {/* Single-page section links */}
+          <nav className="flex items-end space-x-8">
             {navigationItems.map((item) => (
               <a
                 key={item.href}

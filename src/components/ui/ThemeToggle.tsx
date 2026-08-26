@@ -1,80 +1,38 @@
 'use client';
 
-import { useState, useEffect, memo, useCallback } from 'react';
+import { memo } from 'react';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import { useDashboard } from '@/components/dashboard/Dashboard';
 
 interface ThemeToggleProps {
   className?: string;
-  position?: 'fixed' | 'absolute';
+  position?: 'fixed' | 'absolute' | 'relative' | 'static';
 }
 
 const ThemeToggle = memo(function ThemeToggle({ 
   className = '', 
   position = 'fixed' 
 }: ThemeToggleProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isThemeInitialized, setIsThemeInitialized] = useState(false);
+  const { ready, settings, setTheme } = useDashboard();
+  const isDarkMode = settings.theme === 'dark';
 
-  // Initialize theme from localStorage and system preference - CRITICAL: No flash allowed
-  useEffect(() => {
-    // Immediately check and apply theme before any rendering
-    const savedTheme = localStorage.getItem('theme');
-    // const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    let shouldBeDark = true; // Default to dark mode
-    
-    if (savedTheme === 'dark') {
-      shouldBeDark = true;
-    } else if (savedTheme === 'light') {
-      shouldBeDark = false;
-    } else {
-      // No saved preference, default to dark mode
-      shouldBeDark = true;
-    }
-    
-    // Apply theme to DOM immediately
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    }
-    
-    // Set state after DOM is updated
-    setIsDarkMode(shouldBeDark);
-    setIsThemeInitialized(true);
-  }, []);
-
-  // Handle theme toggle - memoized to prevent re-renders
-  const toggleTheme = useCallback(() => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
-  // CRITICAL: Don't render ANYTHING until theme is fully initialized
-  // This prevents the flash from light to dark theme
-  if (!isThemeInitialized) {
-    return null; // Return null instead of a skeleton to prevent any flash
+  if (!ready) {
+    return null;
   }
+
+  const positionClasses = {
+    fixed: 'fixed top-1.5 lg:top-2.5 right-2 md:right-3 z-50',
+    absolute: 'absolute top-1.5 lg:top-2.5 right-2 md:right-3 z-50',
+    relative: 'relative',
+    static: '',
+  }[position];
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
       className={`
-        ${position === 'fixed' ? 'fixed' : 'absolute'}
-        top-1.5 lg:top-2.5 right-2 md:right-3 z-50
+        ${positionClasses}
         p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 
         text-neutral-700 dark:text-neutral-300 
         hover:bg-neutral-200 dark:hover:bg-neutral-700 

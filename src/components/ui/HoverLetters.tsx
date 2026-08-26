@@ -1,75 +1,25 @@
 'use client';
 
-import { useRef } from 'react';
-import gsap from 'gsap';
+import { applyRainbowEnter, applyRainbowLeave, themeRestInk } from '@/lib/motion';
 
 interface HoverLettersProps {
   text: string;
   className?: string;
-  animationDuration?: number;
 }
 
-const rainbowColors = [
-  '#FF0000', // Red
-  '#FF7F00', // Orange  
-  '#FFFF00', // Yellow
-  '#00FF00', // Green
-  '#0000FF', // Blue
-  '#4B0082', // Indigo
-  '#9400D3'  // Violet
-];
-
-export default function HoverLetters({ 
-  text, 
-  className = '',
-}: HoverLettersProps) {
-  const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  
-  // Generate random colors for each letter
-  const getRandomColor = (index: number) => {
-    return rainbowColors[index % rainbowColors.length];
-  };
-
-  // Handle hover with GSAP animations
-  const handleMouseEnter = (index: number) => {
-    const element = letterRefs.current[index];
-    if (!element) return;
-    
-    gsap.to(element, {
-      color: getRandomColor(index),
-      duration: 0.1,
-      ease: 'none'
-    });
-  };
-
-  const handleMouseLeave = (index: number) => {
-    const element = letterRefs.current[index];
-    if (!element) return;
-    
-    gsap.to(element, {
-      color: 'inherit',
-      duration: 0.1,
-      ease: 'power2.out'
-    });
-  };
-
+export default function HoverLetters({ text, className = '' }: HoverLettersProps) {
   return (
     <span className={className}>
-      {text.split('').map((char, i) => (
+      {text.split('').map((character, index) => (
         <span
-          key={i}
-          ref={(el) => {
-            letterRefs.current[i] = el;
-          }}
-          onMouseEnter={() => handleMouseEnter(i)}
-          onMouseLeave={() => handleMouseLeave(i)}
-          style={{ 
-            cursor: 'pointer',
-            display: 'inline-block',
-            padding: '2px'
-          }}
+          key={`${character}-${index}`}
+          className="inline-block"
+          onMouseEnter={(event) => applyRainbowEnter(event.currentTarget)}
+          onMouseLeave={(event) =>
+            applyRainbowLeave(event.currentTarget, themeRestInk('display'))
+          }
         >
-          {char === ' ' ? '\u00A0' : char}
+          {character === ' ' ? '\u00A0' : character}
         </span>
       ))}
     </span>

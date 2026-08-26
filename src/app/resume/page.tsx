@@ -3,6 +3,7 @@
 import { resumeData } from '@/data/resume';
 import ResumeSection from '@/components/resume/ResumeSection';
 import ExperienceSection from '@/components/resume/ExperienceSection';
+import CopyEmail from '@/components/ui/CopyEmail';
 import LanguageIcon from '@mui/icons-material/Language';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MailIcon from '@mui/icons-material/Mail';
@@ -40,9 +41,10 @@ export default function ResumePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <MailIcon className="h-5 w-5 text-neutral-500" fontSize="inherit" aria-hidden="true" />
-                  <a href={`mailto:${personalInfo.email}`} className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                    {personalInfo.email}
-                  </a>
+                  <CopyEmail
+                    showIcon={false}
+                    className="text-neutral-700 transition-colors hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400"
+                  />
                 </div>
 
                 <div className="flex items-center gap-3">

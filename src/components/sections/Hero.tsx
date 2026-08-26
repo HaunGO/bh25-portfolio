@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, memo, useCallback, type MouseEvent, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { applyRainbowEnter, applyRainbowLeave, themeRestInk } from '@/lib/motion';
 import { PageContainer } from '../ui/Container';
 import SimplePreloader from '../ui/SimplePreloader';
 
@@ -17,27 +18,8 @@ const heroTitle = {
   name: ['Brandon'],
   subtitle: ['A', 'Creator', 'of', 'Great', '&', 'Many'],
 };
-const rainbowColors = [
-  '#ef4444', // red
-  '#f97316', // orange
-  '#eab308', // yellow
-  '#22c55e', // green
-  '#3b82f6', // blue
-  '#4f46e5', // indigo
-  '#8b5cf6', // violet
-];
-
-const getHeroTextColor = () => (
-  document.documentElement.classList.contains('dark') ? '#f5f5f5' : '#171717'
-);
-
-const getHeroLineColor = () => (
-  document.documentElement.classList.contains('dark') ? '#ffffff' : '#000000'
-);
-
-const getRandomRainbowColor = () => (
-  rainbowColors[Math.floor(Math.random() * rainbowColors.length)]
-);
+const getHeroTextColor = () => themeRestInk('display');
+const getHeroLineColor = () => themeRestInk('line');
 
 const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = true }: HeroProps) {
   const heroRef = useRef<HTMLElement>(null);
@@ -62,53 +44,19 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   }, []);
 
   const handleCharacterEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    const target = event.currentTarget;
-
-    gsap.killTweensOf(target);
-    gsap.set(target, {
-      color: getRandomRainbowColor(),
-      duration: 0,
-      // ease: 'power3.out',
-    });
+    applyRainbowEnter(event.currentTarget);
   }, []);
 
   const handleCharacterLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    const target = event.currentTarget;
-
-    gsap.killTweensOf(target);
-    gsap.to(target, {
-      color: getHeroTextColor(),
-      duration: 30,
-      ease: 'power3.out',
-      onComplete: () => {
-        gsap.set(target, { clearProps: 'color' });
-      },
-    });
+    applyRainbowLeave(event.currentTarget, getHeroTextColor());
   }, []);
 
   const handleLineEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    const target = event.currentTarget;
-
-    gsap.killTweensOf(target);
-    gsap.to(target, {
-      backgroundColor: getRandomRainbowColor(),
-      duration: 0,
-      ease: 'power3.out',
-    });
+    applyRainbowEnter(event.currentTarget, 'backgroundColor');
   }, []);
 
   const handleLineLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    const target = event.currentTarget;
-
-    gsap.killTweensOf(target);
-    gsap.to(target, {
-      backgroundColor: getHeroLineColor(),
-      duration: 30,
-      ease: 'power3.out',
-      onComplete: () => {
-        gsap.set(target, { clearProps: 'backgroundColor' });
-      },
-    });
+    applyRainbowLeave(event.currentTarget, getHeroLineColor(), 'backgroundColor');
   }, []);
 
   const renderHighlightedWord = useCallback((word: string) => (
@@ -233,7 +181,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                       onMouseLeave={handleLineLeave}
                     ></span>
                   </span>
-                  <span ref={subtitleRef} className="block text-5xl font-normal relative -top-2 ">
+                  <span ref={subtitleRef} className="block text-4xl font-normal relative -top-2 ">
                     {renderHighlightedWords(heroTitle.subtitle)}
                   </span>
                 </h1>

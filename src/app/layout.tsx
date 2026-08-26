@@ -69,31 +69,43 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  const savedTheme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  
-                  let shouldBeDark = true; // Default to dark mode
-                  
-                  if (savedTheme === 'dark') {
-                    shouldBeDark = true;
-                  } else if (savedTheme === 'light') {
-                    shouldBeDark = false;
-                  } else {
-                    shouldBeDark = true; // Default to dark mode instead of system preference
-                  }
-                  
-                  if (shouldBeDark) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.classList.remove('light');
-                  } else {
+                  var theme = 'dark';
+                  try {
+                    var session = sessionStorage.getItem('bh-dashboard-session');
+                    if (session) {
+                      var parsedSession = JSON.parse(session);
+                      if (parsedSession && parsedSession.settings && parsedSession.settings.theme) {
+                        theme = parsedSession.settings.theme;
+                      }
+                    } else {
+                      var store = localStorage.getItem('bh-dashboard-presets');
+                      if (store) {
+                        var parsedStore = JSON.parse(store);
+                        var presets = parsedStore && parsedStore.presets ? parsedStore.presets : [];
+                        for (var i = 0; i < presets.length; i++) {
+                          if (presets[i].id === parsedStore.defaultId && presets[i].settings && presets[i].settings.theme) {
+                            theme = presets[i].settings.theme;
+                            break;
+                          }
+                        }
+                      } else {
+                        var legacy = localStorage.getItem('theme');
+                        if (legacy === 'light' || legacy === 'dark') {
+                          theme = legacy;
+                        }
+                      }
+                    }
+                  } catch (readError) {}
+
+                  if (theme === 'light') {
                     document.documentElement.classList.remove('dark');
                     document.documentElement.classList.add('light');
+                  } else {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
                   }
                 } catch (e) {
-                  // Fallback to system preference if localStorage fails
-                  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add('dark');
-                  }
+                  document.documentElement.classList.add('dark');
                 }
               })();
             `,

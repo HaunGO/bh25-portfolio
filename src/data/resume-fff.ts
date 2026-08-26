@@ -4,7 +4,6 @@ export const resumeData: ResumeData = {
   personalInfo: {
     name: 'Brandon Haun',
     title: 'Senior Frontend Engineer & Creative Developer',
-    email: 'Hello@BrandonHaun.com',
     phone: '(865) 257-9123',
     location: 'Chicago, IL (Remote)',
     website: 'https://www.BrandonHaun.com',

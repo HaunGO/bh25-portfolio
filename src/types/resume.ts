@@ -47,7 +47,6 @@ export interface ResumeData {
   personalInfo: {
     name: string;
     title: string;
-    email: string;
     phone?: string;
     location: string;
     website?: string;
