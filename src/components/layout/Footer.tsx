@@ -12,6 +12,7 @@ import TennesseeOutline from '../ui/TennesseeOutline';
 import { themeRestInk } from '@/lib/motion';
 import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 import { resumeData } from '@/data/resume';
+import { taglines } from '@/data/taglines';
 import { useIsCoarsePointer } from '@/hooks/usePointerMode';
 
 interface FooterProps {
@@ -68,17 +69,6 @@ function CitationNote({
   );
 }
 
-const footerTaglineItems = [
-  '• A Creator of Great & Many',
-  '• Frontend UX & Design System Engineer',
-  '• Creative Developer',
-  '• Electro-Magnetic Tinkerer',
-  '• Experienced Bushcrafter',
-  '• Proper Goofball',
-  '• American',
-  '• Follower of the Way',
-];
-
 const getFooterTextColor = () => themeRestInk('muted');
 
 export default function Footer({ className = '' }: FooterProps) {
@@ -121,10 +111,10 @@ export default function Footer({ className = '' }: FooterProps) {
               </TransitionLink>
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
-              {footerTaglineItems.map((item, index) => (
+              {taglines.map((item, index) => (
                 <Fragment key={`${item}-${index}`}>
                   {index > 0 && ' '}
-                  {renderHighlightedItem(item)}
+                  {renderHighlightedItem(`• ${item}`)}
                 </Fragment>
               ))}
             </p>

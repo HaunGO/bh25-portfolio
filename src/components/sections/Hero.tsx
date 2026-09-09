@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState, memo, useCallback, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { prefersReducedMotion, themeRestInk } from '@/lib/motion';
+import { themeRestInk } from '@/lib/motion';
 import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
-import { PageContainer } from '../ui/Container';
+import { ContentContainer } from '../ui/Container';
 import SimplePreloader from '../ui/SimplePreloader';
+import TaglineReveal from './TaglineReveal';
 
 interface HeroProps {
   className?: string;
@@ -17,7 +18,6 @@ interface HeroProps {
 const heroTitle = {
   greeting: ['Hello,', "I'm"],
   name: ['Brandon'],
-  subtitle: ['A', 'Creator', 'of', 'Great', '&', 'Many'],
 };
 const getHeroTextColor = () => themeRestInk('display');
 const getHeroLineColor = () => themeRestInk('line');
@@ -26,7 +26,6 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   const heroRef = useRef<HTMLElement>(null);
   const greetingRef = useRef<HTMLSpanElement>(null);
   const nameRef = useRef<HTMLSpanElement>(null);
-  const subtitleRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
@@ -101,13 +100,6 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       '-=0.3'
     );
 
-    // Subtitle animation
-    heroTimeline.fromTo(subtitleRef.current,
-      { opacity: 0, y: -5 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-      '-=0.3'
-    );
-
     // Cleanup function
     return () => {
       heroTimeline.kill();
@@ -131,7 +123,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       <section 
         ref={heroRef}
         data-hero-section
-        className={`relative flex items-center justify-start overflow-hidden py-32 sm:py-40 lg:py-52 min-h-[100svh] lg:min-h-dvh ${className}`}
+        className={`relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden py-32 sm:py-40 lg:min-h-dvh lg:py-52 ${className}`}
         style={{ 
           opacity: (isClient && preloaderComplete) ? 1 : 0,
           visibility: (isClient && preloaderComplete) ? 'visible' : 'hidden'
@@ -146,36 +138,37 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
         >
         </div>
           
-          <PageContainer className="">
-            <div className="relative z-10 text-left ">  
-              
-              <div className="relative origin-left md:origin-center lg:scale-125">
-                <h1 data-hero-section-title ref={textRef} className="
-                    font-black text-neutral-900 dark:text-neutral-100 font-display
-                    leading-tight text-[clamp(2.75rem,14vw,6rem)] md:text-8xl whitespace-normal md:whitespace-nowrap "
+          <ContentContainer className="relative z-10 w-full">
+            <div className="w-full text-left">
+              <h1
+                data-hero-section-title
+                ref={textRef}
+                className="w-full font-display font-black leading-tight text-left text-neutral-900 dark:text-neutral-100 text-[clamp(3.25rem,18vw,8rem)] md:text-9xl"
+              >
+                <span
+                  ref={greetingRef}
+                  className="relative z-20 block text-[clamp(1.5rem,6vw,3rem)] font-normal left-8 top-4 sm:left-10 md:left-28 md:top-6 md:text-5xl"
                 >
-                  <span ref={greetingRef} className="relative z-20 block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal left-4 sm:left-10 md:left-16 top-4 md:top-6 "  >
-                    {renderHighlightedWords(heroTitle.greeting)}
-                  </span>
-                  <span ref={nameRef} className="inline-block font-semibold">
-                    {renderHighlightedWords(heroTitle.name)}
-                    <span
-                      id="theLine"
-                      aria-hidden="true"
-                      className="relative -top-2 md:-top-5 block h-1 w-full bg-black dark:bg-white"
-                      {...lineHandlers}
-                    ></span>
-                  </span>
-                  <span ref={subtitleRef} className="block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal relative -top-2 ">
-                    {renderHighlightedWords(heroTitle.subtitle)}
-                  </span>
-                </h1>
-              </div>
-
-
- 
+                  {renderHighlightedWords(heroTitle.greeting)}
+                </span>
+                <span ref={nameRef} className="inline-block font-semibold whitespace-nowrap">
+                  {renderHighlightedWords(heroTitle.name)}
+                  <span
+                    id="theLine"
+                    aria-hidden="true"
+                    className="relative -top-5 block h-2 w-full bg-black dark:bg-white md:-top-7"
+                    {...lineHandlers}
+                  />
+                </span>
+                <span className="relative -top-2 block w-full text-left text-[clamp(1.5rem,6vw,3rem)] font-normal md:text-5xl">
+                  <TaglineReveal
+                    characterHandlers={characterHandlers}
+                    active={isClient && preloaderComplete}
+                  />
+                </span>
+              </h1>
             </div>
-          </PageContainer>
+          </ContentContainer>
 
 
 
