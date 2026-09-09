@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, type RefObject } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -56,12 +56,10 @@ export default function LogoBH({
   const scrollTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const logoIdRef = useRef(Symbol('LogoBH'));
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const reverseClosed = useCallback(() => {
     scrollTimelineRef.current?.reverse();
     hoverTimelineRef.current?.reverse();
-    setIsAnimating(false);
   }, []);
 
   const playOpen = useCallback(() => {
@@ -69,7 +67,6 @@ export default function LogoBH({
 
     if (hoverTimelineRef.current) {
       hoverTimelineRef.current.play();
-      setIsAnimating(true);
     }
   }, []);
 
@@ -133,12 +130,10 @@ export default function LogoBH({
           open: () => {
             hoverTl.pause(0);
             tl.play();
-            setIsAnimating(true);
           },
           close: () => {
             tl.reverse();
             hoverTl.reverse();
-            setIsAnimating(false);
           },
         };
         openLogoTimelines.add(registryEntry);
@@ -162,11 +157,9 @@ export default function LogoBH({
             onEnter: () => {
               closeOtherLogos(logoIdRef.current);
               tl.play();
-              setIsAnimating(true);
             },
             onLeaveBack: () => {
               tl.reverse();
-              setIsAnimating(false);
 
               if (reopenLogoKeyOnClose) {
                 openLogoByKey(reopenLogoKeyOnClose, logoIdRef.current);
@@ -242,20 +235,10 @@ export default function LogoBH({
     };
   }, [triggerRef, triggerStart, triggerEnd, autoAnimate, showMarkers, logoKey, reopenLogoKeyOnClose, playOpen, reverseClosed]);
 
-  const handleClick = (e: MouseEvent) => {
-    e.stopPropagation();
-    if (isAnimating) {
-      reverseClosed();
-    } else {
-      playOpen();
-    }
-  };
-
   return (
     <span 
       ref={myNameRef} 
-      onClick={handleClick}
-      className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display cursor-pointer ${className}`}
+      className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display ${className}`}
     >
       B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">26</sup>
     </span>

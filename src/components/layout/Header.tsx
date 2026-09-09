@@ -123,7 +123,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
     >
       <PageContainer>
         <div className="relative flex justify-end items-center h-12 lg:h-14">
-          <TransitionLink href="/" className="absolute left-0 top-0 bottom-0 flex items-center hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
+          <TransitionLink href="/" aria-label="Home" className="absolute left-0 top-0 bottom-0 flex items-center hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
             <span className="relative top-1 inline-block origin-left scale-110">
               <LogoBH
                 logoKey="header"

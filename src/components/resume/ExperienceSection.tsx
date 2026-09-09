@@ -17,138 +17,73 @@ export function TimelineDot() {
 
 const ExperienceSection = ({ experience, className, children }: ExperienceSectionProps) => {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const experienceRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  // useEffect(() => {
-  //   if (!timelineRef.current) return;
-
-  //   gsap.registerPlugin(ScrollTrigger);
-
-  //   // Create timeline animation
-  //   const tl = gsap.timeline({
-  //     scrollTrigger: {
-  //       trigger: timelineRef.current,
-  //       start: 'top 70%',
-  //       end: 'bottom 30%',
-  //       toggleActions: 'play none none reverse'
-  //     }
-  //   });
-
-  //   // Animate each experience item
-  //   experienceRefs.current.forEach((ref, index) => {
-  //     if (ref) {
-  //       tl.fromTo(ref,
-  //         { opacity: 0, x: -50 },
-  //         { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' },
-  //         index * 0.1
-  //       );
-  //     }
-  //   });
-
-  //   return () => {
-  //     tl.kill();
-  //   };
-  // }, [experience]);
 
   return (
-    <div ref={timelineRef} className={`relative ${className}`}>
-
-      {/* Timeline line */}
-      <div className="absolute left-6 md:left-8 top-0 bottom-0 w-[1px] Tail bg-gradient-to-b from-primary-500 to-accent-500 dark:from-primary-400 dark:to-accent-400"></div>
-      
-
-
-
-
-
+    <div ref={timelineRef} className={`relative ${className ?? ''}`}>
+      <div className="absolute bottom-0 left-6 top-0 w-[1px] bg-gradient-to-b from-primary-500 to-accent-500 dark:from-primary-400 dark:to-accent-400 md:left-8" />
 
       <div className="space-y-12">
         {experience.map((exp, index) => (
-          <div
-            key={exp.id}
-            ref={(el) => { experienceRefs.current[index] = el; }}
-            className="relative pl-14 md:pl-20"
-          >
+          <div key={exp.id} className="relative pl-14 md:pl-20">
             <TimelineDot />
-            
-            {/* Experience card */}
+
             <div
               data-cursor-hit="active"
               data-cursor-level="featured-experience"
               data-cursor-dazzle={index % 3 === 0 ? 'spark' : index % 2 === 0 ? 'pulse' : 'orbit'}
-              className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg border border-neutral-200 dark:border-neutral-700 hover:shadow-xl transition-shadow duration-300"
+              className="rounded-xl border border-neutral-200 bg-white p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
             >
-              
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+              <div className="mb-4 flex flex-col md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h3 className="text-xl font-bold font-display text-primary-600 dark:text-primary-600 ">
+                  <h3 className="font-display text-xl font-bold text-primary-600 dark:text-primary-400">
                     {exp.position}
                   </h3>
                   <p className="text-lg font-medium text-neutral-500 dark:text-neutral-400">
                     {exp.company}
                   </p>
                 </div>
-                <div className="text-right mt-2 md:mt-0">
-                  <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {exp.startDate} - {exp.endDate === 'Present' ? 'Present' :exp.endDate}
+                <div className="mt-2 text-left text-sm md:mt-0 md:text-right">
+                  <div className="text-neutral-500 dark:text-neutral-400">
+                    {exp.startDate} - {exp.endDate}
                   </div>
-                  <div className="text-sm text-neutral-600 dark:text-neutral-300">
+                  <div className="text-neutral-600 dark:text-neutral-300">
                     {exp.location}
                   </div>
                 </div>
               </div>
-              
 
-              <p className="text-neutral-700 dark:text-neutral-300 mb-4 font-body">
+              <p className="mb-4 font-body text-neutral-700 dark:text-neutral-300">
                 {exp.description}
               </p>
-              
 
-
-              
-              {/* Achievements */}
               {exp.achievements.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
-                    Key Achievements:
-                  </h4>
-                  <ul className="space-y-1">
-                    {exp.achievements.map((achievement: string, idx: number) => (
-                      <li key={idx} className="text-sm text-neutral-600 dark:text-neutral-400 flex items-start">
-                        <span className="text-primary-500 dark:text-primary-400 mr-2 mt-1">•</span>
-                        {achievement}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ul className="mb-4 space-y-1">
+                  {exp.achievements.map((achievement) => (
+                    <li
+                      key={achievement}
+                      className="flex items-start text-sm text-neutral-600 dark:text-neutral-400"
+                    >
+                      <span className="mr-2 mt-1 text-primary-500 dark:text-primary-400">•</span>
+                      {achievement}
+                    </li>
+                  ))}
+                </ul>
               )}
-              
 
-
-
-              {/* Technologies */}
-              <div>
-                <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
-                  Technologies:
-                </h4>
+              {exp.technologies.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {exp.technologies.map((tech: string) => (
+                  {exp.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="px-3 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full text-xs font-medium"
+                      className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 dark:bg-neutral-700 dark:text-neutral-300"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           </div>
-
-
-
-
-
         ))}
       </div>
       {children}

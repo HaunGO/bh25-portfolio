@@ -7,6 +7,7 @@ import { PageContainer } from '../ui/Container';
 import ContactHoverLink, { CONTACT_ICON_SIZE } from '../ui/ContactHoverLink';
 import CopyEmail from '../ui/CopyEmail';
 import LogoBH from '../ui/LogoBH';
+import { TransitionLink } from '../transitions/TransitionLink';
 import TennesseeOutline from '../ui/TennesseeOutline';
 import { themeRestInk } from '@/lib/motion';
 import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
@@ -108,14 +109,16 @@ export default function Footer({ className = '' }: FooterProps) {
           {/* Brand Section */}
           <div className="space-y-4 md:col-span-2">
             <div className="flex items-center space-x-2">
-              <LogoBH
-                logoKey="footer"
-                autoAnimate={false}
-                triggerRef={footerRef}
-                triggerStart="45% bottom"
-                triggerEnd="top top"
-                reopenLogoKeyOnClose="header"
-              />
+              <TransitionLink href="/" aria-label="Home">
+                <LogoBH
+                  logoKey="footer"
+                  autoAnimate={false}
+                  triggerRef={footerRef}
+                  triggerStart="45% bottom"
+                  triggerEnd="top top"
+                  reopenLogoKeyOnClose="header"
+                />
+              </TransitionLink>
             </div>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg ">
               {footerTaglineItems.map((item, index) => (

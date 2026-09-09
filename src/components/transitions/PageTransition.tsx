@@ -14,7 +14,12 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   const pathname = usePathname();
 
   const startTransition = async (to: string) => {
-    if (to === pathname || !overlayRef.current) return;
+    if (to === pathname) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (!overlayRef.current) return;
 
     // Reset overlay to hidden state first
     gsap.set(overlayRef.current, { autoAlpha: 0 });

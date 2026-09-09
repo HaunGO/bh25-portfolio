@@ -19,14 +19,17 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
 }) => {
   const handleClick = async (e: MouseEvent<HTMLAnchorElement>) => {
     if (onClick) onClick(e);
-    
-    if (!e.defaultPrevented) {
-      e.preventDefault();
-      const startTransition = (window as { startTransition?: (href: string) => Promise<void> }).startTransition;
-      if (startTransition) {
-        await startTransition(href);
-      }
+    if (e.defaultPrevented) {
+      return;
     }
+
+    const startTransition = (window as { startTransition?: (href: string) => Promise<void> }).startTransition;
+    if (!startTransition) {
+      return;
+    }
+
+    e.preventDefault();
+    await startTransition(href);
   };
 
   return (

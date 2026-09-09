@@ -113,7 +113,7 @@ export const resumeData: ResumeData = {
       company: 'Tombras',
       position: 'Senior Software Engineer',
       location: 'Knoxville, TN | Atlanta, GA | New York, NY',
-      startDate: 'Oc 2016',
+      startDate: 'Oct 2016',
       endDate: 'Feb 2023',
       type: 'full-time',
       description:

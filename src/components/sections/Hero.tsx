@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, memo, useCallback, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { themeRestInk } from '@/lib/motion';
+import { prefersReducedMotion, themeRestInk } from '@/lib/motion';
 import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 import { PageContainer } from '../ui/Container';
 import SimplePreloader from '../ui/SimplePreloader';
@@ -154,16 +154,15 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                     font-black text-neutral-900 dark:text-neutral-100 font-display
                     leading-tight text-[clamp(2.75rem,14vw,6rem)] md:text-8xl whitespace-normal md:whitespace-nowrap "
                 >
-                  <span ref={greetingRef} className="relative z-20 block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal left-4 sm:left-10 md:left-16 top-4 md:top-8 "  >
+                  <span ref={greetingRef} className="relative z-20 block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal left-4 sm:left-10 md:left-16 top-4 md:top-6 "  >
                     {renderHighlightedWords(heroTitle.greeting)}
                   </span>
                   <span ref={nameRef} className="inline-block font-semibold">
-                    {/* <HoverLetters  text="Brandon" className="inline-block" /> */}
                     {renderHighlightedWords(heroTitle.name)}
                     <span
                       id="theLine"
                       aria-hidden="true"
-                      className="relative -top-2 md:-top-4 block h-1 w-full bg-black dark:bg-white"
+                      className="relative -top-2 md:-top-5 block h-1 w-full bg-black dark:bg-white"
                       {...lineHandlers}
                     ></span>
                   </span>
