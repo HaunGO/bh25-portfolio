@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Bitter } from 'next/font/google';
 import './globals.css';
@@ -18,7 +18,12 @@ const bitter = Bitter({
 });
 import Layout from '@/components/layout/Layout';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import AdvancedCursor from '@/components/ui/AdvancedCursor';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: 'BH`26',
@@ -104,6 +109,17 @@ export default function RootLayout({
                     document.documentElement.classList.add('dark');
                     document.documentElement.classList.remove('light');
                   }
+
+                  var hover = window.matchMedia('(hover: hover)').matches;
+                  var fine = window.matchMedia('(pointer: fine)').matches;
+                  var coarse = window.matchMedia('(pointer: coarse)').matches;
+                  var hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                  var pointer = (hover && fine)
+                    ? 'fine'
+                    : (coarse || hasTouch)
+                      ? 'coarse'
+                      : 'none';
+                  document.documentElement.setAttribute('data-pointer', pointer);
                 } catch (e) {
                   document.documentElement.classList.add('dark');
                 }
@@ -115,7 +131,6 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${bitter.variable} antialiased`}
       >
-        <AdvancedCursor />
         <ErrorBoundary>
           <Layout>
             {children}

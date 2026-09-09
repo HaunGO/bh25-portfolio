@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState, memo, useCallback, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, memo, useCallback, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { applyRainbowEnter, applyRainbowLeave, themeRestInk } from '@/lib/motion';
+import { themeRestInk } from '@/lib/motion';
+import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 import { PageContainer } from '../ui/Container';
 import SimplePreloader from '../ui/SimplePreloader';
 
@@ -43,21 +44,8 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     setPreloaderComplete(true);
   }, []);
 
-  const handleCharacterEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowEnter(event.currentTarget);
-  }, []);
-
-  const handleCharacterLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowLeave(event.currentTarget, getHeroTextColor());
-  }, []);
-
-  const handleLineEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowEnter(event.currentTarget, 'backgroundColor');
-  }, []);
-
-  const handleLineLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowLeave(event.currentTarget, getHeroLineColor(), 'backgroundColor');
-  }, []);
+  const characterHandlers = rainbowLetterHandlers(getHeroTextColor);
+  const lineHandlers = rainbowLetterHandlers(getHeroLineColor, 'backgroundColor');
 
   const renderHighlightedWord = useCallback((word: string) => (
     <span
@@ -70,14 +58,13 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           key={`${word}-${character}-${index}`}
           aria-hidden="true"
           className="inline-block"
-          onMouseEnter={handleCharacterEnter}
-          onMouseLeave={handleCharacterLeave}
+          {...characterHandlers}
         >
           {character}
         </span>
       ))}
     </span>
-  ), [handleCharacterEnter, handleCharacterLeave]);
+  ), [characterHandlers]);
 
   const renderHighlightedWords = useCallback((words: string[]) => (
     words.map((word) => renderHighlightedWord(word)).reduce((acc, word, index) => (
@@ -144,7 +131,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       <section 
         ref={heroRef}
         data-hero-section
-        className={`relative flex items-center justify-start overflow-hidden py-52 h-auto lg:h-screen ${className}`}
+        className={`relative flex items-center justify-start overflow-hidden py-32 sm:py-40 lg:py-52 min-h-[100svh] lg:min-h-dvh ${className}`}
         style={{ 
           opacity: (isClient && preloaderComplete) ? 1 : 0,
           visibility: (isClient && preloaderComplete) ? 'visible' : 'hidden'
@@ -162,12 +149,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
           <PageContainer className="">
             <div className="relative z-10 text-left ">  
               
-              <div className="relative scale-75 md:scale-100 lg:scale-125 origin-center">
+              <div className="relative origin-left md:origin-center lg:scale-125">
                 <h1 data-hero-section-title ref={textRef} className="
-                    font-black text-neutral-900 dark:text-neutral-100 font-display whitespace-nowrap
-                    leading-tight text-8xl "
+                    font-black text-neutral-900 dark:text-neutral-100 font-display
+                    leading-tight text-[clamp(2.75rem,14vw,6rem)] md:text-8xl whitespace-normal md:whitespace-nowrap "
                 >
-                  <span ref={greetingRef} className="relative z-20 block text-4xl font-normal left-16 top-8 "  >
+                  <span ref={greetingRef} className="relative z-20 block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal left-4 sm:left-10 md:left-16 top-4 md:top-8 "  >
                     {renderHighlightedWords(heroTitle.greeting)}
                   </span>
                   <span ref={nameRef} className="inline-block font-semibold">
@@ -176,12 +163,11 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                     <span
                       id="theLine"
                       aria-hidden="true"
-                      className="relative -top-4 block h-1 w-full bg-black dark:bg-white"
-                      onMouseEnter={handleLineEnter}
-                      onMouseLeave={handleLineLeave}
+                      className="relative -top-2 md:-top-4 block h-1 w-full bg-black dark:bg-white"
+                      {...lineHandlers}
                     ></span>
                   </span>
-                  <span ref={subtitleRef} className="block text-4xl font-normal relative -top-2 ">
+                  <span ref={subtitleRef} className="block text-[clamp(1.25rem,5vw,2.25rem)] md:text-4xl font-normal relative -top-2 ">
                     {renderHighlightedWords(heroTitle.subtitle)}
                   </span>
                 </h1>

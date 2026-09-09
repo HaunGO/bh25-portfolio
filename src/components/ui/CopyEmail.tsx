@@ -120,7 +120,7 @@ export default function CopyEmail({
         onClick={handleCopy}
         data-rainbow-skip=""
         aria-label="Copy email address"
-        className={`group relative z-10 inline-flex rounded-full p-2.5 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 ${className ?? ''}`}
+        className={`group relative z-10 inline-flex min-h-11 min-w-11 items-center justify-center rounded-full p-2.5 text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 ${className ?? ''}`}
       >
         {pinging && (
           <span

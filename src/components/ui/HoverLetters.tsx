@@ -1,6 +1,7 @@
 'use client';
 
-import { applyRainbowEnter, applyRainbowLeave, themeRestInk } from '@/lib/motion';
+import { themeRestInk } from '@/lib/motion';
+import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 
 interface HoverLettersProps {
   text: string;
@@ -8,16 +9,15 @@ interface HoverLettersProps {
 }
 
 export default function HoverLetters({ text, className = '' }: HoverLettersProps) {
+  const handlers = rainbowLetterHandlers(() => themeRestInk('display'));
+
   return (
     <span className={className}>
       {text.split('').map((character, index) => (
         <span
           key={`${character}-${index}`}
           className="inline-block"
-          onMouseEnter={(event) => applyRainbowEnter(event.currentTarget)}
-          onMouseLeave={(event) =>
-            applyRainbowLeave(event.currentTarget, themeRestInk('display'))
-          }
+          {...handlers}
         >
           {character === ' ' ? '\u00A0' : character}
         </span>

@@ -1,159 +1,284 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { TouchTrailManagerProps, TrailPoint } from '../types';
-import { screenToSVG, getTouchZone, findCursorHitTarget } from '../utils/coordinateUtils';
+import { screenToSVG } from '../utils/coordinateUtils';
+import { interpolateTrailSegment } from '../choreography';
+import { prefersReducedMotion } from '@/lib/motion';
+
+const INTERACTIVE_SELECTOR =
+  'a, button, input, textarea, select, summary, [role="button"], [contenteditable="true"]';
+
+function isInteractiveTarget(target: EventTarget | null) {
+  return target instanceof Element && Boolean(target.closest(INTERACTIVE_SELECTOR));
+}
+
+function pulseAt(x: number, y: number) {
+  const pulse = document.createElement('div');
+  pulse.style.cssText = [
+    'position:fixed',
+    `left:${x}px`,
+    `top:${y}px`,
+    'width:64px',
+    'height:64px',
+    'border:3px solid rgba(56, 189, 248, 0.85)',
+    'border-radius:50%',
+    'pointer-events:none',
+    'z-index:9997',
+    'transform:translate(-50%,-50%)',
+  ].join(';');
+  document.body.appendChild(pulse);
+  gsap.fromTo(
+    pulse,
+    { scale: 0.35, opacity: 0.9 },
+    {
+      scale: 1.35,
+      opacity: 0,
+      duration: 0.38,
+      ease: 'power2.out',
+      onComplete: () => pulse.remove(),
+    },
+  );
+}
 
 /**
- * Mobile touch event handling + trail generation
+ * Hold-to-draw. Flick scrolls natively. Press still, then paint.
+ * Draw mode skips the hold and locks the gesture immediately.
+ * Non-passive touchmove is attached only while drawing so scroll stays cheap.
  */
-const TouchTrailManager = memo(function TouchTrailManager({ 
-  config, 
-  onTrailUpdate, 
+const TouchTrailManager = memo(function TouchTrailManager({
+  config,
+  onTrailUpdate,
   onCursorUpdate,
-  disabled = false 
+  disabled = false,
+  drawMode = false,
 }: TouchTrailManagerProps) {
-  const [mobileTrailLayers, setMobileTrailLayers] = useState<TrailPoint[][]>(
-    config.trailLayers.map(() => [])
-  );
-  const [isTouching, setIsTouching] = useState(false);
-  const [currentTouchZone, setCurrentTouchZone] = useState<'trail' | 'scroll' | null>(null);
-  const [viewportWidth, setViewportWidth] = useState(0);
-  
-  const mobileTrailLayerRefs = useRef<Array<SVGPathElement | null>>(
-    config.trailLayers.map(() => null)
-  );
+  const drawingRef = useRef(false);
+  const holdTimerRef = useRef(0);
+  const startRef = useRef<TrailPoint | null>(null);
+  const lastPointRef = useRef<TrailPoint | null>(null);
+  const layersRef = useRef<TrailPoint[][]>(config.trailLayers.map(() => []));
+  const configRef = useRef(config);
+  const drawModeRef = useRef(drawMode);
+  const drawMoveRef = useRef<((event: TouchEvent) => void) | null>(null);
 
-  // Touch event handlers for mobile trails
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    const touch = e.touches[0];
-    const touchZone = getTouchZone(touch.clientX, viewportWidth, config.touchZones);
-    const hitTarget = findCursorHitTarget(
-      touch.clientX,
-      touch.clientY,
-      config.hitRadius,
-      e.target instanceof HTMLElement ? e.target : null
-    );
-    
-    setCurrentTouchZone(touchZone);
-    setIsTouching(true);
-    onCursorUpdate({
-      x: touch.clientX,
-      y: touch.clientY,
-      isHovering: Boolean(hitTarget),
-      isVisible: true,
-      target: hitTarget,
-    });
-    
-    // Only generate trails in the trail zone
-    if (touchZone === 'trail') {
-      // Prevent default scrolling behavior in trail zone
-      e.preventDefault();
-      
-      const svgPoint = screenToSVG(touch.clientX, touch.clientY);
-      
-      setMobileTrailLayers(prev => 
-        prev.map(() => [svgPoint])
-      );
+  configRef.current = config;
+  drawModeRef.current = drawMode;
+
+  const clearHold = useCallback(() => {
+    window.clearTimeout(holdTimerRef.current);
+    holdTimerRef.current = 0;
+  }, []);
+
+  const detachDrawMove = useCallback(() => {
+    if (!drawMoveRef.current) {
+      return;
     }
-    // In scroll zone, allow default behavior (scrolling)
-  }, [viewportWidth, config.touchZones, config.hitRadius, onCursorUpdate]);
+    document.removeEventListener('touchmove', drawMoveRef.current);
+    drawMoveRef.current = null;
+  }, []);
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isTouching) return;
-
-    const touch = e.touches[0];
-    const svgPoint = screenToSVG(touch.clientX, touch.clientY);
-    const hitTarget = findCursorHitTarget(
-      touch.clientX,
-      touch.clientY,
-      config.hitRadius,
-      e.target instanceof HTMLElement ? e.target : null
-    );
-
-    onCursorUpdate({
-      x: touch.clientX,
-      y: touch.clientY,
-      isHovering: Boolean(hitTarget),
-      isVisible: true,
-      target: hitTarget,
+  const sliceLayers = useCallback((layers: TrailPoint[][]) => {
+    const { trailLayers, trailLength } = configRef.current;
+    return layers.map((layer, index) => {
+      const layerLength = Math.max(
+        2,
+        Math.floor(trailLayers[index].percentage * trailLength),
+      );
+      return layer.slice(-layerLength);
     });
+  }, []);
 
-    if (currentTouchZone !== 'trail') return;
-    
-    // Update mobile trail layers
-    setMobileTrailLayers(prev => 
-      prev.map((layer, index) => {
-        const newPoints = [...layer, svgPoint];
-        const layerLength = Math.floor(config.trailLayers[index].percentage * config.trailLength);
-        return newPoints.slice(-layerLength);
-      })
-    );
-  }, [isTouching, currentTouchZone, config.hitRadius, config.trailLength, config.trailLayers, onCursorUpdate]);
+  const publish = useCallback(
+    (layers: TrailPoint[][]) => {
+      layersRef.current = layers;
+      onTrailUpdate(layers);
+    },
+    [onTrailUpdate],
+  );
 
-  const handleTouchEnd = useCallback(() => {
-    setIsTouching(false);
-    setCurrentTouchZone(null);
+  const appendPoint = useCallback(
+    (point: TrailPoint) => {
+      const last = lastPointRef.current;
+      if (!last) {
+        lastPointRef.current = point;
+        return;
+      }
+
+      const moved = Math.hypot(point.x - last.x, point.y - last.y);
+      if (moved < configRef.current.minMove) {
+        return;
+      }
+
+      const segment = interpolateTrailSegment(last, point);
+      lastPointRef.current = point;
+      publish(
+        sliceLayers(
+          layersRef.current.map((layer) => layer.concat(segment)),
+        ),
+      );
+    },
+    [publish, sliceLayers],
+  );
+
+  const attachDrawMove = useCallback(() => {
+    if (drawMoveRef.current) {
+      return;
+    }
+
+    const onDrawMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch || !drawingRef.current) {
+        return;
+      }
+      event.preventDefault();
+      appendPoint(screenToSVG(touch.clientX, touch.clientY));
+    };
+
+    drawMoveRef.current = onDrawMove;
+    document.addEventListener('touchmove', onDrawMove, { passive: false });
+  }, [appendPoint]);
+
+  const arm = useCallback(
+    (point: TrailPoint) => {
+      if (drawingRef.current || prefersReducedMotion()) {
+        return;
+      }
+
+      drawingRef.current = true;
+      lastPointRef.current = point;
+      const svg = document.querySelector<SVGElement>('[data-cursor-trail]');
+      if (svg) {
+        gsap.killTweensOf(svg);
+        gsap.set(svg, { opacity: 1 });
+      }
+      pulseAt(point.x, point.y);
+      onCursorUpdate({
+        x: point.x,
+        y: point.y,
+        isVisible: true,
+        isHovering: false,
+        target: null,
+      });
+      publish(configRef.current.trailLayers.map(() => [point]));
+      attachDrawMove();
+    },
+    [attachDrawMove, onCursorUpdate, publish],
+  );
+
+  const fadeOut = useCallback(() => {
+    const svg = document.querySelector<SVGElement>('[data-cursor-trail]');
+    if (!svg || layersRef.current.every((layer) => layer.length === 0)) {
+      publish(configRef.current.trailLayers.map(() => []));
+      return;
+    }
+
+    gsap.killTweensOf(svg);
+    gsap.set(svg, { opacity: 1 });
+    gsap.to(svg, {
+      opacity: 0,
+      duration: configRef.current.fadeDuration,
+      ease: 'power2.out',
+      onComplete: () => {
+        publish(configRef.current.trailLayers.map(() => []));
+        gsap.set(svg, { opacity: 1 });
+      },
+    });
+  }, [publish]);
+
+  const resetGesture = useCallback(() => {
+    const wasDrawing = drawingRef.current;
+    clearHold();
+    detachDrawMove();
+    drawingRef.current = false;
+    startRef.current = null;
+    lastPointRef.current = null;
     onCursorUpdate({
       isHovering: false,
       isVisible: false,
       target: null,
     });
-    
-    // Start fade out animation only if we were in trail zone
-    if (currentTouchZone === 'trail') {
-      mobileTrailLayerRefs.current.forEach((pathElement) => {
-        if (pathElement) {
-          gsap.to(pathElement, {
-            opacity: 0,
-            duration: config.fadeDuration,
-            ease: "power2.out",
-            onComplete: () => {
-              // Clear the trail after fade
-              setMobileTrailLayers(prev => 
-                prev.map(() => [])
-              );
-            }
-          });
-        }
-      });
+    if (wasDrawing) {
+      fadeOut();
     }
-  }, [config.fadeDuration, currentTouchZone, onCursorUpdate]);
+  }, [clearHold, detachDrawMove, fadeOut, onCursorUpdate]);
 
-  // Update viewport width
   useEffect(() => {
-    const updateViewportWidth = () => {
-      setViewportWidth(window.innerWidth);
+    if (disabled) {
+      return;
+    }
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (prefersReducedMotion() || event.touches.length !== 1) {
+        return;
+      }
+
+      if (isInteractiveTarget(event.target)) {
+        return;
+      }
+
+      const touch = event.touches[0];
+      const point = screenToSVG(touch.clientX, touch.clientY);
+      startRef.current = point;
+      lastPointRef.current = point;
+      drawingRef.current = false;
+      clearHold();
+      detachDrawMove();
+
+      if (drawModeRef.current) {
+        event.preventDefault();
+        arm(point);
+        return;
+      }
+
+      holdTimerRef.current = window.setTimeout(() => {
+        const start = startRef.current;
+        if (start) {
+          arm(start);
+        }
+      }, configRef.current.holdMs);
     };
-    
-    updateViewportWidth();
-    window.addEventListener('resize', updateViewportWidth);
-    
-    return () => window.removeEventListener('resize', updateViewportWidth);
-  }, []);
 
-  // Touch event listeners for mobile
-  useEffect(() => {
-    if (disabled) return;
+    const handleTouchMove = (event: TouchEvent) => {
+      if (drawingRef.current || !startRef.current) {
+        return;
+      }
 
-    // Add touch event listeners
-    // touchstart: passive for trail zone, non-passive for scroll zone detection
+      const touch = event.touches[0];
+      if (!touch) {
+        return;
+      }
+
+      const point = screenToSVG(touch.clientX, touch.clientY);
+      const drifted = Math.hypot(
+        point.x - startRef.current.x,
+        point.y - startRef.current.y,
+      );
+      if (drifted > configRef.current.cancelMove) {
+        clearHold();
+        startRef.current = null;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      resetGesture();
+    };
+
     document.addEventListener('touchstart', handleTouchStart, { passive: false });
     document.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
     return () => {
+      clearHold();
+      detachDrawMove();
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [disabled, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [arm, clearHold, detachDrawMove, disabled, resetGesture]);
 
-  // Update parent with trail layers
-  useEffect(() => {
-    onTrailUpdate(mobileTrailLayers);
-  }, [mobileTrailLayers, onTrailUpdate]);
-
-  return null; // This component only handles events, no rendering
+  return null;
 });
 
 export default TouchTrailManager;

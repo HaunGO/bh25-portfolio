@@ -109,6 +109,18 @@ function bindDelegatedHover(root: HTMLElement) {
 
   root.addEventListener('mouseover', onEnter);
   root.addEventListener('mouseout', onLeave);
+  root.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch' && event.pointerType !== 'pen') {
+      return;
+    }
+    onEnter(event);
+  });
+  root.addEventListener('pointerup', (event) => {
+    if (event.pointerType !== 'touch' && event.pointerType !== 'pen') {
+      return;
+    }
+    onLeave(event);
+  });
   enhancedRoots.add(root);
 }
 

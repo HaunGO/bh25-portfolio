@@ -147,22 +147,3 @@ export const findCursorHitTarget = (
   return nearestTarget;
 };
 
-/**
- * Determine which touch zone a point is in
- */
-export const getTouchZone = (
-  clientX: number, 
-  viewportWidth: number, 
-  touchZones: { trailZone: { left: number; right: number }; scrollZone: { left: number; right: number } }
-): 'trail' | 'scroll' => {
-  const relativeX = clientX / viewportWidth;
-  
-  if (relativeX >= touchZones.trailZone.left && relativeX < touchZones.trailZone.right) {
-    return 'trail';
-  } else if (relativeX >= touchZones.scrollZone.left && relativeX <= touchZones.scrollZone.right) {
-    return 'scroll';
-  }
-  
-  // Default to trail zone if outside defined zones
-  return 'trail';
-};

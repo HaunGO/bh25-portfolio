@@ -13,7 +13,8 @@ import CursorVisual from './CursorVisual';
  * Main AdvancedCursor component - orchestration and device detection
  */
 const AdvancedCursor = memo(function AdvancedCursor({ 
-  disabled = false, 
+  disabled = false,
+  drawMode = false,
   config = {} 
 }: AdvancedCursorProps) {
   const hasMouse = useMouseSupport();
@@ -32,10 +33,6 @@ const AdvancedCursor = memo(function AdvancedCursor({
       ...DEFAULT_CURSOR_CONFIG.touch,
       ...config.touch,
       trailLayers: config.touch?.trailLayers ?? DEFAULT_CURSOR_CONFIG.touch.trailLayers,
-      touchZones: {
-        ...DEFAULT_CURSOR_CONFIG.touch.touchZones,
-        ...config.touch?.touchZones,
-      },
     },
     visual: {
       ...DEFAULT_CURSOR_CONFIG.visual,
@@ -125,17 +122,13 @@ const AdvancedCursor = memo(function AdvancedCursor({
             onTrailUpdate={handleTrailUpdate}
             onCursorUpdate={handleCursorUpdate}
             disabled={disabled}
+            drawMode={drawMode}
           />
           <TrailRenderer
             layers={finalConfig.touch.trailLayers}
             trailData={trailLayers}
             viewportSize={viewportSize}
-          />
-          <CursorVisual
-            position={{ x: cursorState.x, y: cursorState.y }}
-            state={cursorState}
-            config={finalConfig.visual}
-            viewportSize={viewportSize}
+            vivid
           />
         </>
       )}

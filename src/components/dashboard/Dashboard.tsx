@@ -49,6 +49,8 @@ type DashboardContextValue = {
   ) => void;
   setCursorFocus: (on: boolean) => void;
   setTrailHandoff: (on: boolean) => void;
+  setTouchTrail: (on: boolean) => void;
+  setDrawMode: (on: boolean) => void;
   applyPreset: (id: string) => void;
   saveAsDefault: () => void;
   saveAsPreset: (name: string) => void;
@@ -183,6 +185,20 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     [commitSettings, settings],
   );
 
+  const setTouchTrail = useCallback(
+    (on: boolean) => {
+      commitSettings({ ...settings, touchTrail: on }, null);
+    },
+    [commitSettings, settings],
+  );
+
+  const setDrawMode = useCallback(
+    (on: boolean) => {
+      commitSettings({ ...settings, drawMode: on }, null);
+    },
+    [commitSettings, settings],
+  );
+
   const applyPreset = useCallback(
     (id: string) => {
       const preset = store.presets.find((item) => item.id === id);
@@ -268,6 +284,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       setBlock,
       setCursorFocus,
       setTrailHandoff,
+      setTouchTrail,
+      setDrawMode,
       applyPreset,
       saveAsDefault,
       saveAsPreset,
@@ -282,6 +300,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       setBlock,
       setCursorFocus,
       setTrailHandoff,
+      setTouchTrail,
+      setDrawMode,
       setTheme,
       settings,
       sourcePresetId,
@@ -306,6 +326,8 @@ export default function Dashboard() {
     setBlock,
     setCursorFocus,
     setTrailHandoff,
+    setTouchTrail,
+    setDrawMode,
     applyPreset,
     saveAsDefault,
     saveAsPreset,
@@ -336,7 +358,7 @@ export default function Dashboard() {
       <button
         type="button"
         onClick={openDashboard}
-        className="fixed bottom-5 right-5 z-[80] rounded-lg bg-neutral-100 p-2 text-neutral-700 shadow-lg hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+        className="fixed z-[80] min-h-11 min-w-11 rounded-lg bg-neutral-100 p-2.5 text-neutral-700 shadow-lg hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))]"
         aria-label="Open dashboard"
         aria-expanded={open}
       >
@@ -352,10 +374,10 @@ export default function Dashboard() {
             closeDashboard();
           }
         }}
-        className="dashboard-sheet z-[80] m-0 h-full max-h-full w-full max-w-md border-l border-neutral-200 bg-white p-0 text-neutral-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100"
+        className="dashboard-sheet z-[80] m-0 h-full max-h-full w-full max-w-md border-l border-neutral-200 bg-white p-0 text-neutral-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 max-md:h-[min(88dvh,100%)] max-md:max-h-[min(88dvh,100%)] max-md:max-w-none max-md:rounded-t-2xl max-md:border-l-0 max-md:border-t"
       >
-        <div className="flex h-full flex-col">
-          <div className="flex items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
+        <div className="flex h-full flex-col pb-[env(safe-area-inset-bottom)]">
+          <div className="flex items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 pt-[max(1rem,env(safe-area-inset-top))] dark:border-neutral-800">
             <div>
               <p className="font-mono text-[11px] tracking-widest text-primary-600 dark:text-primary-400">
                 utility
@@ -486,6 +508,27 @@ export default function Dashboard() {
               <p className="mt-1 font-body text-[11px] text-neutral-500 dark:text-neutral-400">
                 Masks the cursor trail over the card so it looks like it becomes the
                 outline. Easy to turn off.
+              </p>
+            </section>
+
+            <section className="mt-8">
+              <h3 className="mb-2 font-display text-lg font-bold">Touch trail</h3>
+              <p className="mb-2 font-body text-xs text-neutral-500 dark:text-neutral-400">
+                Scroll is native. Press and hold, then drag to paint the trail.
+              </p>
+              <ToggleRow
+                label="Hold to draw"
+                on={settings.touchTrail}
+                onToggle={() => setTouchTrail(!settings.touchTrail)}
+              />
+              <ToggleRow
+                label="Always draw"
+                on={settings.drawMode}
+                onToggle={() => setDrawMode(!settings.drawMode)}
+              />
+              <p className="mt-1 font-body text-[11px] text-neutral-500 dark:text-neutral-400">
+                Always draw skips the hold and locks the page for that stroke. Off by
+                default.
               </p>
             </section>
           </div>

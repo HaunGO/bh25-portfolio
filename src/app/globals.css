@@ -22,6 +22,7 @@ html {
   color: #ededed;
   /* Add smooth transitions to html element */
   transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
 }
 
 /* Dark theme overrides */
@@ -48,6 +49,7 @@ body {
   @apply bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100;
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
   transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
 }
 
 /* Custom component classes */
@@ -81,17 +83,29 @@ body {
     transition-duration: 500ms;
   }
 
-  /* Enhanced button hover effects */
+  /* Enhanced button hover effects — lift only on fine pointers */
   .btn-enhanced {
-    @apply relative overflow-hidden transition-all duration-300 transform hover:scale-105;
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn-enhanced {
+      @apply transform hover:scale-105;
+    }
   }
 
   .btn-enhanced::before {
     @apply content-[''] absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 opacity-0 transition-opacity duration-300;
   }
 
-  .btn-enhanced:hover::before {
-    @apply opacity-100;
+  @media (hover: hover) and (pointer: fine) {
+    .btn-enhanced:hover::before {
+      @apply opacity-100;
+    }
+  }
+
+  .btn-enhanced:active {
+    @apply opacity-90;
   }
 
   /* Floating animation for background elements */
@@ -106,7 +120,13 @@ body {
 
   /* Enhanced card hover effects */
   .card-enhanced {
-    @apply transition-all duration-500 transform hover:-translate-y-2 hover:scale-105;
+    @apply transition-all duration-500;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card-enhanced {
+      @apply transform hover:-translate-y-2 hover:scale-105;
+    }
   }
 
 
@@ -204,6 +224,14 @@ a[data-cursor="external"] *,
 dialog.dashboard-sheet {
   margin: 0 0 0 auto;
   max-width: 28rem;
+}
+
+@media (max-width: 767px) {
+  dialog.dashboard-sheet {
+    margin: auto 0 0 0;
+    width: 100%;
+    max-width: none;
+  }
 }
 
 dialog.dashboard-sheet::backdrop {

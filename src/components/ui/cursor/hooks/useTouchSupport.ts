@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
+import { getPointerMode, subscribePointerMode } from '@/lib/pointer-mode';
 
 /**
- * Hook to detect if device supports touch
+ * True when the primary pointing method is a coarse pointer (finger / no hover).
  */
 export const useTouchSupport = (): boolean => {
   const [hasTouch, setHasTouch] = useState(false);
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    const checkTouchSupport = () => {
-      const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setHasTouch(touchSupported);
-    };
-
-    checkTouchSupport();
+    const sync = () => setHasTouch(getPointerMode() === 'coarse');
+    sync();
+    return subscribePointerMode((mode) => setHasTouch(mode === 'coarse'));
   }, []);
 
-  return isClient ? hasTouch : false;
+  return hasTouch;
 };

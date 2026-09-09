@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useCallback, useRef, type MouseEvent } from 'react';
+import { Fragment, useCallback, useRef, useState, type ReactNode } from 'react';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { PageContainer } from '../ui/Container';
@@ -8,11 +8,63 @@ import ContactHoverLink, { CONTACT_ICON_SIZE } from '../ui/ContactHoverLink';
 import CopyEmail from '../ui/CopyEmail';
 import LogoBH from '../ui/LogoBH';
 import TennesseeOutline from '../ui/TennesseeOutline';
-import { applyRainbowEnter, applyRainbowLeave, themeRestInk } from '@/lib/motion';
+import { themeRestInk } from '@/lib/motion';
+import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 import { resumeData } from '@/data/resume';
+import { useIsCoarsePointer } from '@/hooks/usePointerMode';
 
 interface FooterProps {
   className?: string;
+}
+
+function CitationNote({
+  cite,
+  tooltip,
+  tooltipClassName,
+  className,
+  children,
+}: {
+  cite: string;
+  tooltip: string;
+  tooltipClassName: string;
+  className: string;
+  children: ReactNode;
+}) {
+  const isCoarse = useIsCoarsePointer();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <blockquote
+      className={`relative group ${className}`}
+      cite={cite}
+      tabIndex={0}
+      aria-expanded={isCoarse ? open : undefined}
+      onClick={() => {
+        if (isCoarse) {
+          setOpen((value) => !value);
+        }
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setOpen((value) => !value);
+        }
+        if (event.key === 'Escape') {
+          setOpen(false);
+        }
+      }}
+    >
+      {children}
+      <span
+        data-open={open ? 'true' : undefined}
+        className={`absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg px-2 py-1 opacity-0 transition-opacity duration-200 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 data-[open=true]:opacity-100 ${tooltipClassName}`}
+        role="tooltip"
+        aria-hidden={!open}
+      >
+        {tooltip}
+      </span>
+    </blockquote>
+  );
 }
 
 const footerTaglineItems = [
@@ -30,25 +82,17 @@ const getFooterTextColor = () => themeRestInk('muted');
 
 export default function Footer({ className = '' }: FooterProps) {
   const footerRef = useRef<HTMLElement>(null);
-
-  const handleTaglineItemEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowEnter(event.currentTarget);
-  }, []);
-
-  const handleTaglineItemLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowLeave(event.currentTarget, getFooterTextColor());
-  }, []);
+  const taglineHandlers = rainbowLetterHandlers(getFooterTextColor);
 
   const renderHighlightedItem = useCallback((item: string) => (
     <span
       aria-label={item}
       className="inline-block"
-      onMouseEnter={handleTaglineItemEnter}
-      onMouseLeave={handleTaglineItemLeave}
+      {...taglineHandlers}
     >
       {item}
     </span>
-  ), [handleTaglineItemEnter, handleTaglineItemLeave]);
+  ), [taglineHandlers]);
 
   return (
     <footer 
@@ -57,7 +101,7 @@ export default function Footer({ className = '' }: FooterProps) {
       data-cursor-level="footer"
       data-cursor-morph="border"
       data-cursor-border-edge="top"
-      className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 ${className}`}
+      className={`relative mt-12 md:mt-32 z-20 bg-neutral-50 dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 pb-[env(safe-area-inset-bottom)] ${className}`}
     >
       <PageContainer className="relative flex flex-col justify-between pt-10 pb-4 ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -141,33 +185,23 @@ export default function Footer({ className = '' }: FooterProps) {
         <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 cursor-default ">
           <div className="text-center flex flex-col-reverse items-center md:flex-row md:justify-between">
 
-            <blockquote 
-              className="relative group text-purple-800 dark:text-purple-400 text-md w-full md:w-1/2 md:pr-4"
+            <CitationNote
               cite="https://www.law.cornell.edu/ucc/1/1-308"
+              tooltip="UCC 1-308"
+              tooltipClassName="bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900"
+              className="relative text-purple-800 dark:text-purple-400 text-md w-full md:w-1/2 md:pr-4"
             >
               <span className="opacity-60">&copy; {new Date().getFullYear()} Brandon Haun. All Rights Reserved.</span>
-              <span 
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-purple-600 dark:bg-purple-400 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
-                role="tooltip"
-                aria-hidden="true"
-              >
-                UCC 1-308
-              </span>
-            </blockquote>
+            </CitationNote>
 
-            <blockquote 
-              className="text-yellow-600 relative group md:pt-0 text-lg font-script w-full md:w-1/2 md:pl-4"
+            <CitationNote
               cite="https://www.biblegateway.com/passage/?search=Psalm+118%3A24&version=KJV"
+              tooltip="Psalm 118:24"
+              tooltipClassName="bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900"
+              className="text-yellow-600 relative md:pt-0 text-lg font-script w-full md:w-1/2 md:pl-4"
             >
               <span className="opacity-80">This is the day which the LORD hath made; <br />we will rejoice and be glad in it.</span>
-              <span 
-                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-yellow-600 dark:bg-yellow-600 text-neutral-100 dark:text-neutral-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 "
-                role="tooltip"
-                aria-hidden="true"
-              >
-                Psalm 118:24
-              </span>
-            </blockquote>
+            </CitationNote>
             
           </div>
         </div>

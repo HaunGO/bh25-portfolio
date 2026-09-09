@@ -10,6 +10,7 @@ export { default as CursorVisual } from './components/CursorVisual';
 // Hooks
 export { useMouseSupport } from './hooks/useMouseSupport';
 export { useTouchSupport } from './hooks/useTouchSupport';
+export { usePointerMode, useIsCoarsePointer } from '@/hooks/usePointerMode';
 
 // Types
 export type * from './types';

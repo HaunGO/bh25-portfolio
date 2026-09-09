@@ -32,6 +32,8 @@ const TrailRenderer = memo(function TrailRenderer({
   trailData,
   viewportSize,
   className = '',
+  opacity = 1,
+  vivid = false,
 }: TrailRendererProps) {
   const trailLayerRefs = useRef<Array<SVGPathElement | null>>(layers.map(() => null));
 
@@ -41,14 +43,16 @@ const TrailRenderer = memo(function TrailRenderer({
 
   return (
     <svg
+      data-cursor-trail=""
       width="100%"
       height="100%"
       viewBox={`0 0 ${viewportSize.width} ${viewportSize.height}`}
       preserveAspectRatio="none"
       className={`fixed top-0 left-0 pointer-events-none z-[9998] w-full h-full ${className}`}
+      style={{ opacity }}
     >
       <TrailHandoffMask width={viewportSize.width} height={viewportSize.height} />
-      <g className="opacity-50" mask="url(#cursor-trail-handoff-mask)">
+      <g className={vivid ? 'opacity-90' : 'opacity-50'} mask="url(#cursor-trail-handoff-mask)">
         {layers.map((layer, index) => {
           const reverseIndex = layers.length - 1 - index;
           return (

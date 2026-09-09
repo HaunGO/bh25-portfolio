@@ -128,7 +128,7 @@ export const resumeData: ResumeData = {
     {
       id: 'pagetree',
       company: 'PageTree Inc.',
-      position: 'Lead Frontend Developer',
+      position: 'WebMaster',
       location: 'Charleston, SC',
       startDate: '2014',
       endDate: '2016',

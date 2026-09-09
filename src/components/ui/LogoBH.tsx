@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject, type TouchEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -243,17 +243,7 @@ export default function LogoBH({
   }, [triggerRef, triggerStart, triggerEnd, autoAnimate, showMarkers, logoKey, reopenLogoKeyOnClose, playOpen, reverseClosed]);
 
   const handleClick = (e: MouseEvent) => {
-    e.stopPropagation(); // Prevent parent TransitionLink from handling the event
-    if (isAnimating) {
-      reverseClosed();
-    } else {
-      playOpen();
-    }
-  };
-
-  const handleTouchEnd = (e: TouchEvent) => {
-    e.preventDefault(); // Prevent default touch behavior
-    e.stopPropagation(); // Prevent parent TransitionLink from handling the event
+    e.stopPropagation();
     if (isAnimating) {
       reverseClosed();
     } else {
@@ -265,7 +255,6 @@ export default function LogoBH({
     <span 
       ref={myNameRef} 
       onClick={handleClick}
-      onTouchEnd={handleTouchEnd}
       className={`text-2xl font-bold text-primary-600 dark:text-primary-400 font-display cursor-pointer ${className}`}
     >
       B<span className="inline-block opacity-70 w-0 overflow-hidden h-6">randon &nbsp;</span>H<span className="inline-block opacity-70 w-0 h-6 overflow-hidden">aun &nbsp;</span><span className="inline-block opacity-70 w-0 h-6 overflow-hidden"><sup>20</sup></span><sup className="opacity-90 w-0 h-6 overflow-hidden">26</sup>

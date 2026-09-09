@@ -8,6 +8,7 @@ import { PageContainer } from '../ui/Container';
 import LogoBH from '../ui/LogoBH';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { playTrailChoreography } from '@/components/ui/cursor';
+import { getPointerMode } from '@/lib/pointer-mode';
 
 interface HeaderProps {
   className?: string;
@@ -30,18 +31,20 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
     };
 
     if (href === '#contact') {
-      playTrailChoreography({
-        id: 'contact',
-        target: '#contact',
-        travelDuration: duration,
-        scribbleDuration: 1,
-        loops: 2,
-        holdDuration: 0,
-        returnDuration: 0.9,
-        padding: 24,
-        entrySide: 'left',
-        clockwise: false,
-      });
+      if (getPointerMode() === 'fine') {
+        playTrailChoreography({
+          id: 'contact',
+          target: '#contact',
+          travelDuration: duration,
+          scribbleDuration: 1,
+          loops: 2,
+          holdDuration: 0,
+          returnDuration: 0.9,
+          padding: 24,
+          entrySide: 'left',
+          clockwise: false,
+        });
+      }
 
       gsap.to(window, {
         duration,
@@ -113,14 +116,14 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
       data-cursor-morph="border"
       data-cursor-border-edge="bottom"
       className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700
+        fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-neutral-50 dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-700 pt-[env(safe-area-inset-top)]
         ${getHeaderBackground()}
         ${className}
       `}
     >
       <PageContainer>
         <div className="relative flex justify-end items-center h-12 lg:h-14">
-          <TransitionLink href="/" className="absolute left-0 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
+          <TransitionLink href="/" className="absolute left-0 top-0 bottom-0 flex items-center hover:text-primary-700 dark:hover:text-primary-300 transition-colors" >
             <span className="relative top-1 inline-block origin-left scale-110">
               <LogoBH
                 logoKey="header"
@@ -140,7 +143,7 @@ const Header = memo(function Header({ className = '' }: HeaderProps) {
                 href={item.href}
                 onClick={(event) => handleSectionNavigation(event, item.href)}
                 className={`
-                  relative inline-flex items-center px-3 py-2 transition-colors duration-200
+                  relative inline-flex items-center min-h-11 px-3 py-2 transition-colors duration-200
                   text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400
                 `}
                 aria-label={item.label}

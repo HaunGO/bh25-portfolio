@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { prefersReducedMotion } from '@/lib/motion';
+import { getPointerMode } from '@/lib/pointer-mode';
 
 export const cursorFocusConfig = {
   inset: 4,
@@ -639,6 +640,9 @@ function bindCursorFocus(root: HTMLElement) {
   }
 
   root.addEventListener('pointerenter', (event) => {
+    if (getPointerMode() !== 'fine') {
+      return;
+    }
     if (!isCursorFocusEnabled(root.getAttribute('data-cursor-focus'))) {
       return;
     }

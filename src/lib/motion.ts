@@ -101,8 +101,12 @@ export const motionRules = [
     body: 'Hero, logo, page fade, and rainbow are GSAP. Buttons, cards, and looping float stay CSS. Do not invent a third timing system.',
   },
   {
+    title: 'Scroll first. Trail second.',
+    body: 'On coarse pointers, scroll is native. Press and hold, then drag to paint. Always-draw is opt-in. Hover chrome is gated to fine pointers.',
+  },
+  {
     title: 'Skip the show when asked.',
-    body: 'prefers-reduced-motion skips rainbow and GSAP presets. Theme color transitions may remain.',
+    body: 'prefers-reduced-motion skips rainbow, hold-to-draw, and GSAP presets. Theme color transitions may remain.',
   },
 ] as const;
 
@@ -110,7 +114,7 @@ export const allowedMotion = [
   {
     status: 'canonical',
     name: 'Rainbow hover',
-    usedOn: 'Hero letters, footer tagline, and any [data-rainbow-text=on] block',
+    usedOn: 'Hero letters, footer tagline, and any [data-rainbow-text=on] block. Pointer-down on touch.',
   },
   {
     status: 'canonical',
@@ -120,7 +124,7 @@ export const allowedMotion = [
   {
     status: 'canonical',
     name: 'Cursor trail / morph / dazzle',
-    usedOn: 'Global chrome. pulse, orbit, spark.',
+    usedOn: 'Fine pointer: mouse trail. Coarse: hold-to-draw, same rainbow stroke.',
   },
   {
     status: 'canonical',

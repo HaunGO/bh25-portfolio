@@ -6,6 +6,8 @@ import Footer from './Footer';
 import PageTransition from '../transitions/PageTransition';
 import RainbowTextRuntime from '../ui/RainbowTextRuntime';
 import CursorFocusRuntime from '../ui/CursorFocusRuntime';
+import PointerModeRuntime from '../ui/PointerModeRuntime';
+import AdvancedCursor from '../ui/AdvancedCursor';
 import Dashboard, { DashboardProvider } from '../dashboard/Dashboard';
 
 interface LayoutProps {
@@ -23,7 +25,9 @@ const Layout = memo(function Layout({ children }: LayoutProps) {
 
   return (
     <DashboardProvider>
-      <div className="min-h-screen flex flex-col">
+      <PointerModeRuntime />
+      <AdvancedCursor />
+      <div className="min-h-dvh flex flex-col overflow-x-hidden">
         {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
         
         <Header />

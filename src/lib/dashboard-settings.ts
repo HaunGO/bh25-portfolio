@@ -26,6 +26,8 @@ export type DashboardSettings = {
   rainbow: GuideBlockFlags;
   cursorFocus: boolean;
   trailHandoff: boolean;
+  touchTrail: boolean;
+  drawMode: boolean;
 };
 
 export type DashboardPreset = {
@@ -60,6 +62,8 @@ export const builtinSettings: DashboardSettings = {
   rainbow: createBlockFlags(true),
   cursorFocus: true,
   trailHandoff: true,
+  touchTrail: true,
+  drawMode: false,
 };
 
 export function createDefaultPresetStore(): DashboardPresetStore {
@@ -104,6 +108,8 @@ export function mergeSettings(partial?: Partial<DashboardSettings> | null): Dash
     rainbow: mergeBlockFlags(partial?.rainbow),
     cursorFocus: mergeCursorFocus(partial?.cursorFocus),
     trailHandoff: partial?.trailHandoff !== false,
+    touchTrail: partial?.touchTrail !== false,
+    drawMode: partial?.drawMode === true,
   };
 }
 

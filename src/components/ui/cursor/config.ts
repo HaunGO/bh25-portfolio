@@ -70,25 +70,23 @@ export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
     ],
   },
   touch: {
-    trailLength: 40,
+    trailLength: 44,
     hitRadius: 56,
     trailLayers: [
-      { percentage: 0.3, color: 'rgba(59, 130, 246, 1)', strokeWidth: 20 },
-      { percentage: 0.5, color: 'rgba(59, 130, 246, 1)', strokeWidth: 16 },
-      { percentage: 0.7, color: 'rgba(59, 130, 246, 1)', strokeWidth: 12 },
-      { percentage: 0.9, color: 'rgba(59, 130, 246, 1)', strokeWidth: 7 },
-      { percentage: 1.0, color: 'rgba(59, 130, 246, 1)', strokeWidth: 4 },
+      { percentage: 0.1, color: 'rgba(245, 158, 11, 0.95)', strokeWidth: 20 },
+      { percentage: 0.2, color: 'rgba(168, 85, 247, 0.85)', strokeWidth: 16 },
+      { percentage: 0.3, color: 'rgba(59, 130, 246, 0.75)', strokeWidth: 13 },
+      { percentage: 0.4, color: 'rgba(245, 158, 11, 0.58)', strokeWidth: 10 },
+      { percentage: 0.5, color: 'rgba(168, 85, 247, 0.48)', strokeWidth: 8 },
+      { percentage: 0.6, color: 'rgba(59, 130, 246, 0.38)', strokeWidth: 6 },
+      { percentage: 0.7, color: 'rgba(245, 158, 11, 0.28)', strokeWidth: 5 },
+      { percentage: 0.8, color: 'rgba(168, 85, 247, 0.2)', strokeWidth: 4 },
+      { percentage: 0.9, color: 'rgba(59, 130, 246, 0.14)', strokeWidth: 3 },
+      { percentage: 1.0, color: 'rgba(59, 130, 246, 0.1)', strokeWidth: 2 },
     ],
-    fadeDuration: 2.0,
-    touchZones: {
-      trailZone: {
-        left: 0,      // Start from left edge
-        right: 0.67,  // End at 2/3 of screen width
-      },
-      scrollZone: {
-        left: 0.67,   // Start at 2/3 of screen width
-        right: 1,     // End at right edge
-      },
-    },
+    fadeDuration: 0.8,
+    minMove: 2,
+    holdMs: 180,
+    cancelMove: 16,
   },
 };

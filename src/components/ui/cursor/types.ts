@@ -65,16 +65,9 @@ export interface TouchTrailConfig {
   hitRadius: number;
   trailLayers: TrailLayer[];
   fadeDuration: number;
-  touchZones: {
-    trailZone: {
-      left: number;    // 0 = left edge
-      right: number;   // 1 = right edge
-    };
-    scrollZone: {
-      left: number;    // 0 = left edge  
-      right: number;   // 1 = right edge
-    };
-  };
+  minMove: number;
+  holdMs: number;
+  cancelMove: number;
 }
 
 export interface CursorVisualConfig {
@@ -125,6 +118,8 @@ export interface TrailRendererProps {
   trailData: TrailPoint[][];
   viewportSize: ViewportSize;
   className?: string;
+  opacity?: number;
+  vivid?: boolean;
 }
 
 export interface MouseTrailManagerProps {
@@ -138,7 +133,9 @@ export interface TouchTrailManagerProps {
   config: TouchTrailConfig;
   onTrailUpdate: (layers: TrailPoint[][]) => void;
   onCursorUpdate: (update: CursorUpdate) => void;
+  onTrailOpacity?: (opacity: number) => void;
   disabled?: boolean;
+  drawMode?: boolean;
 }
 
 export interface CursorVisualProps {
@@ -150,5 +147,6 @@ export interface CursorVisualProps {
 
 export interface AdvancedCursorProps {
   disabled?: boolean;
+  drawMode?: boolean;
   config?: Partial<CursorConfig>;
 }

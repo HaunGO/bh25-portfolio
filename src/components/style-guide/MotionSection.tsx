@@ -1,11 +1,9 @@
 'use client';
 
-import { useCallback, useState, type MouseEvent } from 'react';
+import { useState } from 'react';
 import Loading, { ButtonLoading, Skeleton } from '@/components/ui/Loading';
 import {
   allowedMotion,
-  applyRainbowEnter,
-  applyRainbowLeave,
   gsapEasings,
   motionDurations,
   motionRules,
@@ -13,16 +11,13 @@ import {
   rainbowSpectrum,
   themeRestInk,
 } from '@/lib/motion';
+import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
+import { usePointerMode } from '@/hooks/usePointerMode';
+import { useDashboard } from '@/components/dashboard/Dashboard';
 import StyleGuideSection from './StyleGuideSection';
 
 function RainbowHoverText({ text }: { text: string }) {
-  const handleEnter = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowEnter(event.currentTarget);
-  }, []);
-
-  const handleLeave = useCallback((event: MouseEvent<HTMLSpanElement>) => {
-    applyRainbowLeave(event.currentTarget, themeRestInk('display'));
-  }, []);
+  const handlers = rainbowLetterHandlers(() => themeRestInk('display'));
 
   return (
     <p
@@ -32,14 +27,51 @@ function RainbowHoverText({ text }: { text: string }) {
       {text.split('').map((character, index) => (
         <span
           key={`${character}-${index}`}
-          onMouseEnter={handleEnter}
-          onMouseLeave={handleLeave}
           className="inline-block"
+          {...handlers}
         >
           {character === ' ' ? '\u00A0' : character}
         </span>
       ))}
     </p>
+  );
+}
+
+function TouchSpecimen() {
+  const mode = usePointerMode();
+  const { ready, settings, setTouchTrail, setDrawMode } = useDashboard();
+
+  return (
+    <div className="rounded-xl border border-neutral-200 bg-white p-5 dark:border-neutral-700 dark:bg-neutral-800">
+      <p className="font-body text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        Fine pointers get the mouse trail. On a phone, <strong>scroll is just
+        scroll</strong>. Press and hold, then drag — a pulse marks the start, then
+        you paint with the same rainbow trail. Always-draw in the dashboard skips
+        the hold. Hover chrome is gated with{' '}
+        <code className="font-mono text-xs">(hover: hover) and (pointer: fine)</code>.
+      </p>
+      <p className="mt-3 font-mono text-xs text-neutral-500 dark:text-neutral-400">
+        data-pointer=&quot;{mode}&quot;
+      </p>
+      {ready && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            className="btn-secondary text-xs"
+            onClick={() => setTouchTrail(!settings.touchTrail)}
+          >
+            Hold to draw · {settings.touchTrail ? 'on' : 'off'}
+          </button>
+          <button
+            type="button"
+            className="btn-secondary text-xs"
+            onClick={() => setDrawMode(!settings.drawMode)}
+          >
+            Always draw · {settings.drawMode ? 'on' : 'off'}
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -142,6 +174,13 @@ export default function MotionSection() {
               </span>
             ))}
           </div>
+        </div>
+
+        <div className="mt-12">
+          <h3 className="mb-3 font-display text-xl font-bold text-neutral-900 dark:text-neutral-100">
+            Touch
+          </h3>
+          <TouchSpecimen />
         </div>
 
         <div className="mt-12">
