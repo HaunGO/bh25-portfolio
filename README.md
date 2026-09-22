@@ -141,12 +141,13 @@ src/
 
 ## 📊 Development Workflow
 
-This project follows the **BMAD** methodology:
+This project follows **BMAD** (Analyst → **PM** → Architect → Scrum Master → Dev → Tester).
 
-1. **Build** ✅ - Project foundation and setup
-2. **Model** ✅ - Requirements and architecture planning
-3. **Agent** ✅ - Development implementation
-4. **Deploy** - Production deployment and monitoring
+- **PM / living spec:** `docs/PRD.md`
+- **Scrum Master / status & backlog:** `docs/Backlog.md`
+- **Agent prompts:** `docs/00_PM.md` … `docs/05_Tester.md`
+
+Architecture (`docs/Architecture.md`) is flagged stale where it still assumes a site nav and contact form. Implement from the PRD and backlog, not those sections.
 
 ## 🤝 Contributing
 

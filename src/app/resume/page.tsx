@@ -2,10 +2,11 @@
 
 import { resumeData } from '@/data/resume';
 import ExperienceSection from '@/components/resume/ExperienceSection';
+import SkillsSection from '@/components/resume/SkillsSection';
 import CopyEmail from '@/components/ui/CopyEmail';
 
 export default function ResumePage() {
-  const { personalInfo, experience } = resumeData;
+  const { personalInfo, experience, skills } = resumeData;
 
   return (
     <div className="min-h-dvh py-20">
@@ -29,7 +30,14 @@ export default function ResumePage() {
           </div>
         </header>
 
-        <section id="experience">
+        <section id="skills" className="mb-16 scroll-mt-28">
+          <h2 className="mb-6 font-display text-3xl font-bold text-neutral-900 dark:text-neutral-100 md:text-4xl">
+            Skills
+          </h2>
+          <SkillsSection skills={skills} />
+        </section>
+
+        <section id="experience" className="scroll-mt-28">
           <h2 className="mb-8 font-display text-3xl font-bold text-neutral-900 dark:text-neutral-100 md:text-4xl">
             Experience
           </h2>

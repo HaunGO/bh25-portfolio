@@ -26,7 +26,6 @@ export const resumeData: ResumeData = {
     { id: 'angular', name: 'Angular', category: 'frontend', proficiency: 'advanced' },
     { id: 'vue', name: 'Vue.js', category: 'frontend', proficiency: 'advanced' },
     { id: 'wordpress', name: 'WordPress', category: 'backend', proficiency: 'advanced' },
-    { id: 'drupal', name: 'Drupal', category: 'backend', proficiency: 'intermediate' },
 
     // State Management & Testing
     { id: 'redux', name: 'Redux', category: 'frontend', proficiency: 'advanced' },
@@ -128,7 +127,7 @@ export const resumeData: ResumeData = {
     {
       id: 'pagetree',
       company: 'PageTree Inc.',
-      position: 'WebMaster',
+      position: 'Frontend Developer',
       location: 'Charleston, SC',
       startDate: '2014',
       endDate: '2016',
@@ -139,7 +138,7 @@ export const resumeData: ResumeData = {
         'Championed customization and optimization of PageTree CMS as a web-based platform',
         'Delivered solutions for clients including Nitro World Games, Scott Flyrods, EP Flies'
       ],
-      technologies: ['HTML5', 'CSS3', 'JavaScript', 'SMACSS', 'BEM', 'CMS']
+      technologies: ['HTML5', 'CSS3', 'JavaScript', 'BEM', 'CMS']
     },
     {
       id: 'pario',

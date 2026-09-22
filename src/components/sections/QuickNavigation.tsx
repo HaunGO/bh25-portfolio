@@ -23,12 +23,6 @@ const navigationItems = [
     href: '/resume',
     icon: '📄',
   },
-  {
-    title: 'Contact',
-    description: 'Get in touch about opportunities or collaborations',
-    href: '/contact',
-    icon: '💬',
-  },
 ];
 
 export default function QuickNavigation({ className = '' }: QuickNavigationProps) {
@@ -97,7 +91,7 @@ export default function QuickNavigation({ className = '' }: QuickNavigationProps
         
         <div 
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {navigationItems.map((item) => (
             <div 

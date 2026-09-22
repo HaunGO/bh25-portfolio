@@ -5,8 +5,7 @@ import { TransitionLink } from '../transitions/TransitionLink';
 const TransitionDemo: React.FC = () => {
   const pages = [
     { name: 'Portfolio', href: '/portfolio' },
-    { name: 'Resume', href: '/resume' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Resume', href: '/resume' }
   ];
 
   return (

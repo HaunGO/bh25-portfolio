@@ -315,6 +315,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/** Unused in live chrome for now — remount `<Dashboard />` in Layout when wiring it again. */
 export default function Dashboard() {
   const {
     ready,

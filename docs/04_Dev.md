@@ -3,7 +3,7 @@
 ```
 *dev
 
-Please act as the Dev agent for my BMAD project. Use the PRD (Analyst), Architecture Document (Architect), and Backlog/User Stories (Scrum Master) to implement the project step by step.
+Please act as the Dev agent for my BMAD project. Use the PRD (`docs/PRD.md`, PM — not the Analyst prompt), Architecture (skip nav/contact sections; see the stale banner), and Backlog (`docs/Backlog.md`, Scrum Master) to implement **one user story at a time**. Next story is S8 (resume) then S16 (hero toy) unless the SM says otherwise. Do not start S7 (portfolio grid) until the human asks. Do not rebuild dropped scope (nav, contact form, mailto, mounted dashboard).
 
 Deliverables:
 - Implement one user story at a time.

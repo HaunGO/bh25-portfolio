@@ -46,12 +46,6 @@ export default function NotFound() {
             >
               Resume
             </Link>
-            <Link 
-              href="/contact"
-              className="text-primary-600 dark:text-primary-400 hover:underline font-body"
-            >
-              Contact
-            </Link>
           </div>
         </div>
       </div>

@@ -1,160 +1,154 @@
 # Product Requirements Document (PRD)
-## Portfolio Website - Senior Frontend/Creative Developer
+## BH25 Creative Portfolio
+
+**Owner:** Project Manager  
+**Status:** Living spec (replaces the Analyst-only PRD)  
+**Last updated:** 16 September 2026 (priority: resume page, then hero craft; portfolio deferred)  
+**Source of truth:** this document. `docs/01_Analyst.md` is the original brief, not current scope.
 
 ---
 
-## 1. Project Overview
+## 1. Overview
 
-**Project Name:** BH25 Creative Portfolio  
-**Project Type:** Modern, interactive portfolio website  
-**Primary Goal:** Demonstrate technical creativity while providing an engaging, recruiter-friendly experience  
+A personal site for Brandon Haun: recruiter-facing, motion-led, technically credible. Home is a full-viewport introduction. Resume is a first-class page. Contact is a footer ritual (copy email + cursor trail), not a form and not a page. Primary navigation is intentionally absent.
 
----
-
-## 2. Goals & Objectives
-
-### Primary Goals
-- Present as a strong candidate for senior frontend/creative developer roles
-- Showcase advanced technical skills through interactive experiences
-- Provide an engaging alternative to traditional static resumes
-- Enable easy contact and professional networking
-
-### Success Metrics
-- Page load time < 3 seconds on 3G connection
-- WCAG AA accessibility compliance
-- Mobile-first responsive design
-- ATS-friendly resume content
-- Engagement metrics (time on site, interaction rates)
+**Primary goal:** Hireability — skills and experience are easy to find, the craft is visible, contacting is one click without exposing the address to scrapers.
 
 ---
 
-## 3. Target Users
+## 2. Goals
 
-### Primary Users (Recruiters & Hiring Managers)
-- Need to quickly assess technical skills and experience
-- Require ATS-compatible resume information
-- Value professional presentation and performance
-- May access from various devices and network conditions
+- Present as a senior frontend / creative developer candidate
+- Show craft through motion, typography, and interaction — not through chrome
+- Make resume content scannable for humans; keep a path to ATS-friendly export (PDF still required)
+- Let someone copy email without a contact form, mailto, or readable address in HTML
 
-### Secondary Users (Potential Clients)
-- Want to see creative capabilities and project examples
-- Need to understand service offerings and expertise
-- Value impressive visual experiences
-
-### Tertiary Users (Developers/Designers)
-- Seek inspiration and technical insights
-- Appreciate innovative implementations
-- May share and reference the work
+**Not goals (explicit):** a marketing-site nav, a contact page, or a message form.
 
 ---
 
-## 4. Core Features
+## 3. Users
 
-### 4.1 Home/Landing Page
-- **Bold Visual Introduction:** Hero section with animated typography and motion graphics
-- **Motion Graphics:** GSAP-powered animations that showcase technical skill
-- **Quick Value Proposition:** Clear statement of expertise and value
-- **Navigation:** Intuitive menu system with smooth transitions
-
-### 4.2 Portfolio Section
-- **Project Showcase:** Grid/list view of completed work
-- **Case Studies:** Detailed project breakdowns with technical insights
-- **Interactive Previews:** Hover effects, animations, and micro-interactions
-- **Filtering System:** By technology, project type, or industry
-- **Project Details:** Technologies used, challenges solved, outcomes achieved
-
-### 4.3 Interactive Resume
-- **Scroll-Based Experience:** Progressive reveal of skills and experience
-- **Modular Sections:** Skills, work history, education, certifications
-- **Interactive Elements:** Clickable skills, expandable experience details
-- **ATS Compatibility:** Structured data and downloadable PDF version
-- **Visual Hierarchy:** Clear information architecture for both human and ATS readers
-
-### 4.4 Contact Form
-- **Form Validation:** Client-side and server-side validation
-- **Email Integration:** Functional contact form with email delivery
-- **Professional Presentation:** Clean, accessible form design
-- **Success/Error Handling:** Clear feedback for user actions
-- **Spam Protection:** Basic anti-spam measures
-
-### 4.5 Performance & Accessibility
-- **Fast Loading:** Optimized assets and lazy loading
-- **Responsive Design:** Mobile-first approach with desktop enhancements
-- **WCAG AA Compliance:** Meeting accessibility standards
-- **Cross-Browser Compatibility:** Modern browser support
-- **SEO Optimization:** Meta tags, structured data, performance metrics
+| Priority | Who | Need |
+|---|---|---|
+| Primary | Recruiters / hiring managers | Fast read on who you are, resume, a way to email |
+| Secondary | Potential clients | Work samples and tone |
+| Tertiary | Other makers | Craft and implementation details (style guide is internal, not a product surface) |
 
 ---
 
-## 5. Optional Features
+## 4. Product decisions (locked unless reversed)
 
-### 5.1 Advanced 3D Elements
-- **WebGL/Three.js Scenes:** Interactive 3D backgrounds or elements
-- **3D Models:** Custom or imported models showcasing technical depth
-- **Performance Optimization:** Ensuring smooth 3D rendering across devices
+These override the original Analyst brief.
 
-### 5.2 Advanced Motion Sequences
-- **GSAP Parallax:** Scroll-triggered parallax effects
-- **Physics Animations:** Realistic motion and interaction feedback
-- **Advanced Transitions:** Page-to-page and component transitions
-
-### 5.3 Enhanced User Experience
-- **Theme Toggles:** Dark/light mode or playful/professional themes
-- **Blog/Notes Section:** Technical insights and project learnings
-- **Easter Eggs:** Hidden interactions and playful discoveries
-- **Loading States:** Engaging loading animations and progress indicators
-
----
-
-## 6. Technical Constraints
-
-### 6.1 Technology Stack
-- **Frontend Framework:** Next.js (React-based)
-- **Styling:** TailwindCSS v3
-- **Animations:** GSAP (GreenSock Animation Platform)
-- **3D Graphics:** Three.js for WebGL content
-- **TypeScript:** For type safety and developer experience
-
-### 6.2 Hosting & Deployment
-- **Platform:** Vercel for optimal Next.js performance
-- **Custom Domain:** Professional branding and credibility
-- **CDN:** Global content delivery for fast loading
-- **Analytics:** Performance and user behavior tracking
-
-### 6.3 Performance Requirements
-- **Mobile Performance:** Smooth operation on mobile devices
-- **Browser Compatibility:** Modern browsers (Chrome, Firefox, Safari, Edge)
-- **Network Optimization:** Efficient loading on various connection speeds
-- **Accessibility:** WCAG AA compliance for inclusive design
+| Decision | Rule |
+|---|---|
+| No primary nav | Header is logo (home) + ID-card control. No hamburger, no Resume/Portfolio/Style Guide/Contact menu. Pages may exist at URLs; they are not advertised in a menu. |
+| No `/contact` | Route removed. Do not rebuild. |
+| No contact form | Do not add name/email/message, API mail, or spam tooling unless the human asks. |
+| No mailto / mail app | Header ID card does **not** copy email and does **not** open a mail client. It only plays the cursor trail to the footer and scrolls there. |
+| Copy email | Footer (and resume inline control) copies via the existing clipboard helpers. Address is assembled in JS, not shown as plaintext in HTML. |
+| Home = hero | First viewport is ~full screen (~90%+). Resume CTA is text-only, pinned to the bottom of that viewport. |
+| Dots | Shared background dot grid on every page (layout), not per-page copies. |
+| Utility dashboard | Idea kept in code; **not mounted**. Do not rewire to `/resume` unless asked. |
+| Tennessee map | Outline in footer; small black dot for Knoxville (east TN). |
+| Portfolio is not current | `/portfolio` may stay a stub. Do not prioritize a project grid until resume and hero craft are done. |
+| Sequence | Finalize `/resume` first, then hero / landing motion and a playful interactive “toy.” |
 
 ---
 
-## 7. Content Requirements
+## 5. Information architecture (current)
 
-### 7.1 Resume Content
-- **ATS-Friendly Format:** Structured, keyword-rich content
-- **Downloadable PDF:** Professional resume for offline use
-- **Skills Section:** Technical skills with proficiency levels
-- **Experience Timeline:** Clear work history with achievements
-- **Education & Certifications:** Relevant qualifications and training
+```
+/                 Home — full-viewport hero, Resume CTA
+/resume           Full resume: identity, experience, skills, education (PDF still later)
+/portfolio        Exists; coming-soon stub — **deferred**, not the next build
+/style-guide      Internal / craft reference — not in chrome
+#contact          Footer anchor — trail + copy-email, not a page
+```
 
-### 7.2 Portfolio Content
-- **Project Descriptions:** Clear explanations of work and outcomes
-- **Technical Details:** Technologies, frameworks, and methodologies used
-- **Visual Assets:** High-quality images, videos, and interactive demos
-- **Case Studies:** Problem-solution-outcome narratives
+404 may link to existing routes. That is not a nav system.
 
----
+**User journeys**
 
-## 8. Success Criteria
-
-- **Performance:** Lighthouse score > 90 for all metrics
-- **Accessibility:** WCAG AA compliance verified
-- **User Experience:** Intuitive navigation and engaging interactions
-- **Professional Impact:** Clear presentation of skills and experience
-- **Technical Demonstration:** Showcasing advanced frontend capabilities
+1. Land on hero → read name/tagline → Resume CTA → `/resume`
+2. Header ID card → trail down → footer circles contact → copy email from footer control
+3. Direct URL or 404 → `/portfolio` (stub; not current work)
 
 ---
 
-**Document Status:** Ready for Architect Phase  
-**Next Phase:** Technical Architecture & Component Design
+## 6. In-scope features
+
+### 6.1 Home (after resume)
+- Full-viewport hero, animated type, value/tagline — already structurally shipped
+- **Next after `/resume`:** landing animation and an interactive “fun toy” (playful craft on the hero; details with the human)
+- Text-only Resume control at the bottom of the first screen → `/resume`
+- Global dots behind content
+
+### 6.2 Resume (`/resume`) — **current focus**
+- Name, title, summary, location
+- Copy-email control (same clipboard system as footer)
+- Experience, **skills as a short type list** (featured words; extra tooling behind More)
+- Skills are not a filter. Do not add “pick a skill to highlight roles.”
+- Education is **not on the page** (data may remain for a later PDF)
+- ATS-friendly content on-page; downloadable PDF remains a later slice, not a blocker for “page complete”
+
+### 6.3 Portfolio (`/portfolio`)
+- **Deferred.** Stub may remain. Grid/case studies are not the current sprint.
+
+### 6.4 Contact (footer, not a page)
+- ID-card in header: trail + scroll only
+- Footer: copy email, LinkedIn, location / Tennessee outline with Knoxville dot
+- Email never in HTML as readable text or `mailto:`
+
+### 6.5 Chrome & craft
+- Header (logo + ID card), footer, theme, advanced cursor, page transitions
+- Background dots on all routes
+- Style guide page may exist for development; it is not a product nav item
+- Performance, responsive, WCAG AA, SEO remain requirements
+
+---
+
+## 7. Out of scope (do not build)
+
+- Contact form, `/contact`, mailto
+- Primary/global/mobile site navigation
+- Mounting the utility dashboard
+- Opening the user's mail app from the ID card
+- Restoring a “Copied” state on the header ID card
+
+Optional later (not current sprint): Three.js scenes, blog/notes, easter eggs, re-introducing nav if IA grows, remounting dashboard against `/resume`.
+
+---
+
+## 8. Constraints
+
+- Next.js (App Router), React, TypeScript, TailwindCSS v3, GSAP, Three.js available but 3D is optional
+- Vercel + custom domain
+- Mobile and desktop; `prefers-reduced-motion`
+- Resume remains ATS-readable; PDF download still in scope
+- Do not put the email address in the document for crawlers
+
+---
+
+## 9. Success metrics
+
+- Lighthouse > 90 when we are in polish/deploy
+- WCAG AA
+- Recruiter path: home → resume in one click; email copy without seeing the address
+- `/resume` shows experience, skills, and education before we call the resume page complete
+- Portfolio is not a launch blocker for the current phase
+- Motion stays at ~60fps; trail/copy remain separate behaviors
+
+---
+
+## 10. Open questions (PM)
+
+1. When portfolio ships, how do recruiters find it with no nav? (Footer link, home secondary CTA, or accept direct URL only?)
+2. Is style guide public or should it stay unlisted?
+3. PDF resume: generate from the page, or host a static file?
+4. Dashboard: delete later, or keep dormant?
+
+---
+
+**Handoff:** Scrum Master maintains `docs/Backlog.md` against this PRD. Architect (`docs/Architecture.md`) still describes the old sitemap (nav + contact form) — treat this PRD as IA source of truth until Architecture is revised.

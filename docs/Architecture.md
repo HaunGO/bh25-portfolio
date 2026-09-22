@@ -1,6 +1,8 @@
 # System Architecture Document
 ## Portfolio Website - Senior Frontend/Creative Developer
 
+> **Stale vs product (PM/SM, 16 Sep 2026):** This document still describes header navigation and a `/contact` form. Those are **out of scope**. IA, contact, and chrome rules live in `docs/PRD.md`. Do not implement sitemap or contact-form sections below until this file is revised. Scrum Master status: `docs/Backlog.md`.
+
 ---
 
 ## 1. Information Architecture

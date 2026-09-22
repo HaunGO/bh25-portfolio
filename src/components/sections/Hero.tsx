@@ -8,6 +8,7 @@ import { rainbowLetterHandlers } from '@/lib/rainbow-pointer';
 import { ContentContainer } from '../ui/Container';
 import SimplePreloader from '../ui/SimplePreloader';
 import TaglineReveal from './TaglineReveal';
+import { TransitionLink } from '../transitions/TransitionLink';
 
 interface HeroProps {
   className?: string;
@@ -27,6 +28,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
   const greetingRef = useRef<HTMLSpanElement>(null);
   const nameRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
+  const resumeLinkRef = useRef<HTMLDivElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
   
   // State for preloader - temporarily set to true to bypass
@@ -100,6 +102,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       '-=0.3'
     );
 
+    heroTimeline.fromTo(resumeLinkRef.current,
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+      '-=0.2'
+    );
+
     // Cleanup function
     return () => {
       heroTimeline.kill();
@@ -123,7 +131,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
       <section 
         ref={heroRef}
         data-hero-section
-        className={`relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden py-32 sm:py-40 lg:min-h-dvh lg:py-52 ${className}`}
+        className={`relative flex min-h-[100svh] w-full flex-col overflow-hidden ${className}`}
         style={{ 
           opacity: (isClient && preloaderComplete) ? 1 : 0,
           visibility: (isClient && preloaderComplete) ? 'visible' : 'hidden'
@@ -134,12 +142,12 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
 
         <div 
           ref={backgroundRef}
-          className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
+          className="fixed inset-0 z-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
         >
         </div>
           
-          <ContentContainer className="relative z-10 w-full">
-            <div className="w-full text-left">
+          <ContentContainer className="relative z-10 flex min-h-[100svh] w-full flex-col pt-12 lg:pt-14">
+            <div className="flex w-full flex-1 items-center text-left">
               <h1
                 data-hero-section-title
                 ref={textRef}
@@ -168,41 +176,20 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
                 </span>
               </h1>
             </div>
+
+            <div
+              ref={resumeLinkRef}
+              className="relative z-10 shrink-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4"
+            >
+              <TransitionLink
+                href="/resume"
+                data-cursor-hit="active"
+                className="inline-flex min-h-11 items-center font-display text-3xl font-semibold text-neutral-900 dark:text-neutral-100 md:text-5xl"
+              >
+                Resume
+              </TransitionLink>
+            </div>
           </ContentContainer>
-
-
-
-        {/* Interactive Background Elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Grid pattern */}
-          {/* <div className="absolute inset-0 opacity-10 dark:opacity-1 ">
-            <div className="w-full h-full fixed" style={{
-              backgroundImage: `radial-gradient(circle at 10px 10px, currentColor 1px, transparent 0)`,
-              backgroundSize: '20px 20px',
-              backgroundPosition: '0 0'
-              }} />
-              </div> */}
-
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="fixed inset-0  ">
-            <defs>
-              <pattern id="dotGrid"
-                      x="0" y="0"
-                      width="15" height="15"
-                      patternUnits="userSpaceOnUse">
-                <circle cx="10" cy="10" r="1" className="fill-neutral-300 dark:fill-neutral-700" >
-                  {/* <animate attributeName="r"
-                          values="1;3;1"
-                          dur="2s"
-                          repeatCount="indefinite" /> */}
-                </circle>
-              </pattern>
-            </defs>
-
-            <rect width="100%" height="100%" fill="url(#dotGrid)" />
-          </svg>
-
-
-        </div>  
         {/* </div> */}
       </section>
     </>

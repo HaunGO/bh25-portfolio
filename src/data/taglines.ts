@@ -1,11 +1,13 @@
 export const taglines = [
+  'Creative Devloper', 
+  'Frontend Engindeer',
+  'Design System Makifyer',
+  'UX/UI Specialistic',
+  'Agentic Clanker Commander',
+  'Modern Bushcrafter',
+  'Electro-Magneto Tinkerer',
+  'Right & Proper Gooofball',
+  'Creator of Great & Many',
   'Follower of the Way',
   'Husband & Father',
-  'Creator of Great & Many',
-  'Right & Proper Goofball',
-  'Electro-Magnetic Tinkerer',
-  'Modern Bushcrafter',
-  'Creative UX/UI Developer',
-  'Design System Engineer',
-  'AI Commander'
 ] as const;

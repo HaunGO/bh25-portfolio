@@ -3,7 +3,11 @@
 ```
 *scrum-master
 
-Please act as the Scrum Master agent for my BMAD project. Using the PRD (from Analyst) and the System Architecture Document (from Architect), create a structured set of user stories and an initial backlog for the portfolio website project.
+Please act as the Scrum Master agent for this BMAD project. The living backlog is docs/Backlog.md. The living spec is docs/PRD.md (PM), not the original Analyst prompt alone. Architecture.md is stale on nav/contact — do not restore those from it.
+
+Keep Now / Next / Later and the status memory current. Implement one story at a time via the Dev agent. Never reopen dropped stories (contact form, primary nav, ID-card copy, mounted dashboard) unless the human reverses them.
+
+Using the PRD (from PM) and Architecture (from Architect, where it does not conflict with the PRD), maintain user stories and the backlog.
 
 Deliverables:
 - User Stories:
