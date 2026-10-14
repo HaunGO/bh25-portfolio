@@ -6,6 +6,9 @@ import { useThreeScene } from '@/hooks/useThreeScene';
 
 interface Hero3DProps {
   className?: string;
+  mode?: 'demo' | 'background';
+  showDebugBorder?: boolean;
+  showOverlay?: boolean;
 }
 
 interface FloatingShape {
@@ -36,6 +39,7 @@ const SHAPE_LAYOUT = [
 ] as const;
 
 const SHAPE_SCALE_MULTIPLIER = 3;
+const MOTION_SPEED_MULTIPLIER = 0.05;
 
 const getVisibleSizeAtDepth = (camera: THREE.PerspectiveCamera, z: number) => {
   const distance = Math.max(0.1, camera.position.z - z);
@@ -70,12 +74,21 @@ const updateResponsiveShapeLayout = (
   });
 };
 
-export default function Hero3D({ className = '' }: Hero3DProps) {
+export default function Hero3D({
+  className = '',
+  mode = 'demo',
+  showDebugBorder,
+  showOverlay,
+}: Hero3DProps) {
   const shapesRef = useRef<FloatingShape[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const targetMouseRef = useRef({ x: 0, y: 0 });
   const timeRef = useRef(0);
+  const prefersReducedMotionRef = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const isBackground = mode === 'background';
+  const shouldShowOverlay = showOverlay ?? !isBackground;
+  const shouldShowDebugBorder = showDebugBorder ?? !isBackground;
 
   const createFloatingShapes = useCallback((scene: THREE.Scene, camera: THREE.PerspectiveCamera) => {
     const shapes: FloatingShape[] = [];
@@ -126,9 +139,9 @@ export default function Hero3D({ className = '' }: Hero3DProps) {
         originalPosition: mesh.position.clone(),
         normalizedPosition: new THREE.Vector3(layout.x, layout.y, layout.z),
         rotationSpeed: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02
+          (Math.random() - 0.5) * 0.02 * MOTION_SPEED_MULTIPLIER,
+          (Math.random() - 0.5) * 0.02 * MOTION_SPEED_MULTIPLIER,
+          (Math.random() - 0.5) * 0.02 * MOTION_SPEED_MULTIPLIER
         ),
         floatSpeed: 0.5 + Math.random() * 0.5,
         floatAmplitude: 0.2 + Math.random() * 0.3,
@@ -181,7 +194,7 @@ export default function Hero3D({ className = '' }: Hero3DProps) {
 
   const onAnimate = useCallback(
     (scene: THREE.Scene, camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer, delta: number) => {
-      timeRef.current += delta;
+      timeRef.current += delta * MOTION_SPEED_MULTIPLIER;
 
       // Smooth mouse following
       mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * 0.05;
@@ -190,6 +203,11 @@ export default function Hero3D({ className = '' }: Hero3DProps) {
       // Animate floating shapes
       updateResponsiveShapeLayout(camera, shapesRef.current);
       shapesRef.current.forEach((shape) => {
+        if (prefersReducedMotionRef.current) {
+          shape.mesh.position.copy(shape.originalPosition);
+          return;
+        }
+
         // Rotation
         shape.mesh.rotation.x += shape.rotationSpeed.x;
         shape.mesh.rotation.y += shape.rotationSpeed.y;
@@ -224,17 +242,33 @@ export default function Hero3D({ className = '' }: Hero3DProps) {
 
   // Mouse move handler
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateMotionPreference = () => {
+      prefersReducedMotionRef.current = mediaQuery.matches;
+    };
     const handleMouseMove = (e: MouseEvent) => {
       targetMouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       targetMouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
 
+    updateMotionPreference();
+    mediaQuery.addEventListener('change', updateMotionPreference);
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      mediaQuery.removeEventListener('change', updateMotionPreference);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   return (
-    <div className={`relative w-full h-screen ${className}`}>
+    <div
+      className={`${
+        isBackground
+          ? 'pointer-events-none fixed inset-0 h-dvh w-dvw overflow-hidden'
+          : 'relative h-screen w-full overflow-hidden'
+      } ${className}`}
+      aria-hidden={isBackground ? 'true' : undefined}
+    >
       <div
         ref={containerRef}
         data-hero-3d-canvas
@@ -245,20 +279,26 @@ export default function Hero3D({ className = '' }: Hero3DProps) {
       />
       
       {/* Content overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="text-center z-10 pointer-events-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg mb-4">
-            Welcome
-          </h1>
-          <p className="text-xl md:text-2xl text-white/80 drop-shadow-md">
-            Interactive 3D Experience
-          </p>
+      {shouldShowOverlay ? (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center z-10 pointer-events-auto">
+            <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg mb-4">
+              Welcome
+            </h1>
+            <p className="text-xl md:text-2xl text-white/80 drop-shadow-md">
+              Interactive 3D Experience
+            </p>
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      {/* Gradient overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none" />
-      <div className="pointer-events-none absolute inset-0 z-20 border border-dashed border-cyan-300" />
+      {/* Gradient overlay for better text readability in the standalone demo. */}
+      {!isBackground ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none" />
+      ) : null}
+      {shouldShowDebugBorder ? (
+        <div className="pointer-events-none absolute inset-0 z-20 border border-dashed border-cyan-300" />
+      ) : null}
     </div>
   );
 }

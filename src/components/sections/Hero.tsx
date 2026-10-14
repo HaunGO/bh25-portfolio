@@ -149,7 +149,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
     // Background animation
     heroTimeline.fromTo(backgroundRef.current,
       { opacity: 0, scale: 1.1 },
-      { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }
+      { opacity: 0.35, scale: 1, duration: 1, ease: 'power2.out' }
     );
 
     // Greeting text animation
@@ -207,7 +207,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
 
         <div 
           ref={backgroundRef}
-          className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0"
+          className="fixed inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 transition-all duration-700 opacity-0 pointer-events-none"
         >
         </div>
           
@@ -257,7 +257,7 @@ const Hero = memo(function Hero({ className = '', delay = 0.2, shouldAnimate = t
               }} />
               </div> */}
 
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="fixed inset-0  ">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="fixed inset-0 opacity-20 dark:opacity-20">
             <defs>
               <pattern id="dotGrid"
                       x="0" y="0"

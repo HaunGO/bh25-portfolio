@@ -4,6 +4,7 @@ import { ReactNode, memo } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import PageTransition from '../transitions/PageTransition';
+import Hero3D from '../three/Hero3D';
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,18 +20,22 @@ const Layout = memo(function Layout({ children }: LayoutProps) {
   
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
-      
-      <Header />
-      
-      <PageTransition>
-        <main>
-          {children}
-        </main>  
-      </PageTransition>
-      
-      <Footer />
+    <div className="relative min-h-screen">
+      <Hero3D mode="background" className="z-0" />
+
+      <div className="relative z-10 flex min-h-screen flex-col">
+        {/* <Header className={isHomePage ? 'hidden opacity-0' : 'visible opacity-100'} /> */}
+
+        <Header />
+
+        <PageTransition>
+          <main>
+            {children}
+          </main>
+        </PageTransition>
+
+        <Footer />
+      </div>
     </div>
   );
 });
