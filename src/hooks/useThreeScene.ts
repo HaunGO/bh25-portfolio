@@ -54,11 +54,13 @@ export function useThreeScene(
 
     const width = container.clientWidth;
     const height = container.clientHeight;
+    if (width === 0 || height === 0) return;
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-  }, []);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, mergedConfig.pixelRatioLimit!));
+  }, [mergedConfig.pixelRatioLimit]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -86,6 +88,9 @@ export function useThreeScene(
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, mergedConfig.pixelRatioLimit!));
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.width = '100%';
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
@@ -109,12 +114,16 @@ export function useThreeScene(
 
     animate();
 
-    // Handle resize
+    // Handle resize from both viewport and container changes.
     window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+    handleResize();
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       
       if (frameId.current !== null) {
         cancelAnimationFrame(frameId.current);
