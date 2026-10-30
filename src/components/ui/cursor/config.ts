@@ -3,7 +3,7 @@ import { CursorConfig } from './types';
 export const DEFAULT_CURSOR_CONFIG: CursorConfig = {
   disabled: false,
   visual: {
-    enableRing: false,
+    enableRing: true,
     size: 7,
     ringSize: 76,
     ringThickness: 0.8,
