@@ -118,35 +118,30 @@ h1,h2,h3,h4,h5,h6 {
   @apply relative;
 }
 
-/* Keep cursor-target areas steady; real interactive controls still show the native hand. */
-[data-cursor-hit],
-[data-advanced-cursor="true"],
-[data-advanced-cursor="true"] * {
+/* Hide the system pointer wherever the custom ring is showing.
+   !important beats the browser text I-beam and any cursor utilities. */
+html,
+body,
+body * {
+  cursor: none !important;
+}
+
+/* The ring is not shown in the header or footer, so the system pointer comes back. */
+header,
+header *,
+footer,
+footer * {
   cursor: default !important;
 }
 
-[data-cursor-hit],
-[data-cursor-hit] *,
-[data-advanced-cursor="true"],
-[data-advanced-cursor="true"] * {
-  transition-duration: 0ms !important;
-}
-
-a,
-button,
-summary,
-[role="button"],
-.cursor-pointer,
-[data-cursor-hit] a,
-[data-cursor-hit] button,
-[data-cursor-hit] summary,
-[data-cursor-hit] [role="button"] {
+header a,
+header button,
+header summary,
+header [role="button"],
+footer a,
+footer button,
+footer summary,
+footer [role="button"] {
   cursor: pointer !important;
-}
-
-[data-hero-section-title],
-[data-hero-section-title] * {
-  cursor: default !important;
-  transition-duration: 0ms !important;
 }
 
